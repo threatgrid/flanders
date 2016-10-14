@@ -112,16 +112,66 @@
      (str (if leaf? "  *" "*")
           " Usage: " usage "\n"))))
 
+(defn- ->entry-anchor [entry-loc]
+  (-> (->entry-header (z/node entry-loc) entry-loc)
+      (str/replace #"[:∷]" "-")
+      (str/replace #"[^-\w]" "")
+      (str/lower-case)))
+
+(defn- make-entry-vec
+  "used by ->map-summary once for each row-m"
+  [{:keys [entry key type] :as _row-m_}]
+  [;; key field
+   (str "[" (fs/->leaf-schema (z/node key) key) "]"
+        "(#" (->entry-anchor entry) ")")
+   ;; type field
+   (->short-description (z/node type))
+   ;; required? field
+   (when (:required? (z/node entry))
+     "&#10003;")])
+
+(defn- ->map-summary
+  "Build the TOC for the given map"
+  [map-node map-loc]
+  (let [row-vs (loop [loc (-> map-loc z/node fu/->ddl-zip)
+                      row-m nil
+                      entries []]
+                 (cond
+                   (z/end? loc) entries
+                   (fp/entry loc) (recur (z/next loc)
+                                         {:entry loc}
+                                         entries)
+                   (fp/key loc) (recur (z/next loc)
+                                       (assoc row-m :key loc)
+                                       entries)
+                   (fp/leaf loc) (recur (z/next loc)
+                                        nil
+                                        (if row-m
+                                          (conj entries
+                                                (make-entry-vec (assoc row-m
+                                                                       :type loc)))
+                                          entries))
+                   :else (recur (z/next loc)
+                                row-m
+                                entries)))]
+    (str
+     "| key | type | required? |\n"
+     "| --- | ---- | --------- |\n"
+     (str/join "\n"
+               (map (fn [row-v]
+                      (str "|" (apply str (interpose "|" row-v)) "|"))
+                    row-vs))
+     "\n")))
+
 (extend-protocol MarkdownNode
   MapType
-  (->markdown-part [{:keys [anchor jump-anchor] :as this} loc]
+  (->markdown-part [{:keys [anchor] :as this} loc]
     (str "<a name=\"" anchor "\"/>\n"
          (if (nil? (z/up loc))
            (->header loc " " (->short-description this))
            (->leaf-header this loc))
-         (when jump-anchor
-           (str "[return](#" jump-anchor ")\n\n"))
          (->description this)
+         (->map-summary this loc)
          (->comment this)
          (->usage this)
          (->reference this)))
@@ -140,7 +190,8 @@
 
   MapEntry
   (->markdown-part [{:keys [key required?] :as this} loc]
-    (str (->entry-header this loc)
+    (str "<a name=\"" (->entry-anchor loc) "\"/>\n"
+         (->entry-header this loc)
          (->description this)
          (if required?
            "* This entry is required"
