@@ -122,7 +122,7 @@
   "used by ->map-summary once for each row-m"
   [{:keys [entry key type] :as _row-m_}]
   [;; key field
-   (str "[" (fs/->leaf-schema (z/node key) key) "]"
+   (str "[" (pr-str (fs/->leaf-schema (z/node key) key)) "]"
         "(#" (->entry-anchor entry) ")")
    ;; type field
    (->short-description (z/node type))

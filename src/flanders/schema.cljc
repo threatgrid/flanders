@@ -1,12 +1,8 @@
 (ns flanders.schema
-  (:refer-clojure :exclude [key])
-  (:require #?(:clj  [clojure.core :as core]
-               :cljs [cljs.core :as core])
-            #?(:clj  [clojure.core.match :refer [match]]
+  (:require #?(:clj  [clojure.core.match :refer [match]]
                :cljs [cljs.core.match :refer-macros [match]])
             [clojure.zip :as z]
             [flanders.predicates :as fp]
-            [flanders.protocols :as p]
             #?(:clj  [flanders.types :as ft]
                :cljs [flanders.types
                       :as ft
