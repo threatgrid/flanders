@@ -62,8 +62,8 @@
 (defn- ->entry-header [{:keys [key type]} loc]
   (->header loc
             " MapEntry "
-            (let [key-schema (fs/->leaf-schema key
-                                               (z/down loc))]
+            (let [key-schema (fs/->schema-at-loc key
+                                                 (z/down loc))]
               (if (keyword? key-schema)
                 key-schema
                 (->short-description key)))
@@ -77,7 +77,7 @@
       (str "* " type-str " Value\n"))))
 
 (defn- ->schema-str [this loc]
-  (let [schema (pr-str (fs/->leaf-schema this loc))
+  (let [schema (pr-str (fs/->schema-at-loc this loc))
         schema (cond
                  (str/starts-with? schema "(enum") "(enum ...)"
                  (= "java.lang.String" schema) "Str"
@@ -122,7 +122,7 @@
   "used by ->map-summary once for each row-m"
   [{:keys [entry key type] :as _row-m_}]
   [;; key field
-   (str "[" (pr-str (fs/->leaf-schema (z/node key) key)) "]"
+   (str "[" (pr-str (fs/->schema-at-loc (z/node key) key)) "]"
         "(#" (->entry-anchor entry) ")")
    ;; type field
    (->short-description (z/node type))

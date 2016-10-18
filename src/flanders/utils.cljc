@@ -1,6 +1,8 @@
 (ns flanders.utils
   (:require [clojure.zip :as z]
-            [flanders.protocols :refer [branch? node-children make-node]]))
+            [flanders.predicates :as fp]
+            [flanders.protocols :refer [branch? node-children make-node]]
+            [flanders.types :as ft]))
 
 (defn right-loc-seq
   "Lazy seq of loc and its right siblings"
@@ -27,3 +29,25 @@
        (into {} children)
        (assoc x 1 (into {} children))))
    m))
+
+(defn- replace-with-any [loc description]
+  (z/replace loc
+             (ft/map->AnythingType {:description description})))
+
+(defn replace-either-with-any
+  "Walks the DDL tree, replacing EitherType nodes with AnythingType nodes"
+  [ddl]
+  (loop [ddl-loc (->ddl-zip ddl)]
+    (cond
+      ;; Terminate
+      (z/end? ddl-loc)
+      (z/root ddl-loc)
+
+      ;; Replace
+      (fp/either? (z/node ddl-loc))
+      (recur (z/next (replace-with-any ddl-loc
+                                       "Simplified conditional branch")))
+
+      ;; Recur
+      :else
+      (recur (z/next ddl-loc)))))

@@ -66,7 +66,7 @@
 
   KeywordType
   (->example [node _]
-    (let [schema (fs/->schema-tree node)]
+    (let [schema (fs/->schema node)]
       (if (keyword? schema)
         (name schema)
         "keyword")))
