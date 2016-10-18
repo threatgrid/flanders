@@ -9,6 +9,7 @@
                       :refer [AnythingType BooleanType EitherType InstType
                               IntegerType KeywordType MapEntry MapType
                               NumberType SequenceOfType SetOfType StringType]])
+            [flanders.protocols :as prots]
             [flanders.utils :as fu]
             #?(:clj [ring.swagger.json-schema :as rs])
             [schema.core :as s]
@@ -162,3 +163,18 @@
    (if (fp/key loc)
      (assoc leaf-node :key? true)
      leaf-node)))
+
+(defn dedup-map-type
+  "MapType maintains a list of MapEntryTypes.  Since this is a list
+  and not a map, there is no duplicate key resolution.  This fn takes
+  a MapType and returns a new MapType with duplicates removed (based
+  on key schema matching)."
+  [map-type]
+  (let [ent-map (reduce (fn [m {key :key :as entry}]
+                          (st/assoc m
+                                    (->schema-tree
+                                     (assoc key :key? true))
+                                    entry))
+                        (array-map)
+                        (:entries map-type))]
+    (prots/make-node map-type (vals ent-map))))
