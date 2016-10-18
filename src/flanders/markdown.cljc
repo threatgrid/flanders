@@ -366,13 +366,14 @@
                (rest maps-to-walk)
                markdown)
 
-        ;; for a MapType, recur with deduped MapType
+        ;; for a MapType, recur with deduped (and sorted) MapType
         (and (fp/map? (z/node current-map-loc))
              ((complement :deduped?) (z/node current-map-loc)))
         (recur (z/replace current-map-loc
                           (-> current-map-loc
                               z/node
                               fs/dedup-map-type
+                              fs/sort-map-type
                               (assoc :deduped? true)))
                maps-to-walk
                markdown)

@@ -154,3 +154,18 @@
                         (array-map)
                         (:entries map-type))]
     (prots/make-node map-type (vals ent-map))))
+
+(defn sort-map-type
+  "Sort the entries in a MapType by schema (compared as a string).
+  The MapType should already be deduped (as by dedup-map-type) as this
+  fn does not use schema-tools assoc."
+  [map-type]
+  (let [ent-map (reduce (fn [m {key :key :as entry}]
+                          (assoc m
+                                 (-> (assoc key :key? true)
+                                     ->schema
+                                     pr-str)
+                                 entry))
+                        (sorted-map)
+                        (:entries map-type))]
+    (prots/make-node map-type (vals ent-map))))
