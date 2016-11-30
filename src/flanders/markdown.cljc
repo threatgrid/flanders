@@ -59,16 +59,23 @@
               parts
               ["\n\n"])))
 
+(defn- mkd-symbol [x]
+  (str "`" (if (keyword? x)
+             (name x)
+             (pr-str x))
+       "`"))
+
 (defn- ->entry-header [{:keys [key type]} loc]
   (->header loc
             " MapEntry "
             (let [key-schema (fs/->schema-at-loc key
                                                  (z/down loc))]
-              (if (keyword? key-schema)
-                key-schema
-                (->short-description key)))
+              (mkd-symbol (if (keyword? key-schema)
+                            key-schema
+                            (->short-description key))))
             " ∷ "
-            (->short-description type)))
+            (mkd-symbol
+             (->short-description type))))
 
 (defn- ->leaf-header [this loc]
   (let [type-str (->short-description this)]
@@ -85,8 +92,9 @@
                  :else schema)]
     (str "  * Plumatic Schema: "
          (if (fp/sequential? loc)
-           (str "[" schema "]")
-           schema)
+           (str "[" (mkd-symbol schema)
+                "]")
+           (mkd-symbol schema))
          "\n")))
 
 (defn- ->values [{v :values}]
@@ -94,7 +102,7 @@
     (str "  * Allowed Values:\n"
          (str/join
            (->> (sort (seq v))
-                (map #(str "    * " % "\n")))))))
+                (map #(str "    * " (mkd-symbol %) "\n")))))))
 
 (defn- ->comment
   ([node]
