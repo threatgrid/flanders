@@ -1,5 +1,5 @@
 (ns flanders.predicates
-  (:refer-clojure :exclude [key map? sequential?])
+  (:refer-clojure :exclude [key keyword keyword? map map? sequential?])
   (:require [clojure.zip :as z]
             [flanders.protocols :as prots]
             #?(:clj  [flanders.types]
@@ -28,6 +28,8 @@
 
 (def set-of? (partial instance? SetOfType))
 
+(def keyword? (partial instance? KeywordType))
+
 
 ;; ----------------------------------------------------------------------
 ;; about zipper locations
@@ -50,6 +52,18 @@
   return the loc"
   [loc]
   (when (some-> loc z/up entry z/node :key (= (z/node loc)))
+    loc))
+
+(defn keyword
+  "If the loc points at a KeywordType, return the loc"
+  [loc]
+  (when (some-> loc z/node keyword?)
+    loc))
+
+(defn map
+  "If the loc points at a MapType, return the loc"
+  [loc]
+  (when (some-> loc z/node map?)
     loc))
 
 (defn sequential?
