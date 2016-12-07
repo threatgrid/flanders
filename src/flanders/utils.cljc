@@ -51,3 +51,16 @@
       ;; Recur
       :else
       (recur (z/next ddl-loc)))))
+
+(defn require-all
+  "Walk the DDL tree making all MapEntry nodes required"
+  [ddl]
+  (loop [ddl-loc (->ddl-zip ddl)]
+    (cond
+      (z/end? ddl-loc) (z/root ddl-loc)
+      (fp/entry ddl-loc) (recur
+                          (z/next
+                           (z/replace ddl-loc
+                                      (assoc (z/node ddl-loc)
+                                             :required? true))))
+      :else (recur (z/next ddl-loc)))))

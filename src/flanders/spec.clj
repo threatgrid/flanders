@@ -2,7 +2,9 @@
   (:require [clojure.core.match :refer [match]]
             [clojure.future :refer :all] ;; Remove after CLJ 1.9
             [clojure.spec :as s]
-            [flanders.types])
+            [clojure.zip :as z]
+            [flanders.types]
+            [flanders.utils :as fu])
   (:import [flanders.types
             AnythingType BooleanType EitherType InstType IntegerType
             KeywordType MapEntry MapType NumberType SequenceOfType
@@ -17,13 +19,6 @@
 (defn ns-str? [s]
   (and (string? s)
        (re-matches #"\w+(\.?\w+)*" s)))
-
-(defn ->spec [node ns]
-  (->spec' node ns ->spec))
-
-(s/fdef ->spec
-        :args (s/cat :node speced-node? :ns ns-str?)
-        :ret #(satisfies? s/Spec %))
 
 (defn- key? [spec]
   (and (set? spec)
@@ -42,6 +37,15 @@
                  (assoc m spec entry))
                (array-map))
        vals))
+
+(defn- with-gen
+  "Used like clojure.spec/with-gen, except that it takes a node (that
+  may have :_gen set) and a spec.  If set, :_gen must be a function
+  of zero args that returns a generator."
+  [{gen :_gen} spec]
+  (if gen
+    (s/with-gen spec gen)
+    spec))
 
 (extend-protocol SpecedNode
 
@@ -98,56 +102,105 @@
   (->spec' [{:keys [type]} ns f]
     (let [result-kw (keyword ns "set-of")]
       (eval `(s/def ~result-kw ~(f type ns)))
-      (eval `(s/coll-of ~(f type ns) :kind set?))))
+      (eval `(s/coll-of ~result-kw :kind set?))))
 
   ;; Leaves
 
   AnythingType
-  (->spec' [{:keys [spec]} _ _]
-    (or spec
-        any?))
+  (->spec' [{:keys [gen spec]} _ _]
+    (with-gen
+      (or spec
+          any?)
+      gen))
 
   BooleanType
-  (->spec' [{:keys [open? spec default]} _ _]
-    (match [(some? spec) open? default]
-           [true _   _  ] spec
-           [_   true _  ] boolean?
-           [_   _    nil] boolean?
-           :else          #{default}))
+  (->spec' [{:keys [open? spec default] :as node} _ _]
+    (with-gen node
+      (match [(some? spec) open? default]
+             [true _   _  ] spec
+             [_   true _  ] boolean?
+             [_   _    nil] boolean?
+             :else          #{default})))
 
   InstType
-  (->spec' [{:keys [spec]} _ _]
-    (or spec
-        inst?))
+  (->spec' [{:keys [spec] :as node} _ _]
+    (with-gen node
+      (or spec
+          inst?)))
 
   IntegerType
-  (->spec' [{:keys [open? spec values]} _ _]
-    (match [(some? spec) open? values]
-           [true _    _  ] spec
-           [_    true _  ] integer?
-           [_    _    nil] integer?
-           :else           (set values)))
+  (->spec' [{:keys [open? spec values] :as node} _ _]
+    (with-gen node
+      (match [(some? spec) open? values]
+             [true _    _  ] spec
+             [_    true _  ] integer?
+             [_    _    nil] integer?
+             :else           (set values))))
 
   KeywordType
-  (->spec' [{:keys [open? spec values]} _ _]
-    (match [(some? spec) open? values]
-           [true _     _  ] spec
-           [_    true  _  ] keyword?
-           [_    _     nil] keyword?
-           :else            (set values)))
+  (->spec' [{:keys [gen open? spec values] :as node} _ _]
+    (with-gen node
+      (match [(some? spec) open? values]
+             [true _     _  ] spec
+             [_    true  _  ] keyword?
+             [_    _     nil] keyword?
+             :else            (set values))))
 
   NumberType
-  (->spec' [{:keys [open? spec values]} _ _]
-    (match [(some? spec) open? (seq values)]
-           [true _    _  ] spec
-           [_    true _  ] number?
-           [_    _    nil] number?
-           :else           (set values)))
+  (->spec' [{:keys [gen open? spec values] :as node} _ _]
+    (with-gen node
+      (match [(some? spec) open? (seq values)]
+             [true _    _  ] spec
+             [_    true _  ] number?
+             [_    _    nil] number?
+             :else           (set values))))
 
   StringType
-  (->spec' [{:keys [open? spec values]} _ _]
-    (match [(some? spec) open? (seq values)]
-           [true  _   _  ] spec
-           [_    true _  ] string?
-           [_    _    nil] string?
-           :else           (set values))))
+  (->spec' [{:keys [gen open? spec values] :as node} _ _]
+    (with-gen node
+      (match [(some? spec) open? (seq values)]
+             [true  _   _  ] spec
+             [_    true _  ] string?
+             [_    _    nil] string?
+             :else           (set values)))))
+
+(defn- assoc-generator
+  "Used to assoc the generator function that will be used by the spec
+  for the given node. Takes a clojure.zip location of a node.  The
+  resulting generator will be assoc'ed onto the node as :_gen.  The
+  result will be a function of zero args that returns a generator, as
+  used by clojure.spec/with-gen.  If no generator has been set, then
+  node is unchanged.
+
+  Generators may be set on the node in one of three ways:
+  - Using :gen-fn, the no-arg, generator returning function is set.
+  - Using :gen, a generator is set, which will be wrapped in a fn.
+  - Using :loc-gen, a function that takes a location and returns a
+    generator should be set.  The resulting generator will be wrapped
+    in a fn."
+  [node-loc]
+  (let [{:keys [gen loc-gen gen-fn] :as node} (z/node node-loc)]
+    (cond
+      gen-fn (assoc node :_gen gen-fn)
+      gen (assoc node :_gen (constantly gen))
+      loc-gen (assoc node :_gen (constantly (loc-gen node-loc)))
+      :else node)))
+
+(defn- assoc-generators
+  "Walk the DDL tree and try to assoc a generator to each node,
+  returning the updated tree"
+  [ddl-node]
+  (loop [current-loc (fu/->ddl-zip ddl-node)]
+    (if (z/end? current-loc)
+      (z/root current-loc)
+      (recur (z/next (z/replace current-loc
+                                (assoc-generator current-loc)))))))
+
+(s/fdef ->spec
+        :args (s/cat :node speced-node? :ns ns-str?)
+        :ret #(satisfies? s/Spec %))
+
+(defn ->spec [node ns]
+  (letfn [(recursive-spec [node ns]
+            (->spec' node ns recursive-spec))]
+    (recursive-spec (assoc-generators node) ns)))
