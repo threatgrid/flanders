@@ -64,3 +64,16 @@
                                       (assoc (z/node ddl-loc)
                                              :required? true))))
       :else (recur (z/next ddl-loc)))))
+
+(defn remove-in-place
+  "Alternative to clojure.zip/remove.  Removes the node at loc,
+  returning the loc of the left sibling, if present, or else the loc
+  of the right sibling (with may be nil)."
+  [loc]
+  (let [[_ {l :l, r :r, :as path}] loc]
+    (if (nil? path)
+      (throw (new Exception "Remove at top"))
+      (if (pos? (count l))
+        (with-meta [(peek l) (assoc path :l (pop l))] (meta loc))
+        (when (pos? (count r))
+          (with-meta [(first r) (assoc path :r (rest r))] (meta loc)))))))
