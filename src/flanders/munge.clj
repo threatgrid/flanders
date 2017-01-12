@@ -16,6 +16,10 @@
         @v
         (throw (RuntimeException. (str "Var " s " is not on the classpath")))))))
 
+(def generator?
+  (let [g? (delay (dynaload 'clojure.test.check.generators/generator?))]
+    @g?))
+
 (defn- first-value [{v :values}]
   (first v))
 
@@ -38,10 +42,9 @@
            (z/replace loc
                       (assoc node :type (munge-ddl node-type action)))
 
-           (let [g? (delay (dynaload 'clojure.test.check.generators/generator?))]
-             (@g? action))
+           (generator? action)
            (z/replace loc
-                      (assoc node :gen action))
+                      (assoc node :type (assoc node-type :gen action)))
 
            (fn? action)
            (action loc)
