@@ -1,5 +1,6 @@
 (ns flanders.predicates
-  (:refer-clojure :exclude [key keyword keyword? map map? sequential?])
+  (:refer-clojure
+    :exclude [key keyword keyword? map map? sequential?])
   (:require [clojure.zip :as z]
             [flanders.protocols :as prots]
             #?(:clj  [flanders.types]
@@ -24,9 +25,14 @@
 
 (def leaf? (complement branch?))
 
-(def sequence-of? (partial instance? SequenceOfType))
+(def seq-of? (partial instance? SequenceOfType))
+
+(def ^:deprecated sequence-of? seq-of?)
 
 (def set-of? (partial instance? SetOfType))
+
+(def col-of?
+  (comp boolean (some-fn seq-of? set-of?)))
 
 (def keyword? (partial instance? KeywordType))
 
@@ -76,3 +82,20 @@
            z/up
            z/node
            sequence-of?)))
+
+(defn seq-of
+  "If the loc points at a SequenceOfType, return the loc"
+  [loc]
+  (when (some-> loc z/node sequence-of?)))
+
+(defn set-of
+  "If the loc points at a SetOfType, return the loc"
+  [loc]
+  (when (some-> loc z/node set-of?)
+    loc))
+
+(defn col-of
+  "Either seq-of or set-of"
+  [loc]
+  (or (seq-of loc)
+      (set-of loc)))
