@@ -1,7 +1,7 @@
 (def schema-tools-version "0.9.0")
 (def schema-version "1.1.3")
 
-(defproject threatgrid/flanders "0.1.5"
+(defproject threatgrid/flanders "0.1.5b"
   :description "flanders"
   :url "http://github.com/threatgrid/flanders"
   :license {:name "Eclipse Public License"
@@ -9,7 +9,7 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [clojure-future-spec "1.9.0-alpha14"]
                  [org.clojure/core.match "0.3.0-alpha4"]
-                 [cheshire "5.6.1"]
+                 [cheshire "5.6.3"]
 
                  [prismatic/schema ~schema-version]
                  [metosin/ring-swagger "0.22.9"]
