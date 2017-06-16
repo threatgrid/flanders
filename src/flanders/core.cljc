@@ -138,10 +138,11 @@
       (keyword? v) (ft/map->KeywordType (merge opts {:values values :open? open?}))
       (string? v)  (ft/map->StringType  (merge opts {:values values :open? open?})))))
 
-(defn eq [value & {:keys [description reference comment usage]}]
+(defn eq [value & {:keys [description reference comment usage name]}]
   (enum #{value}
         :open? false
         :default value
+        :name name
         :description description
         :reference reference
         :comment comment
@@ -193,3 +194,12 @@
      (map-of (merge ~opts
                     {:name ~(core/str name)})
              ~map-entries)))
+
+(defmacro def-enum-type [name values & opts]
+  `(def ~name
+     (enum ~values :name ~(core/str name) ~@opts)))
+
+(defmacro def-eq [name value & opts]
+  `(def ~name
+     (eq ~value :name ~(core/str name) ~@opts)))
+

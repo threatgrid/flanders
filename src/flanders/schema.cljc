@@ -48,6 +48,8 @@
 
   MapEntry
   (->schema' [{:keys [key type required?] :as entry} f]
+    (assert (some? type) (format "Type nil for MapEntry with key %s" key))
+    (assert (some? key) (format "Key nil for MapEntry with type %s" type))
     [((if (not required?)
         s/optional-key
         identity)
