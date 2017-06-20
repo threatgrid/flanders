@@ -81,12 +81,12 @@
            leaf
            z/up
            z/node
-           sequence-of?)))
+           seq-of?)))
 
 (defn seq-of
   "If the loc points at a SequenceOfType, return the loc"
   [loc]
-  (when (some-> loc z/node sequence-of?)))
+  (when (some-> loc z/node seq-of?)))
 
 (defn set-of
   "If the loc points at a SetOfType, return the loc"
