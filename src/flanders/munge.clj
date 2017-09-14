@@ -126,3 +126,22 @@
 (defmethod ^{:doc "Trigger a removal of the node from the DDL tree"}
   munge-action :delete [_ _]
   nil)
+
+;; --- Predefined Action Fns ---
+
+(defn append-entries [new-entries]
+  (fn action-fn [node rule]
+    (cond
+      (fp/map? node)
+      (update node :entries
+              concat new-entries)
+
+      (and (fp/entry? node)
+           (fp/map? (:type node)))
+      (update-in node [:type :entries]
+                 concat new-entries)
+
+      :else
+      (throw (ex-info (str "Node '" (type node) "' does not have entries")
+                      {:node node
+                       :rule rule})))))
