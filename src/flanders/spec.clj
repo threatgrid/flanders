@@ -78,7 +78,7 @@
           result-kw))))
 
   MapType
-  (->spec' [{:keys [entries]} ns f]
+  (->spec' [{:keys [entries spec]} ns f]
     (let [entries (->> entries
                        (map #(assoc % :spec (f % ns)))
                        (filter (comp keyword? :spec))
@@ -86,8 +86,12 @@
           [req-ents opt-ents] ((juxt filter remove) :required? entries)
           req-specs (mapv :spec req-ents)
           opt-specs (mapv :spec opt-ents)
-          map-spec (eval `(s/keys :req-un ~req-specs
-                                  :opt-un ~opt-specs))
+          map-spec (if spec
+                     (eval `(s/and (s/keys :req-un ~req-specs
+                                           :opt-un ~opt-specs)
+                                   ~spec))
+                     (eval `(s/keys :req-un ~req-specs
+                                    :opt-un ~opt-specs)))
           map-kw (keyword ns "map")]
       (eval `(s/def ~map-kw ~map-spec))
       map-kw))

@@ -61,3 +61,46 @@
      (fs/->spec (ft/map->EitherType {:choices [f/any-str f/any-keyword]})
                 "test-not-valid-spec")
      'foo)))
+
+(deftest test-map
+  (testing "map with custom spec predicate"
+    (s/valid?
+     (fs/->spec (f/map
+                 (f/optional-entries
+                  (f/entry :foo f/any-str)
+                  (f/entry :bar f/any-str))
+                 :spec (fn [m]
+                         (= 1 (count m))))
+                "test-map-1")
+     {:foo "foo"})
+
+    (s/valid?
+     (fs/->spec (f/map
+                 (f/optional-entries
+                  (f/entry :foo f/any-str)
+                  (f/entry :bar f/any-str))
+                 :spec (fn [m]
+                         (= 1 (count m))))
+                "test-map-2")
+     {:bar "bar"})
+
+    ((complement s/valid?)
+     (fs/->spec (f/map
+                 (f/optional-entries
+                  (f/entry :foo f/any-str)
+                  (f/entry :bar f/any-str))
+                 :spec (fn [m]
+                         (= 1 (count m))))
+                "test-map-3")
+     {:foo "foo"
+      :bar "bar"})
+
+    ((complement s/valid?)
+     (fs/->spec (f/map
+                 (f/optional-entries
+                  (f/entry :foo f/any-str)
+                  (f/entry :bar f/any-str))
+                 :spec (fn [m]
+                         (= 1 (count m))))
+                "test-map-4")
+     {:spam "eggs"})))
