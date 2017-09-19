@@ -38,7 +38,7 @@
                (array-map))
        vals))
 
-(defn- with-gen
+(defn with-gen
   "Used like clojure.spec/with-gen, except that it takes a node (that
   may have :_gen set) and a spec.  If set, :_gen must be a function
   of zero args that returns a generator."
@@ -78,7 +78,7 @@
           result-kw))))
 
   MapType
-  (->spec' [{:keys [entries spec]} ns f]
+  (->spec' [{:keys [entries spec] :as node} ns f]
     (let [entries (->> entries
                        (map #(assoc % :spec (f % ns)))
                        (filter (comp keyword? :spec))
@@ -93,7 +93,7 @@
                      (eval `(s/keys :req-un ~req-specs
                                     :opt-un ~opt-specs)))
           map-kw (keyword ns "map")]
-      (eval `(s/def ~map-kw ~map-spec))
+      (eval `(s/def ~map-kw (with-gen ~node ~map-spec)))
       map-kw))
 
   SequenceOfType
