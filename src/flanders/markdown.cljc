@@ -133,9 +133,9 @@
    ;; type field
    (->short-description (z/node type))
 
-   ;; description of property 
+   ;; description of property
    (ready-for-table (or (:description (z/node entry)) " "))
-   
+
    ;; required? field
    (when (:required? (z/node entry))
      "&#10003;")])
@@ -164,20 +164,20 @@
                                        (assoc row-m :key loc)
                                        entries)
                    ;; if it's a col, set the type to the col node
-                   (fp/col-of? (z/node loc)) (recur (z/next loc)
-                                                         (assoc row-m :type loc)
-                                                         entries)
+                   (fp/col-of loc) (recur (z/next loc)
+                                          (assoc row-m :type loc)
+                                          entries)
                    ;; if we are at a leaf, populate type if it's not already set
                    ;; and add a new entry
                    (fp/leaf loc) (recur (z/next loc)
-                                            nil
-                                            (if row-m
-                                              (conj entries
-                                                    (make-entry-vec
-                                                     (if (:type row-m)
-                                                       row-m
-                                                       (assoc row-m :type loc ))))
-                                              entries))
+                                        nil
+                                        (if row-m
+                                          (conj entries
+                                                (make-entry-vec
+                                                 (if (:type row-m)
+                                                   row-m
+                                                   (assoc row-m :type loc ))))
+                                          entries))
                    :else (recur (z/next loc)
                                 row-m
                                 entries)))]
@@ -239,7 +239,7 @@
     nil)
   (->short-description [this]
     (str (->short-description (:type this)) " List"))
-  
+
   SetOfType
   (->markdown-part [{:keys [description]} loc]
     nil)
@@ -356,7 +356,7 @@
                                            :jump-anchor ref-anchor))
                  result-maps
                  (inc map-counter)))
-        
+
         ;; else go to next location
         :else
         (recur (z/next current-map-loc)
