@@ -86,7 +86,8 @@
 (defn seq-of
   "If the loc points at a SequenceOfType, return the loc"
   [loc]
-  (when (some-> loc z/node seq-of?)))
+  (when (some-> loc z/node seq-of?)
+    loc))
 
 (defn set-of
   "If the loc points at a SetOfType, return the loc"
