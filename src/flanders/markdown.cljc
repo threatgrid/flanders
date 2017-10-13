@@ -22,6 +22,12 @@
 
 (defleaf ReferenceNode [text anchor jump-anchor])
 
+(defn ready-for-table [str]
+  (-> str
+      (str/replace #"\n" " ")
+      (str/replace #"\|" "\\\\|")
+      ))
+
 (defn ->default [{:keys [default values]}]
   (when (and default (> (count values) 1))
     (str "  * Default: " default "\n")))
@@ -61,11 +67,11 @@
 
 (defn- ->entry-header [{:keys [key type]} loc]
   (->header loc
-            " MapEntry "
+            " Property "
             (let [key-schema (fs/->schema-at-loc key
                                                  (z/down loc))]
               (if (keyword? key-schema)
-                key-schema
+                (name key-schema)
                 (->short-description key)))
             " ∷ "
             (->short-description type)))
@@ -122,13 +128,29 @@
   "used by ->map-summary once for each row-m"
   [{:keys [entry key type] :as _row-m_}]
   [;; key field
-   (str "[" (pr-str (fs/->schema-at-loc (z/node key) key)) "]"
-        "(#" (->entry-anchor entry) ")")
+   (let [key-schema (fs/->schema-at-loc (z/node key) key)]
+     (str "[" (if (keyword? key-schema)
+                (name key-schema)
+                (pr-str key-schema)) "]"
+          "(#" (->entry-anchor entry) ")"))
    ;; type field
    (->short-description (z/node type))
+
+   ;; description of property
+   (ready-for-table (or (:description (z/node entry)) " "))
+
    ;; required? field
    (when (:required? (z/node entry))
      "&#10003;")])
+
+(defn sort-entry-vecs [rows]
+  (sort (fn [r1 r2]
+          ;; required first
+          (let [req (compare (last r2) (last r1))]
+            (if (= 0 req)
+              (compare (first r1) (first r2))
+              req)))
+        rows))
 
 (defn- ->map-summary
   "Build the TOC for the given map"
@@ -144,29 +166,38 @@
                    (fp/key loc) (recur (z/next loc)
                                        (assoc row-m :key loc)
                                        entries)
+                   ;; if it's a col, set the type to the col node
+                   (fp/col-of loc) (recur (z/next loc)
+                                          (assoc row-m :type loc)
+                                          entries)
+                   ;; if we are at a leaf, populate type if it's not already set
+                   ;; and add a new entry
                    (fp/leaf loc) (recur (z/next loc)
                                         nil
                                         (if row-m
                                           (conj entries
-                                                (make-entry-vec (assoc row-m
-                                                                       :type loc)))
+                                                (make-entry-vec
+                                                 (if (:type row-m)
+                                                   row-m
+                                                   (assoc row-m :type loc ))))
                                           entries))
                    :else (recur (z/next loc)
                                 row-m
                                 entries)))]
     (str
-     "| key | type | required? |\n"
-     "| --- | ---- | --------- |\n"
+     "| Property | Type | Description | Required? |\n"
+     "| -------- | ---- | ----------- | --------- |\n"
      (str/join "\n"
                (map (fn [row-v]
                       (str "|" (apply str (interpose "|" row-v)) "|"))
-                    row-vs))
-     "\n")))
+                    (sort-entry-vecs row-vs)))
+     "\n\n")))
+
 
 (extend-protocol MarkdownNode
   MapType
   (->markdown-part [{:keys [anchor] :as this} loc]
-    (str "<a name=\"" anchor "\"/>\n"
+    (str "<a id=\"" anchor "\"></a>\n"
          (if (nil? (z/up loc))
            (->header loc " " (->short-description this))
            (->leaf-header this loc))
@@ -177,12 +208,12 @@
          (->reference this)))
   (->short-description [{name :name}]
     (if (seq name)
-      (str "*" name "* Map")
-      "Map"))
+      (str "*" name "* Object")
+      "Object"))
 
   ReferenceNode
   (->markdown-part [{:keys [text anchor jump-anchor] :as this} loc]
-    (str "<a name=\"" anchor "\"/>\n"
+    (str "<a id=\"" anchor "\"></a>\n"
          (->leaf-header this loc)
          "  * Details: [" text "](#" jump-anchor ")\n"))
   (->short-description [{:keys [text]}]
@@ -190,7 +221,7 @@
 
   MapEntry
   (->markdown-part [{:keys [key required?] :as this} loc]
-    (str "<a name=\"" (->entry-anchor loc) "\"/>\n"
+    (str "<a id=\"" (->entry-anchor loc) "\"></a>\n"
          (->entry-header this loc)
          (->description this)
          (if required?
@@ -202,14 +233,15 @@
            "* This entry's type is a set (allows zero or more distinct values)\n")
          (->comment this)
          (->usage this)
-         (->reference this)))
-  (->short-description [_] "MapEntry")
+         (->reference this)
+         ))
+  (->short-description [_] "Property")
 
   SequenceOfType
   (->markdown-part [{:keys [description]} loc]
     nil)
-  (->short-description [{:keys [type]}]
-    (str "[" (->short-description type) "]"))
+  (->short-description [this]
+    (str (->short-description (:type this)) " List"))
 
   SetOfType
   (->markdown-part [{:keys [description]} loc]
@@ -219,8 +251,7 @@
 
   EitherType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
+    (str (->description this :leaf)
          (->comment this)
          (->usage this :leaf)
          (->reference this :leaf)
@@ -229,9 +260,7 @@
 
   AnythingType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
-         (->schema-str this loc)
+    (str (->description this :leaf)
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
@@ -239,9 +268,7 @@
 
   BooleanType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
-         (->schema-str this loc)
+    (str (->description this :leaf)
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
@@ -249,48 +276,40 @@
 
   IntegerType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
-         (->schema-str this loc)
+    (str (->description this :leaf)
          (->equals this loc)
          (->default this)
          (->values this)
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
-  (->short-description [_] "Integer")
+  (->short-description [this] (str (:name this) "Integer"))
 
   NumberType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
-         (->schema-str this loc)
+    (str (->description this :leaf)
          (->equals this loc)
          (->default this)
          (->values this)
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
-  (->short-description [_] "Number")
+  (->short-description [this] (str (:name this) "Number"))
 
   StringType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
-         (->schema-str this loc)
+    (str (->description this :leaf)
          (->equals this loc)
          (->default this)
          (->values this)
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
-  (->short-description [_] "String")
+  (->short-description [this] (str (:name this) " String"))
 
   InstType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
-         (->schema-str this loc)
+    (str (->description this :leaf)
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
@@ -298,9 +317,7 @@
 
   KeywordType
   (->markdown-part [this loc]
-    (str (->leaf-header this loc)
-         (->description this :leaf)
-         (->schema-str this loc)
+    (str (->description this :leaf)
          (->equals this loc)
          (->default this)
          (->values this)
