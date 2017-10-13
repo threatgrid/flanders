@@ -71,7 +71,7 @@
             (let [key-schema (fs/->schema-at-loc key
                                                  (z/down loc))]
               (if (keyword? key-schema)
-                key-schema
+                (name key-schema)
                 (->short-description key)))
             " ∷ "
             (->short-description type)))
@@ -128,8 +128,11 @@
   "used by ->map-summary once for each row-m"
   [{:keys [entry key type] :as _row-m_}]
   [;; key field
-   (str "[" (pr-str (fs/->schema-at-loc (z/node key) key)) "]"
-        "(#" (->entry-anchor entry) ")")
+   (let [key-schema (fs/->schema-at-loc (z/node key) key)]
+     (str "[" (if (keyword? key-schema)
+                (name key-schema)
+                (pr-str key-schema)) "]"
+          "(#" (->entry-anchor entry) ")"))
    ;; type field
    (->short-description (z/node type))
 
