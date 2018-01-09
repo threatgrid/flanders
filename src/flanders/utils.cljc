@@ -52,9 +52,9 @@
       :else
       (recur (z/next ddl-loc)))))
 
-(defn require-all
-  "Walk the DDL tree making all MapEntry nodes required"
-  [ddl]
+(defn toggle-require-all
+  "Walk the DDL tree making all MapEntry nodes setting the required option"
+  [ddl required?]
   (loop [ddl-loc (->ddl-zip ddl)]
     (cond
       (z/end? ddl-loc) (z/root ddl-loc)
@@ -62,5 +62,15 @@
                           (z/next
                            (z/replace ddl-loc
                                       (assoc (z/node ddl-loc)
-                                             :required? true))))
+                                             :required? required?))))
       :else (recur (z/next ddl-loc)))))
+
+(defn require-all
+  "Walk the DDL tree making all MapEntry nodes required"
+  [ddl]
+  (toggle-require-all ddl true))
+
+(defn optionalize-all
+  "Walk the DDL tree making all MapEntry nodes not required"
+  [ddl]
+  (toggle-require-all ddl false))
