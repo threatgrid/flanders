@@ -1,7 +1,7 @@
 (def schema-tools-version "0.9.1")
 (def schema-version "1.1.7")
 
-(defproject threatgrid/flanders "0.1.14"
+(defproject threatgrid/flanders "0.1.15-SNAPSHOT"
   :description "flanders"
   :url "http://github.com/threatgrid/flanders"
   :license {:name "Eclipse Public License"
