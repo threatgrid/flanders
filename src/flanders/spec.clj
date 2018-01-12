@@ -1,7 +1,6 @@
 (ns flanders.spec
   (:require [clojure.core.match :refer [match]]
-            [clojure.future :refer :all] ;; Remove after CLJ 1.9
-            [clojure.spec :as s]
+            [clojure.spec.alpha :as s]
             [clojure.zip :as z]
             [flanders.types]
             [flanders.utils :as fu])

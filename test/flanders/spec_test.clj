@@ -1,6 +1,6 @@
 (ns flanders.spec-test
-  (:require [clojure.spec :as s]
-            [clojure.spec.test :as stest]
+  (:require [clojure.spec.alpha :as s]
+            [clojure.spec.test.alpha :as stest]
             [clojure.test :refer [deftest is testing use-fixtures]]
             [flanders.core :as f]
             [flanders.examples :refer [Example]]
