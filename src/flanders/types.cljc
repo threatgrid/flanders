@@ -1,5 +1,5 @@
 (ns flanders.types
-  (:refer-clojure :exclude [defrecord type])
+  (:refer-clojure :exclude [defrecord type MapEntry ->MapEntry])
   (:require #?(:clj  [flanders.macros :refer [defleaf]]
                :cljs [flanders.macros :refer-macros [defleaf]])
             [flanders.protocols :refer [TreeNode]]
