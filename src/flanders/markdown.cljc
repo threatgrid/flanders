@@ -1,4 +1,5 @@
 (ns flanders.markdown
+  (:refer-clojure :exclude [type])
   (:require [clojure.string :as str]
             [clojure.zip :as z]
             #?(:clj  [flanders.macros :refer [defleaf]]
@@ -246,8 +247,8 @@
   SetOfType
   (->markdown-part [{:keys [description]} loc]
     nil)
-  (->short-description [{:keys [description]}]
-    (str "#{" (->short-description type) "}"))
+  (->short-description [this]
+    (str "#{" (->short-description (:type this)) "}"))
 
   EitherType
   (->markdown-part [this loc]
