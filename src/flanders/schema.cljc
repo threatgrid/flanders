@@ -52,7 +52,8 @@
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
     [((if (and (not required?)
-               (:values key))
+               (not (:open? key))
+               (seq (:values key)))
         s/optional-key
         identity)
       (f (assoc key
