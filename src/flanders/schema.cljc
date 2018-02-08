@@ -1,4 +1,5 @@
 (ns flanders.schema
+  (:refer-clojure :exclude [type key])
   (:require #?(:clj  [clojure.core.match :refer [match]]
                :cljs [cljs.core.match :refer-macros [match]])
             [clojure.zip :as z]
@@ -50,7 +51,8 @@
   (->schema' [{:keys [key type required?] :as entry} f]
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
-    [((if (not required?)
+    [((if (and (not required?)
+               (:values key))
         s/optional-key
         identity)
       (f (assoc key

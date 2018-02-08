@@ -12,3 +12,12 @@
    (f/entry :yes? f/any-bool))
   (f/optional-entries
    (f/entry :spam (f/eq :eggs))))
+
+(f/def-entity-type OptionalKeywordMapEntryExample
+  {:description "Foo"}
+  [(f/entry :foo f/any-str :required? false)
+   (f/entry
+    :relation_info
+    (f/map
+     [(f/entry f/any-keyword f/any :required? false)])
+    :required? true)])
