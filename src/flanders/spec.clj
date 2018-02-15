@@ -110,11 +110,9 @@
   ;; Leaves
 
   AnythingType
-  (->spec' [{:keys [gen spec]} _ _]
-    (with-gen
-      (or spec
-          any?)
-      gen))
+  (->spec' [{:keys [spec] :as node} _ _]
+    (with-gen node
+      (or spec any?)))
 
   BooleanType
   (->spec' [{:keys [open? spec default] :as node} _ _]
