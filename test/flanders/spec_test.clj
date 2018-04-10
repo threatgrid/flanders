@@ -104,3 +104,11 @@
                          (= 1 (count m))))
                 "test-map-4")
      {:spam "eggs"})))
+
+(deftest test-seq-set
+  (is (s/valid?
+       (fs/->spec (f/seq-of (f/seq-of f/any)) "test-seq")
+       [["foo"]]))
+  (is (s/valid?
+       (fs/->spec (f/set-of (f/set-of f/any-str)) "test-set")
+       #{#{"foo"}})))

@@ -98,13 +98,13 @@
   SequenceOfType
   (->spec' [{:keys [type]} ns f]
     (let [result-kw (keyword ns "seq-of")]
-      (eval `(s/def ~result-kw ~(f type ns)))
+      (eval `(s/def ~result-kw ~(f type (str ns "." "seq-of"))))
       (eval `(s/coll-of ~result-kw))))
 
   SetOfType
   (->spec' [{:keys [type]} ns f]
     (let [result-kw (keyword ns "set-of")]
-      (eval `(s/def ~result-kw ~(f type ns)))
+      (eval `(s/def ~result-kw ~(f type (str ns "." "set-of"))))
       (eval `(s/coll-of ~result-kw :kind set?))))
 
   ;; Leaves
