@@ -165,6 +165,15 @@
        (type-script-munge (name value)))
      (get this :values))))
 
+(extend-type flanders.types.SetOfType
+  TypeScriptPrimitiveTypeName
+  (-type-script-primitive-type-name [this]
+    (let [sequence-type (get this :type)]
+      (str (or (type-script-type-name sequence-type)
+               (type-script-primitive-type-name sequence-type)
+               "any")
+           "[]"))))
+
 (extend-type flanders.types.SequenceOfType
   TypeScriptPrimitiveTypeName
   (-type-script-primitive-type-name [this]
