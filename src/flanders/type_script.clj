@@ -83,6 +83,14 @@
   (-type-script-primitive-type-name [this]
     "boolean"))
 
+(extend-type flanders.types.EitherType
+  TypeScriptPrimitiveTypeName
+  (-type-script-primitive-type-name [this]
+    (let [choice-names (map type-script-type-name (get this :choices))]
+      (if (some #{nil "any"} choice-names)
+        "any"
+        (string/join " | " (sort (distinct choice-names)))))))
+
 (extend-type flanders.types.KeywordType
   TypeScriptFieldNames
   (-type-script-field-names [this]
