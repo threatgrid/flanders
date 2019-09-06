@@ -83,6 +83,14 @@
   (-type-script-primitive-type-name [this]
     "boolean"))
 
+(extend-type flanders.types.KeywordType
+  TypeScriptFieldNames
+  (-type-script-field-names [this]
+    (map
+     (fn [value]
+       (type-script-munge (name value)))
+     (get this :values))))
+
 (extend-type flanders.types.IntegerType
   TypeScriptPrimitiveTypeName
   (-type-script-primitive-type-name [this]
@@ -152,19 +160,6 @@
   (-type-script-primitive-type-name [this]
     "number"))
 
-(extend-type flanders.types.StringType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
-    "string"))
-
-(extend-type flanders.types.KeywordType
-  TypeScriptFieldNames
-  (-type-script-field-names [this]
-    (map
-     (fn [value]
-       (type-script-munge (name value)))
-     (get this :values))))
-
 (extend-type flanders.types.SetOfType
   TypeScriptPrimitiveTypeName
   (-type-script-primitive-type-name [this]
@@ -182,6 +177,11 @@
                (type-script-primitive-type-name sequence-type)
                "any")
            "[]"))))
+
+(extend-type flanders.types.StringType
+  TypeScriptPrimitiveTypeName
+  (-type-script-primitive-type-name [this]
+    "string"))
 
 ;; ---------------------------------------------------------------------
 ;; Type graph
