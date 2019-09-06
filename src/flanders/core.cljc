@@ -2,6 +2,8 @@
   (:refer-clojure :exclude [int key keyword map name num str type])
   (:require #?(:clj  [clojure.core :as core]
                :cljs [cljs.core :as core])
+            #?(:clj [clojure.spec.alpha :as spec]
+               :cljs [cljs.spec.alpha :as spec])
             [clojure.zip :as z]
             [flanders.types :as ft]
             [schema.core :as s]))
@@ -180,7 +182,9 @@
 ;; Macros
 ;; ----------------------------------------------------------------------
 
-(defmacro def-entity-type [name description & map-entries]
+(defmacro def-entity-type
+  [name description & map-entries]
+  (assert (or (string? description) (map? description)))
   `(def ~name
      (map-of (if (map? ~description)
                (merge ~description
@@ -188,6 +192,12 @@
                {:description ~description
                 :name ~(core/str name)})
              ~@map-entries)))
+
+(spec/fdef def-entity-type
+  :args (spec/cat :name simple-symbol?
+                  :description (spec/or :string-description string?
+                                        :map-description map?)
+                  :map-entries (spec/* any?)))
 
 (defmacro def-map-type [name map-entries & {:as opts}]
   `(def ~name
