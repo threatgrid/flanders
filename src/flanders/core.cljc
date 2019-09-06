@@ -62,6 +62,21 @@
    (merge opts
           {:type t})))
 
+(defn either
+  {:arglists '([choices* & {:as [opts]}])}
+  [& args]
+  (let [[choices options] (split-with (complement keyword?) args)]
+    (assert (seq choices) "either expects at least one choice")
+    ;; else
+    (ft/map->EitherType
+     (into {:choices choices}
+           (keep
+            (fn [[k v]]
+              (if (keyword? k)
+                (if (not (= k :choices))
+                  [k v])))
+            (partition-all 2 options))))))
+
 (defn conditional [& pred+types]
   (assert (even? (count pred+types)) "pred and types must be even")
   (assert (seq pred+types) "must provide pred and types")
