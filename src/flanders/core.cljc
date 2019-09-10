@@ -63,19 +63,21 @@
           {:type t})))
 
 (defn either
-  {:arglists '([choices* & {:as [opts]}])}
-  [& args]
-  (let [[choices options] (split-with (complement keyword?) args)]
-    (assert (seq choices) "either expects at least one choice")
-    ;; else
-    (ft/map->EitherType
-     (into {:choices choices}
-           (keep
-            (fn [[k v]]
-              (if (keyword? k)
-                (if (not (= k :choices))
-                  [k v])))
-            (partition-all 2 options))))))
+  "Build an EitherType with the keyword arguments `opts`.
+
+    (either :choices [(int) (str)])
+    ;; =>
+    #flanders.types.EitherType{:choices [,,,]}
+
+  This function requires the value of the `:choices` key be a sequence
+  of at least length 1.
+
+    (either :choices [(int) (str)])
+    ;; =>
+    AssertionError Assert failed: either expects at least one choice"
+  [& {:keys [choices] :as opts}]
+  (assert (seq choices) "either expects at least one choice")
+  (ft/map->EitherType opts))
 
 (defn conditional [& pred+types]
   (assert (even? (count pred+types)) "pred and types must be even")
