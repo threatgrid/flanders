@@ -67,8 +67,7 @@
   [x]
   (if (satisfies? TypeScript x)
     (-type-script x)
-    (or (type-script-type-alias x)
-        (type-script-interface x))))
+    (type-script-type-alias x)))
 
 ;; ---------------------------------------------------------------------
 ;; Protocol implementation
