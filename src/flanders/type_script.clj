@@ -263,7 +263,7 @@
         (recur new-graph new-queue))
       graph)))
 
-(defn type-script-of-seqable
+(defn type-script-of-sequential
   {:private true}
   [schemas]
   (let [graph (reduce into-graph empty-graph schemas)
@@ -284,7 +284,12 @@
                            ranked-nodes)]
     (string/join "\n" type-script-lines)))
 
-(extend-type clojure.lang.Seqable
+(extend-type clojure.lang.ISeq
   TypeScript
   (-type-script [this]
-    (type-script-of-seqable this)))
+    (type-script-of-sequential this)))
+
+(extend-type clojure.lang.IPersistentVector
+  TypeScript
+  (-type-script [this]
+    (type-script-of-sequential this)))
