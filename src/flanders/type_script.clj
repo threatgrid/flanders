@@ -18,9 +18,9 @@
      as a single key haveing a value type of
     `flanders.types.EitherType`.
 
-  * `:warn-on-duplicate-names` causes a warning to be printed for
-    each group of `flanders.types.<X>Type`s which have the `:name`
-    name."
+  * `:warn-on-duplicate-names` when rendering multiple type
+    declarations, causes a warning to be printed for each group of
+    Flanders typess which have the same `:name`."
   #{:warn-on-duplicate-entries
     :warn-on-duplicate-names})
 
@@ -45,7 +45,7 @@
     "any"))
 
 (defn type-script-union
-  "Render `xs`"
+  "Render `xs` as a TypeScript UnionType or \"any\"."
   [xs]
   {:pre [(sequential? xs)]}
   (let [types (map type-script-type xs)]
