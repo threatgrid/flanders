@@ -2,6 +2,8 @@
   (:refer-clojure :exclude [int key keyword map name num str type])
   (:require #?(:clj  [clojure.core :as core]
                :cljs [cljs.core :as core])
+            #?(:clj [clojure.spec.alpha :as spec]
+               :cljs [cljs.spec.alpha :as spec])
             [clojure.zip :as z]
             [flanders.types :as ft]
             [schema.core :as s]))
@@ -61,6 +63,23 @@
   (ft/map->SetOfType
    (merge opts
           {:type t})))
+
+(defn either
+  "Build an EitherType with the keyword arguments `opts`.
+
+    (either :choices [(int) (str)])
+    ;; =>
+    #flanders.types.EitherType{:choices [,,,]}
+
+  This function requires the value of the `:choices` key be a sequence
+  of at least length 1.
+
+    (either :choices [(int) (str)])
+    ;; =>
+    AssertionError Assert failed: either expects at least one choice"
+  [& {:keys [choices] :as opts}]
+  (assert (seq choices) "either expects at least one choice")
+  (ft/map->EitherType opts))
 
 (defn conditional [& pred+types]
   (assert (even? (count pred+types)) "pred and types must be even")
@@ -180,7 +199,9 @@
 ;; Macros
 ;; ----------------------------------------------------------------------
 
-(defmacro def-entity-type [name description & map-entries]
+(defmacro def-entity-type
+  [name description & map-entries]
+  (assert (or (string? description) (map? description)))
   `(def ~name
      (map-of (if (map? ~description)
                (merge ~description
@@ -188,6 +209,12 @@
                {:description ~description
                 :name ~(core/str name)})
              ~@map-entries)))
+
+(spec/fdef def-entity-type
+  :args (spec/cat :name simple-symbol?
+                  :description (spec/or :string-description string?
+                                        :map-description map?)
+                  :map-entries (spec/* any?)))
 
 (defmacro def-map-type [name map-entries & {:as opts}]
   `(def ~name
