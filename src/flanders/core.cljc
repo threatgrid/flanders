@@ -64,6 +64,23 @@
    (merge opts
           {:type t})))
 
+(defn either
+  "Build an EitherType with the keyword arguments `opts`.
+
+    (either :choices [(int) (str)])
+    ;; =>
+    #flanders.types.EitherType{:choices [,,,]}
+
+  This function requires the value of the `:choices` key be a sequence
+  of at least length 1.
+
+    (either :choices [(int) (str)])
+    ;; =>
+    AssertionError Assert failed: either expects at least one choice"
+  [& {:keys [choices] :as opts}]
+  (assert (seq choices) "either expects at least one choice")
+  (ft/map->EitherType opts))
+
 (defn conditional [& pred+types]
   (assert (even? (count pred+types)) "pred and types must be even")
   (assert (seq pred+types) "must provide pred and types")
