@@ -87,8 +87,16 @@
          (f.ts/type-script-declaration (f.t/map->EitherType {:choices [(f/int) (f/str)] :name "T"})))))
 
 (deftest map-type-test
+  (is (= "{\n  a: any\n}"
+         (f.ts/type-script-type (f/map [(f/entry (f/key :a) (f/anything))]))))
+
+  (is (nil? (f.ts/type-script-type-name (f/map [(f/entry (f/key :a) (f/anything))]))))
+
+  (is (= "T"
+         (f.ts/type-script-type-name (f/map [(f/entry (f/key :a) (f/anything))] :name "T"))))
+
   (is (= "interface T {}"
          (f.ts/type-script-declaration (f/map [] :name "T"))))
 
-  (is (= "interface T {\n  a: any\n}" (f.ts/type-script-declaration
-          (f/map [(f/entry (f/key :a) (f/anything))] :name "T")))))
+  (is (= "interface T {\n  a: any\n}"
+         (f.ts/type-script-declaration (f/map [(f/entry (f/key :a) (f/anything))] :name "T")))))
