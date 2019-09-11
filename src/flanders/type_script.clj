@@ -17,11 +17,26 @@
     (-type-script-type x)
     "any"))
 
-(defn union [xs]
+(defn type-script-union [xs]
   (let [types (map type-script-type xs)]
     (if (some #{nil "any"} types)
       "any"
       (string/join " | " (sort (distinct types))))))
+
+(defn union?
+  "true if `x` can be represented as a TypeScript union, false
+  otherwise."
+  {:private true}
+  [x]
+  (instance? flanders.types.EitherType x))
+
+(defn type-script-sequence-type [x]
+  (let [ts-type (type-script-type x)]
+    (if (string? ts-type)
+      (if (union? x)
+        (str "(" ts-type ")[]")
+        (str ts-type "[]"))
+      "any[]")))
 
 (defprotocol TypeScriptInterfaceDeclaration
   (-type-script-interface-declaration [this]))
@@ -96,7 +111,7 @@
 (extend-type flanders.types.EitherType
   TypeScriptType
   (-type-script-type [this]
-    (union (get this :choices))))
+    (type-script-union (get this :choices))))
 
 (extend-type flanders.types.KeywordType
   TypeScriptType
@@ -186,18 +201,12 @@
 (extend-type flanders.types.SetOfType
   TypeScriptType
   (-type-script-type [this]
-    (let [sequence-type (get this :type)]
-      (str (or (type-script-type sequence-type)
-               "any")
-           "[]"))))
+    (type-script-sequence-type (get this :type))))
 
 (extend-type flanders.types.SequenceOfType
   TypeScriptType
   (-type-script-type [this]
-    (let [sequence-type (get this :type)]
-      (str (or (type-script-type sequence-type)
-               "any")
-           "[]"))))
+    (type-script-sequence-type (get this :type))))
 
 (extend-type flanders.types.StringType
   TypeScriptType

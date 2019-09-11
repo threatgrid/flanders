@@ -99,3 +99,41 @@
 
   (is (= "interface T {\n  a: any\n}"
          (f.ts/type-script-declaration (f/map [(f/entry (f/key :a) (f/anything))] :name "T")))))
+
+(deftest seq-of-test
+  (is (= "number[]"
+         (f.ts/type-script-type (f/seq-of (f/int)))))
+  
+  (is (= "(number | string)[]"
+         (f.ts/type-script-type (f/seq-of (f/either :choices [(f/int) (f/str)])))))
+
+  (is (= "(number)[]"
+         (f.ts/type-script-type (f/seq-of (f/either :choices [(f/int)])))))
+
+  (is (nil? (f.ts/type-script-type-name (f/seq-of (f/int)))))
+
+  (is (= "T" (f.ts/type-script-type-name (f/seq-of (f/int) :name "T"))))
+
+  (is (nil? (f.ts/type-script-declaration (f/seq-of (f/int)))))
+
+  (is (= "type T = number[];"
+         (f.ts/type-script-declaration (f/seq-of (f/int) :name "T")))))
+
+(deftest set-of-test
+  (is (= "number[]"
+         (f.ts/type-script-type (f/set-of (f/int)))))
+  
+  (is (= "(number | string)[]"
+         (f.ts/type-script-type (f/set-of (f/either :choices [(f/int) (f/str)])))))
+
+  (is (= "(number)[]"
+         (f.ts/type-script-type (f/set-of (f/either :choices [(f/int)])))))
+
+  (is (nil? (f.ts/type-script-type-name (f/set-of (f/int)))))
+
+  (is (= "T" (f.ts/type-script-type-name (f/set-of (f/int) :name "T"))))
+
+  (is (nil? (f.ts/type-script-declaration (f/set-of (f/int)))))
+
+  (is (= "type T = number[];"
+         (f.ts/type-script-declaration (f/set-of (f/int) :name "T")))))
