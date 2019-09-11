@@ -5,6 +5,25 @@
   (:require [clojure.string :as string]
             [flanders.types]))
 
+(def ^{:dynamic true}
+  *flags*
+  "A set of keywords used by the `type-script-declaration` and
+  `type-script-declarations` functions.
+
+  Flags may be one of the following
+
+  * `:warn-on-duplicate-entries` causes a warning to be printed
+     for each key in a `flanders.types.MapType` which has more than
+     one disctinct associated value type. Note, this is not the same
+     as a single key haveing a value type of
+    `flanders.types.EitherType`.
+
+  * `:warn-on-duplicate-names` causes a warning to be printed for
+    each group of `flanders.types.<X>Type`s which have the `:name`
+    name."
+  #{:warn-on-duplicate-entries
+    :warn-on-duplicate-names})
+
 (defn type-script-munge
   [s]
   (clojure.string/replace s #"[^A-Za-z0-9]+" "_"))
@@ -176,10 +195,11 @@
           ;; non-required duplicate key or the first key.
           entries (reduce
                    (fn [entries [k duplicate-entries]]
-                     (when (< 1 (count duplicate-entries))
-                       (println "WARNING:" (type-script-type-name this)
-                                "contains duplicate definitions for the field(s)"
-                                (string/join ", " (map pr-str (type-script-property-names k)))))
+                     (when (contains? *flags* :warn-on-duplicate-entries)
+                       (when (< 1 (count duplicate-entries))
+                         (println "WARNING:" (type-script-type-name this)
+                                  "contains duplicate definitions for the field(s)"
+                                  (string/join ", " (map pr-str (type-script-property-names k))))))
                      (conj entries
                            (or (some (fn [entry]
                                        (if-not (get entry :required?)
@@ -290,22 +310,28 @@
       graph)))
 
 (defn type-script-declarations
-  [xs]
-  {:pre [(sequential? xs)]}
-  (let [graph (reduce into-graph empty-graph xs)
-        from-to (get graph :from-to)
-        named-nodes (filter type-script-type-name (keys from-to))
-        ranked-nodes (sort-by
-                      (fn [node]
-                        (count (get from-to node)))
-                      named-nodes)
-        type-script-lines (sequence
-                           (comp (mapcat
-                                  (fn [node]
-                                    (if-some [ts (type-script-declaration node)]
-                                      (if-some [description (get node :description)]
-                                        [(string/replace description #"(?m:^)" "// ") ts]
-                                        [ts]))))
-                                 (distinct))
-                           ranked-nodes)]
-    (string/join "\n" type-script-lines)))
+  {:arglists '([xs] [xs {{:as flags} :flags}])}
+  ([xs]
+   (type-script-declarations xs {:flags *flags*}))
+  ([xs options]
+   {:pre [(sequential? xs)
+          (set? (get options :flags))
+          (nil? (get options :flags))]}
+   (binding [*flags* (get options :flags)]
+     (let [graph (reduce into-graph empty-graph xs)
+           from-to (get graph :from-to)
+           named-nodes (filter type-script-type-name (keys from-to))
+           ranked-nodes (sort-by
+                         (fn [node]
+                           (count (get from-to node)))
+                         named-nodes)
+           type-script-lines (sequence
+                              (comp (mapcat
+                                     (fn [node]
+                                       (if-some [ts (type-script-declaration node)]
+                                         (if-some [description (get node :description)]
+                                           [(string/replace description #"(?m:^)" "// ") ts]
+                                           [ts]))))
+                                    (distinct))
+                              ranked-nodes)]
+       (string/join "\n" type-script-lines)))))
