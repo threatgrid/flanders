@@ -68,23 +68,22 @@
   (is (= "type T = string;"
          (f.ts/type-script-declaration (f/str :name "T")))))
 
-;; TODO: Replace `f.t/map->EitherType` with `f/either`.
 (deftest either-type-test
   (is (= "number"
-         (f.ts/type-script-type (f.t/map->EitherType {:choices [(f/int)]}))))
+         (f.ts/type-script-type (f/either :choices [(f/int)]))))
 
   (is (= "number | string"
-         (f.ts/type-script-type (f.t/map->EitherType {:choices [(f/int) (f/str)]}))))
+         (f.ts/type-script-type (f/either :choices [(f/int) (f/str)]))))
 
-  (is (nil? (f.ts/type-script-type-name (f.t/map->EitherType {:choices [(f/int) (f/str)]}))))
+  (is (nil? (f.ts/type-script-type-name (f/either :choices [(f/int) (f/str)]))))
 
   (is (= "T"
-         (f.ts/type-script-type-name (f.t/map->EitherType {:choices [(f/int) (f/str)] :name "T"}))))
+         (f.ts/type-script-type-name (f/either :choices [(f/int) (f/str)] :name "T"))))
 
-  (is (nil? (f.ts/type-script-declaration (f.t/map->EitherType {:choices [(f/int) (f/str)]}))))
+  (is (nil? (f.ts/type-script-declaration (f/either :choices [(f/int) (f/str)]))))
 
   (is (= "type T = number | string;"
-         (f.ts/type-script-declaration (f.t/map->EitherType {:choices [(f/int) (f/str)] :name "T"})))))
+         (f.ts/type-script-declaration (f/either :choices [(f/int) (f/str)] :name "T")))))
 
 (deftest map-type-test
   (is (= "{\n  a: any\n}"
