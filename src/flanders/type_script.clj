@@ -1,38 +1,61 @@
 (ns flanders.type-script
+  "Render flanders.types types as TypeScript types.
+
+  See: https://github.com/microsoft/TypeScript/blob/f30e8a284ac479a96ac660c94084ce5170543cc4/doc/spec.md#A"
   (:require [clojure.string :as string]
             [flanders.types]))
-
-;; ---------------------------------------------------------------------
-;; Protocols
-
-(defprotocol TypeScript
-  (-type-script [this]))
-
-(defprotocol TypeScriptEnum
-  (-type-script-enum [this]))
-
-(defprotocol TypeScriptFieldNames
-  (-type-script-field-names [this]))
-
-(defprotocol TypeScriptFields
-  (-type-script-fields [this]))
-
-(defprotocol TypeScriptTypeName
-  (-type-script-type-name [this]))
-
-(defprotocol TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]))
 
 (defn type-script-munge
   [s]
   (clojure.string/replace s #"[^A-Za-z0-9]+" "_"))
 
-(defn type-script-primitive-type-name
-  "Return the primitive TypeScript type name of `x`. Returns `nil` if `x`
-  does not have a primitive type."
+(defprotocol TypeScriptType
+  (-type-script-type [this]))
+
+(defn type-script-type [x]
+  (if (satisfies? TypeScriptType x)
+    (-type-script-type x)
+    "any"))
+
+(defn union [xs]
+  (let [types (map type-script-type xs)]
+    (if (some #{nil "any"} types)
+      "any"
+      (string/join " | " (sort (distinct types))))))
+
+(defprotocol TypeScriptInterfaceDeclaration
+  (-type-script-interface-declaration [this]))
+
+(defn type-script-interface-declaration
   [x]
-  (if (satisfies? TypeScriptPrimitiveTypeName x)
-    (-type-script-primitive-type-name x)))
+  (if (satisfies? TypeScriptInterfaceDeclaration x)
+    (-type-script-interface-declaration x)))
+
+(defprotocol TypeScriptEnumDeclaration
+  (-type-script-enum-declaration [this]))
+
+(defn type-enum-declaration [x]
+  (if (satisfies? TypeScriptEnumDeclaration x)
+    (-type-script-enum-declaration x)))
+
+(defprotocol TypeScriptPropertyNames
+  (-type-script-property-names [this]))
+
+(defn type-script-property-names
+  [x]
+  (if (satisfies? TypeScriptPropertyNames x)
+    (-type-script-property-names x)))
+
+(defprotocol TypeScriptPropertySignatures
+  (-type-script-property-signatures [this]))
+
+(defn type-script-property-signatures
+  [x]
+  (if (satisfies? TypeScriptPropertySignatures x)
+    (-type-script-property-signatures x)))
+
+(defprotocol TypeScriptTypeName
+  (-type-script-type-name [this]))
 
 (defn type-script-type-name
   "Attempt to return the TypeScript type name of `x`. Returns `nil` if
@@ -44,96 +67,89 @@
     (if (string? x-name)
       (type-script-munge x-name))))
 
-(defn type-script-type-alias
-  {:private true}
+(defn type-alias-declaration
   [x]
   (if-some [type-name (type-script-type-name x)]
-    (if-some [primitive-name (type-script-primitive-type-name x)]
-      (format "type %s = %s;" type-name primitive-name))))
+    (if-some [type (type-script-type x)]
+      (format "type %s = %s;" type-name type))))
 
-(defn type-script-field-names
+(defn type-script-declaration
+  "Attempt to render `x` as a TypeScript declaration."
   [x]
-  (if (satisfies? TypeScriptFieldNames x)
-    (-type-script-field-names x)))
-
-(defn type-script-fields
-  [x]
-  (if (satisfies? TypeScriptFields x)
-    (-type-script-fields x)))
-
-(defn type-script
-  "Attempts to convert `x` into a `string?` of TypeScript
-  code. Returns `nil` if `x` cannot be converted."
-  [x]
-  (if (satisfies? TypeScript x)
-    (-type-script x)
-    (type-script-type-alias x)))
+  (or (type-script-interface-declaration x)
+      (type-alias-declaration x)
+      (type-enum-declaration x)))
 
 ;; ---------------------------------------------------------------------
 ;; Protocol implementation
 
 (extend-type flanders.types.AnythingType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     "any"))
 
 (extend-type flanders.types.BooleanType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     "boolean"))
 
 (extend-type flanders.types.EitherType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
-    (let [choice-names (map type-script-type-name (get this :choices))]
-      (if (some #{nil "any"} choice-names)
-        "any"
-        (string/join " | " (sort (distinct choice-names)))))))
+  TypeScriptType
+  (-type-script-type [this]
+    (union (get this :choices))))
 
 (extend-type flanders.types.KeywordType
-  TypeScriptFieldNames
-  (-type-script-field-names [this]
+  TypeScriptType
+  (-type-script-type [this]
+    "string")
+
+  TypeScriptPropertyNames
+  (-type-script-property-names [this]
     (map
      (fn [value]
        (type-script-munge (name value)))
      (get this :values))))
 
 (extend-type flanders.types.IntegerType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     "number"))
 
 (extend-type flanders.types.InstType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     "Date | string"))
 
 (extend-type flanders.types.MapEntry
-  TypeScriptFields
-  (-type-script-fields [this]
+  TypeScriptPropertySignatures
+  (-type-script-property-signatures [this]
     (let [? (if (get this :required?) "" "?")
           entry-type (get this :type)
           field-type-name (or (type-script-type-name entry-type)
-                              (type-script-primitive-type-name entry-type)
+                              (type-script-type entry-type)
                               "any")]
       (map
        (fn [field-name]
-         (format "%s%s: %s;" field-name ? field-type-name))
-       (type-script-field-names (get this :key))))))
+         (format "%s%s: %s" field-name ? field-type-name))
+       (type-script-property-names (get this :key))))))
 
 (extend-type flanders.types.MapType
-  TypeScript
-  (-type-script [this]
+  TypeScriptType
+  (-type-script-type [this]
+    (if-some [signatures (seq (type-script-property-signatures this))]
+      (let [type-body (string/replace (string/join ";\n" (sort signatures))
+                                      #"(?m:^)"
+                                      "\n  ")]
+        (format "{%s\n}" type-body))
+      "{}"))
+  
+  TypeScriptInterfaceDeclaration
+  (-type-script-interface-declaration [this]
     (if-some [type-name (type-script-type-name this)]
-      (let [type-fields (type-script-fields this)]
-        (format "interface %s {\n%s\n}"
-                type-name
-                (string/replace (string/join "\n" (sort type-fields))
-                                #"(?m:^)"
-                                "  ")))))
+      (format "interface %s %s" type-name (-type-script-type this))))
 
-  TypeScriptFields
-  (-type-script-fields [this]
+  TypeScriptPropertySignatures
+  (-type-script-property-signatures [this]
     (let [;; Because it is possible to construct a MapType with
           ;; duplicate keys and type script does not allow interfaces
           ;; to contain duplicate fields, we need a strategy for
@@ -145,7 +161,7 @@
                      (when (< 1 (count duplicate-entries))
                        (println "WARNING:" (type-script-type-name this)
                                 "contains duplicate definitions for the field(s)"
-                                (string/join ", " (map pr-str (type-script-field-names k)))))
+                                (string/join ", " (map pr-str (type-script-property-names k)))))
                      (conj entries
                            (or (some (fn [entry]
                                        (if-not (get entry :required?)
@@ -154,40 +170,38 @@
                                (first duplicate-entries))))
                    []
                    (group-by :key (get this :entries)))]
-      (mapcat type-script-fields entries)))
+      (mapcat type-script-property-signatures entries)))
 
   TypeScriptTypeName
   (-type-script-type-name [this]
     (let [this-name (get this :name)]
       (if (string? this-name)
-        (str "I" this-name)))))
+        this-name))))
 
 (extend-type flanders.types.NumberType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     "number"))
 
 (extend-type flanders.types.SetOfType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     (let [sequence-type (get this :type)]
-      (str (or (type-script-type-name sequence-type)
-               (type-script-primitive-type-name sequence-type)
+      (str (or (type-script-type sequence-type)
                "any")
            "[]"))))
 
 (extend-type flanders.types.SequenceOfType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     (let [sequence-type (get this :type)]
-      (str (or (type-script-type-name sequence-type)
-               (type-script-primitive-type-name sequence-type)
+      (str (or (type-script-type sequence-type)
                "any")
            "[]"))))
 
 (extend-type flanders.types.StringType
-  TypeScriptPrimitiveTypeName
-  (-type-script-primitive-type-name [this]
+  TypeScriptType
+  (-type-script-type [this]
     "string"))
 
 ;; ---------------------------------------------------------------------
@@ -263,10 +277,10 @@
         (recur new-graph new-queue))
       graph)))
 
-(defn type-script-of-sequential
-  {:private true}
-  [schemas]
-  (let [graph (reduce into-graph empty-graph schemas)
+(defn type-script-declarations
+  [xs]
+  {:pre [(sequential? xs)]}
+  (let [graph (reduce into-graph empty-graph xs)
         from-to (get graph :from-to)
         named-nodes (filter type-script-type-name (keys from-to))
         ranked-nodes (sort-by
@@ -276,20 +290,10 @@
         type-script-lines (sequence
                            (comp (mapcat
                                   (fn [node]
-                                    (if-some [ts (type-script node)]
+                                    (if-some [ts (type-script-declaration node)]
                                       (if-some [description (get node :description)]
                                         [(string/replace description #"(?m:^)" "// ") ts]
                                         [ts]))))
                                  (distinct))
                            ranked-nodes)]
     (string/join "\n" type-script-lines)))
-
-(extend-type clojure.lang.ISeq
-  TypeScript
-  (-type-script [this]
-    (type-script-of-sequential this)))
-
-(extend-type clojure.lang.IPersistentVector
-  TypeScript
-  (-type-script [this]
-    (type-script-of-sequential this)))
