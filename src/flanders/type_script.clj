@@ -31,12 +31,23 @@
 (defprotocol TypeScriptType
   (-type-script-type [this]))
 
-(defn type-script-type [x]
+(defn type-script-type
+  "Render `x` as a TypeScript type e.g. one of
+
+    * UnionOrIntersectionOrPrimaryType,
+    * FunctionType, or
+    * ConstructorType
+
+  as defined in the TypeScript grammer."
+  [x]
   (if (satisfies? TypeScriptType x)
     (-type-script-type x)
     "any"))
 
-(defn type-script-union [xs]
+(defn type-script-union
+  "Render `xs`"
+  [xs]
+  {:pre [(sequential? xs)]}
   (let [types (map type-script-type xs)]
     (if (some #{nil "any"} types)
       "any"

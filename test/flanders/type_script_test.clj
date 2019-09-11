@@ -143,3 +143,14 @@
 
   (is (= "type T = number[];"
          (f.ts/type-script-declaration (f/set-of (f/int) :name "T")))))
+
+(let [TId (f/int :name "ID"
+                 :description "An ID")
+      TUser (f/map [(f/entry (f/key :name) (f/str))
+                    (f/entry (f/key :id) TId)]
+                   :name "User"
+                   :description "A User")
+      TUserList (f/seq-of TUser
+                          :name "User List"
+                          :description "A list of User")]
+  (f.ts/type-script-declarations [TId TUserList TUser]))
