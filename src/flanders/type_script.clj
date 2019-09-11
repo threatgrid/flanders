@@ -30,14 +30,6 @@
   [x]
   (instance? flanders.types.EitherType x))
 
-(defn type-script-sequence-type [x]
-  (let [ts-type (type-script-type x)]
-    (if (string? ts-type)
-      (if (union? x)
-        (str "(" ts-type ")[]")
-        (str ts-type "[]"))
-      "any[]")))
-
 (defprotocol TypeScriptInterfaceDeclaration
   (-type-script-interface-declaration [this]))
 
@@ -94,6 +86,17 @@
   (or (type-script-interface-declaration x)
       (type-alias-declaration x)
       (type-enum-declaration x)))
+
+(defn type-script-sequence-type [x]
+  (let [ts-name (type-script-type-name x)]
+    (if (string? ts-name)
+      (str ts-name "[]")
+      (let [ts-type (type-script-type x)]
+        (if (string? ts-type)
+          (if (union? x)
+            (str "(" ts-type ")[]")
+            (str ts-type "[]"))
+          "any[]")))))
 
 ;; ---------------------------------------------------------------------
 ;; Protocol implementation
@@ -154,8 +157,8 @@
     (if-some [signatures (seq (type-script-property-signatures this))]
       (let [type-body (string/replace (string/join ";\n" (sort signatures))
                                       #"(?m:^)"
-                                      "\n  ")]
-        (format "{%s\n}" type-body))
+                                      "  ")]
+        (format "{\n%s\n}" type-body))
       "{}"))
   
   TypeScriptInterfaceDeclaration

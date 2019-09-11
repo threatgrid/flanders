@@ -103,6 +103,9 @@
 (deftest seq-of-test
   (is (= "number[]"
          (f.ts/type-script-type (f/seq-of (f/int)))))
+
+  (is (= "ID[]"
+         (f.ts/type-script-type (f/seq-of (f/int :name "ID")))))
   
   (is (= "(number | string)[]"
          (f.ts/type-script-type (f/seq-of (f/either :choices [(f/int) (f/str)])))))
@@ -122,6 +125,9 @@
 (deftest set-of-test
   (is (= "number[]"
          (f.ts/type-script-type (f/set-of (f/int)))))
+
+  (is (= "ID[]"
+         (f.ts/type-script-type (f/set-of (f/int :name "ID")))))
   
   (is (= "(number | string)[]"
          (f.ts/type-script-type (f/set-of (f/either :choices [(f/int) (f/str)])))))
