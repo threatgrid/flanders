@@ -24,6 +24,9 @@
   #{:warn-on-duplicate-entries
     :warn-on-duplicate-names})
 
+(defn warn-on-duplicate-names? []
+  (contains? *flags* :warn-on-duplicate-names))
+
 (defn type-script-munge
   [s]
   (clojure.string/replace s #"[^A-Za-z0-9]+" "_"))
@@ -320,18 +323,44 @@
         (recur new-graph new-queue))
       graph)))
 
+
+(defn type-script-named-nodes
+  {:private true}
+  [type-graph]
+  (filter type-script-type-name (keys (get type-graph :from-to))))
+
+(defn display-duplicate-name-warnings
+  {:private true}
+  [type-graph]
+  (let [named-nodes (type-script-named-nodes type-graph)]
+    (run!
+     (fn [[ts-name nodes]]
+       (let [nodes* (distinct nodes)]
+         (let [duplicate-count (count nodes*)]
+           (when (< 1 duplicate-count)
+             (printf "WARNING: %d types produce the TypeScript name `%s`:\n"
+                     duplicate-count
+                     ts-name)
+             (run!
+              (fn [node]
+                (printf "  - %s (%s)\n"
+                        (pr-str (get node :name))
+                        (.getName (class node))))
+              nodes*)))))
+     (group-by type-script-type-name named-nodes))))
+
 (defn type-script-declarations
   {:arglists '([xs] [xs {{:as flags} :flags}])}
   ([xs]
    (type-script-declarations xs {:flags *flags*}))
   ([xs options]
    {:pre [(sequential? xs)
-          (set? (get options :flags))
-          (nil? (get options :flags))]}
+          (or (set? (get options :flags))
+              (nil? (get options :flags)))]}
    (binding [*flags* (get options :flags)]
      (let [graph (reduce into-graph empty-graph xs)
            from-to (get graph :from-to)
-           named-nodes (filter type-script-type-name (keys from-to))
+           named-nodes (type-script-named-nodes graph)
            ranked-nodes (sort-by
                          (fn [node]
                            (count (get from-to node)))
@@ -345,4 +374,6 @@
                                            [ts]))))
                                     (distinct))
                               ranked-nodes)]
+       (when (warn-on-duplicate-names?)
+         (display-duplicate-name-warnings graph))
        (string/join "\n" type-script-lines)))))
