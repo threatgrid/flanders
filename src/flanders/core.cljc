@@ -96,11 +96,11 @@
     (ft/map->EitherType {:choices types
                          :tests tests})))
 
-(defn signature
+(defn sig
   "Build a SignatureType with the keyword arguments `opts`.
 
-    (signature :parameters [(int) (str)]
-               :return (str))
+    (sig :parameters [(int) (str)]
+         :return (str))
     ;; =>
     #flanders.types.SignatureType{:parameters [,,,]
                                   :return #flanders.types.StringType{,,,}}
