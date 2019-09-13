@@ -131,6 +131,12 @@
                           name :- (s/maybe s/Str)]
   TreeNode
   (branch? [_] true)
-  (node-children [_] parameters return)
-  (make-node [this [new-parameters new-return]]
-    (SignatureType. new-parameters new-return name)))
+  (node-children [_]
+    (if (some? rest-parameter)
+      [parameters return rest-parameter]
+      [parameters return]))
+  (make-node [this [new-parameters new-return new-rest-parameter]]
+    (SignatureType. new-parameters
+                    new-rest-parameter
+                    new-return
+                    name)))
