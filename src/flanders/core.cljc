@@ -104,7 +104,12 @@
     ;; =>
     #flanders.types.SignatureType{:parameters [,,,]
                                   :return #flanders.types.StringType{,,,}}
-  "
+
+  If the `:return` option is not specified the return type of the
+  signature is will be specified as `flanders.types.AnythingType`.
+
+  A signature can be variadic by specifying the `:rest-parameter`
+  argument."
   [& {:keys [parameters rest-parameter return] :as opts}]
   (if (some? parameters)
     (assert (sequential? parameters) ":parameters argument must be `sequential?`"))
