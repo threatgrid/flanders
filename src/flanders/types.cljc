@@ -117,3 +117,19 @@
                       reference :- (s/maybe s/Str)
                       comment :- (s/maybe s/Str)
                       usage :- (s/maybe s/Str)])
+
+(defrecord ParameterListType [parameters :- [(s/protocol TreeNode)]]
+  TreeNode
+  (branch? [_] true)
+  (node-children [_] parameters)
+  (make-node [this new-parameters]
+    (ParameterListType. (vec new-parameters))))
+
+(defrecord SignatureType [parameter-list :- ParameterListType
+                          return :- (s/protocol TreeNode)
+                          name :- (s/maybe s/Str)]
+  TreeNode
+  (branch? [_] true)
+  (node-children [_] parameter-list return)
+  (make-node [this [new-parameter-list new-return]]
+    (SignatureType. new-parameter-list new-return name)))
