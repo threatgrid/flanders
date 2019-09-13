@@ -126,6 +126,7 @@
     (ParameterListType. (vec new-parameters))))
 
 (defrecord SignatureType [parameters :- ParameterListType
+                          rest-parameter :- (s/maybe (s/protocol TreeNode))
                           return :- (s/protocol TreeNode)
                           name :- (s/maybe s/Str)]
   TreeNode
