@@ -11,7 +11,7 @@
 
   (is (thrown? clojure.lang.ExceptionInfo
                (let [bad 43]
-                 (f/def-entity-type Foo 43))))
+                 (f/def-entity-type Foo bad))))
 
   (is (instance? clojure.lang.Var
                  (f/def-entity-type Bar "")))
