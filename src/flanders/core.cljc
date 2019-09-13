@@ -105,15 +105,17 @@
     #flanders.types.SignatureType{:parameters [,,,]
                                   :return #flanders.types.StringType{,,,}}
   "
-  [& {:keys [parameters return] :as opts}]
+  [& {:keys [parameters rest-parameter return] :as opts}]
   (if (some? parameters)
     (assert (sequential? parameters) ":parameters argument must be `sequential?`"))
   (let [return (if (some? return)
                  return
                  (ft/map->AnythingType {}))
-        parameter-list (ft/map->ParameterListType {:parameters (vec parameters)})]
+        parameter-list (ft/map->ParameterListType
+                        {:parameters (vec parameters)})]
     (ft/map->SignatureType
      (merge opts {:parameters parameter-list
+                  :rest-parameter rest-parameter
                   :return return}))))
 
 ;; ----------------------------------------------------------------------
