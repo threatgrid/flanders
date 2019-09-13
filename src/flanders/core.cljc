@@ -110,7 +110,7 @@
     (assert (sequential? parameters) ":parameters argument must be `sequential?`"))
   (let [return (if (some? return)
                  return
-                 (anything))
+                 (ft/map->AnythingType {}))
         parameter-list (ft/map->ParameterListType {:parameters (vec parameters)})]
     (ft/map->SignatureType
      (merge opts {:parameters parameter-list
