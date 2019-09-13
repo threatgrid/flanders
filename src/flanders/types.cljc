@@ -125,11 +125,11 @@
   (make-node [this new-parameters]
     (ParameterListType. (vec new-parameters))))
 
-(defrecord SignatureType [parameter-list :- ParameterListType
+(defrecord SignatureType [parameters :- ParameterListType
                           return :- (s/protocol TreeNode)
                           name :- (s/maybe s/Str)]
   TreeNode
   (branch? [_] true)
-  (node-children [_] parameter-list return)
-  (make-node [this [new-parameter-list new-return]]
-    (SignatureType. new-parameter-list new-return name)))
+  (node-children [_] parameters return)
+  (make-node [this [new-parameters new-return]]
+    (SignatureType. new-parameters new-return name)))
