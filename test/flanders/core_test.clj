@@ -33,7 +33,7 @@
                 :description))))
 
   (is (= "Description"
-         (let [okay {:description "Description"}]
+         (let [description {:description "Description"}]
            (get (deref (f/def-entity-type Bar description))
                 :description)))))
 
