@@ -201,19 +201,24 @@
 
 (defmacro def-entity-type
   [name description & map-entries]
-  (assert (or (string? description) (map? description)))
-  `(def ~name
-     (map-of (if (map? ~description)
-               (merge ~description
-                      {:name ~(core/str name)})
-               {:description ~description
-                :name ~(core/str name)})
-             ~@map-entries)))
+  `(let [description# ~description
+         options# (cond
+                    (map? description#)
+                    (merge description# {:name ~(core/str name)})
+
+                    (string? description#)
+                    {:description description#
+                     :name ~(core/str name)}
+
+                    :else
+                    (throw (ex-info "def-entity-type description argument must be a `map?` or a `string?`"
+                                    {:description description#})))]
+     (def ~name
+       (map-of options# ~@map-entries))))
 
 (spec/fdef def-entity-type
   :args (spec/cat :name simple-symbol?
-                  :description (spec/or :string-description string?
-                                        :map-description map?)
+                  :description any?
                   :map-entries (spec/* any?)))
 
 (defmacro def-map-type [name map-entries & {:as opts}]
