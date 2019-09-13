@@ -2,8 +2,8 @@
   (:require [clojure.test :refer [deftest is]]
             [flanders.core :as f])
   (:import (flanders.types EitherType
-                           MapType)))
-
+                           MapType
+                           SignatureType)))
 
 (deftest def-entity-type-test
   (is (thrown? clojure.lang.ExceptionInfo
@@ -41,3 +41,7 @@
   (is (instance? EitherType (f/either :choices [(f/int)])))
   (is (thrown? java.lang.AssertionError (f/either)))
   (is (thrown? java.lang.AssertionError (f/either :choices []))))
+
+(deftest sig-test
+  (is (instance? SignatureType (f/sig)))
+  (is (thrown? java.lang.AssertionError (f/sig :parameters 10))))
