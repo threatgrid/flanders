@@ -25,8 +25,17 @@
 
   (is (= "Description"
          (get (deref (f/def-entity-type Bar {:description "Description"}))
-              :description))))
+              :description)))
 
+  (is (= "Description"
+         (let [description "Description"]
+           (get (deref (f/def-entity-type Bar description))
+                :description))))
+
+  (is (= "Description"
+         (let [okay {:description "Description"}]
+           (get (deref (f/def-entity-type Bar description))
+                :description)))))
 
 (deftest either-test
   (is (instance? EitherType (f/either :choices [(f/int)])))
