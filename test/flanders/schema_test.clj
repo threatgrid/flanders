@@ -7,7 +7,9 @@
             [flanders.utils :refer [optionalize-all]]
             [flanders.schema :as fs]
             [schema.core :as s
-             :refer [Keyword Any]]))
+             :refer [Keyword Any]])
+  (:import (flanders.types ParameterListType
+                           SignatureType)))
 
 (deftest test-valid-schema
   (is
@@ -26,3 +28,33 @@
          :relation_info {Keyword Any}}]
     (is (= expected-schema
            (fs/->schema OptionalKeywordMapEntryExample)))))
+
+(deftest signature-type->schema
+  (is (instance? schema.core.FnSchema
+                 (fs/->schema (f/sig :parameters []))))
+
+  (is (instance? schema.core.AnythingSchema
+                 (:output-schema (fs/->schema (f/sig :parameters [])))))
+
+  (let [return (f/int)]
+    (is (instance? (class (fs/->schema return))
+                   (:output-schema (fs/->schema (f/sig :parameters []
+                                                       :return return))))))
+
+  (let [a (f/int)
+        b (f/int)]
+    (is (= 1
+           (count (:input-schemas (fs/->schema (f/sig :parameters [a b])))))
+        "A signature should produce only 1 input-schema"))
+
+  (let [a (f/int)
+        b (f/int)]
+    (is (= [(fs/->schema a) (fs/->schema b)]
+           (first (:input-schemas (fs/->schema (f/sig :parameters [a b])))))))
+
+  (let [a (f/int)
+        b (f/int)
+        c (f/str)]
+    (is (= [(fs/->schema a) (fs/->schema b) [(fs/->schema c)]]
+           (first (:input-schemas (fs/->schema (f/sig :parameters [a b]
+                                                      :rest-parameter c))))))))
