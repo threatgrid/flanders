@@ -263,10 +263,11 @@
   (->markdown-part [this loc]
     (->short-description this))
 
+  ;; (Integer, String ...) => Integer
   (->short-description [this]
     (let [parameter-list-str (->short-description (get this :parameters))
           rest-parameter-str (if-some [rest-parameter (get this :rest-parameter)]
-                               (str (->short-description rest-parameter) "...")
+                               (str (->short-description rest-parameter) " ...")
                                "")
           return-str (->short-description (get this :return))]
        (case [(str/blank? parameter-list-str) (str/blank? rest-parameter-str)]
