@@ -2,6 +2,7 @@
   (:require [clojure.spec.alpha :as s]
             [clojure.spec.test.alpha :as stest]
             [clojure.test :refer [deftest is testing use-fixtures]]
+            [clojure.core.match :refer [match]]
             [flanders.core :as f]
             [flanders.examples :refer [Example]]
             [flanders.spec :as fs]
@@ -112,3 +113,20 @@
   (is (s/valid?
        (fs/->spec (f/set-of (f/set-of f/any-str)) "test-set")
        #{#{"foo"}})))
+
+(deftest sig-spec-test
+  (let [spec-key (fs/->spec (f/sig :parameters [(f/int)]) "foo")]
+    (is (match (s/describe spec-key)
+          (['fspec :args (['cat :a0 _] :seq) :ret _ :fn nil] :seq)
+          true
+
+          _
+          false)))
+
+  (let [spec-key (fs/->spec (f/sig :parameters [(f/int)] :rest-parameter (f/int)) "foo")]
+    (is (match (s/describe spec-key)
+          (['fspec :args (['cat :a0 _ :a* (['* _] :seq)] :seq) :ret _ :fn nil] :seq)
+          true
+
+          _
+          false))))
