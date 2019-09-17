@@ -121,7 +121,7 @@
 (defrecord ParameterListType [parameters :- [(s/protocol TreeNode)]]
   TreeNode
   (branch? [_] true)
-  (node-children [_] parameters)
+  (node-children [_] (seq parameters))
   (make-node [this new-parameters]
     (ParameterListType. (vec new-parameters))))
 

@@ -3,11 +3,9 @@
             [flanders.core :as f]
             [flanders.markdown :as f.markdown]))
 
-
 (deftest signuature-type->markdown
-  ;; TODO: This causes an error.
   (is (= (f.markdown/->markdown (f/sig :parameters []))
-         "() => Anything\n\n"))
+         "() => Anything\n"))
 
   (is (= (f.markdown/->markdown (f/sig :parameters [(f/int)]))
          "(Integer) => Anything\n\n"))
@@ -17,8 +15,8 @@
 
   (is (= (f.markdown/->markdown (f/sig :parameters [(f/int)]
                                        :rest-parameter (f/str)))
-         "(Integer,  String...) => Anything\n\n\n"))
+         "(Integer,  String ...) => Anything\n\n\n"))
 
   (is (= (f.markdown/->markdown (f/sig :parameters [(f/int)]
                                        :rest-parameter (f/str)))
-         "(Integer,  String...) => Anything\n\n\n")))
+         "(Integer,  String ...) => Anything\n\n\n")))
