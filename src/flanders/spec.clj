@@ -108,10 +108,8 @@
       (eval `(s/coll-of ~result-kw :kind set?))))
 
   SignatureType
-  (->spec' [this ns f]
-    (let [parameter-list (get this :parameters)
-          parameters (get parameter-list :parameters)
-          rest-parameter (get this :rest-parameter)
+  (->spec' [{:keys [parameters rest-parameter return]} ns f]
+    (let [parameters (get parameters :parameters)
           parameter-count (count parameters)
           ;; Using gensym to produce a unique function name pending a
           ;; better approach.
@@ -129,7 +127,7 @@
                           parameters)
                        ~@(if (some? rest-parameter)
                            [:a* `(s/* ~(f rest-parameter (str ns ".a*")))]))
-          :ret ~(if-some [return (get this :return)]
+          :ret ~(if (some? return)
                   (f return (str ns ".return"))
                   `any?)))))
 
