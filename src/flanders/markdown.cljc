@@ -10,12 +10,15 @@
                :cljs [flanders.types
                       :refer [AnythingType BooleanType EitherType InstType
                               IntegerType KeywordType MapEntry MapType
-                              NumberType SequenceOfType SetOfType StringType]])
+                              ParameterListType NumberType
+                              SequenceOfType SetOfType SignatureType
+                              StringType]])
             [flanders.utils :as fu])
   #?(:clj (:import [flanders.types
-                    AnythingType BooleanType EitherType InstType IntegerType
-                    KeywordType MapEntry MapType NumberType SequenceOfType
-                    SetOfType StringType])))
+                    AnythingType BooleanType EitherType InstType
+                    IntegerType KeywordType MapEntry MapType
+                    NumberType ParameterListType SequenceOfType
+                    SetOfType SignatureType StringType])))
 
 (defprotocol MarkdownNode
   (->markdown-part [node depth])
@@ -249,6 +252,35 @@
     nil)
   (->short-description [this]
     (str "#{" (->short-description (:type this)) "}"))
+
+  ParameterListType
+  (->markdown-part [this loc]
+    nil)
+  (->short-description [this]
+    (str/join ", " (map ->short-description (get this :parameters))))
+
+  SignatureType
+  (->markdown-part [this loc]
+    (->short-description this))
+
+  (->short-description [this]
+    (let [parameter-list-str (->short-description (get this :parameters))
+          rest-parameter-str (if-some [rest-parameter (get this :rest-parameter)]
+                               (str (->short-description rest-parameter) " ...")
+                               "")
+          return-str (->short-description (get this :return))]
+       (case [(str/blank? parameter-list-str) (str/blank? rest-parameter-str)]
+         [true true]
+         (str "() => " return-str)
+
+         [true false]
+         (str "(" rest-parameter-str ") => " return-str)
+
+         [false true]
+         (str "(" parameter-list-str ") => " return-str)
+
+         [false false]
+         (str "(" parameter-list-str ", " rest-parameter-str ") => " return-str))))
 
   EitherType
   (->markdown-part [this loc]

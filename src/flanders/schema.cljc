@@ -6,18 +6,21 @@
             [flanders.predicates :as fp]
             #?(:clj  [flanders.types]
                :cljs [flanders.types
-                      :refer [AnythingType BooleanType EitherType InstType
-                              IntegerType KeywordType MapEntry MapType
-                              NumberType SequenceOfType SetOfType StringType]])
+                      :refer [AnythingType BooleanType EitherType
+                              InstType IntegerType KeywordType
+                              MapEntry MapType NumberType
+                              ParameterListType SequenceOfType
+                              SetOfType SignatureType StringType]])
             [flanders.protocols :as prots]
             [flanders.utils :as fu]
             #?(:clj [ring.swagger.json-schema :as rs])
             [schema.core :as s]
             [schema-tools.core :as st])
   #?(:clj (:import [flanders.types
-                    AnythingType BooleanType EitherType InstType IntegerType
-                    KeywordType MapEntry MapType NumberType SequenceOfType
-                    SetOfType StringType])))
+                    AnythingType BooleanType EitherType InstType
+                    IntegerType KeywordType MapEntry MapType
+                    NumberType ParameterListType SequenceOfType
+                    SetOfType SignatureType StringType])))
 
 (defprotocol SchemaNode
   (->schema' [node f]))
@@ -70,6 +73,10 @@
              (map f entries))
      description))
 
+  ParameterListType
+  (->schema' [{:keys [parameters]} f]
+    (mapv f parameters))
+
   SequenceOfType
   (->schema' [{:keys [type]} f]
     [(f type)])
@@ -77,6 +84,14 @@
   SetOfType
   (->schema' [{:keys [type]} f]
     #{(f type)})
+
+  SignatureType
+  (->schema' [{:keys [parameters rest-parameter return name]} f]
+    (let [parameters (f parameters)]
+      (s/make-fn-schema (f return)
+                        (if (some? rest-parameter)
+                          [(conj parameters [(f rest-parameter)])]
+                          [parameters]))))
 
   ;; Leaves
 

@@ -4,13 +4,16 @@
             #?(:clj  [flanders.types :as ft]
                :cljs [flanders.types
                       :as ft
-                      :refer [AnythingType BooleanType EitherType InstType
-                              IntegerType KeywordType MapEntry MapType
-                              NumberType SequenceOfType SetOfType StringType]]))
+                      :refer [AnythingType BooleanType EitherType
+                              InstType IntegerType KeywordType
+                              MapEntry MapType NumberType
+                              SequenceOfType SetOfType SignatureType
+                              StringType]]))
   #?(:clj (:import [flanders.types
-                    AnythingType BooleanType EitherType InstType IntegerType
-                    KeywordType MapEntry MapType NumberType SequenceOfType
-                    SetOfType StringType]
+                    AnythingType BooleanType EitherType InstType
+                    IntegerType KeywordType MapEntry MapType
+                    NumberType SequenceOfType SetOfType SignatureType
+                    StringType]
                    [java.util Date])))
 
 (defprotocol JsonExampleNode
@@ -77,7 +80,11 @@
 
   StringType
   (->example [_ _]
-    "string"))
+    "string")
+
+  SignatureType
+  (->example [_ _]
+    (constantly "anything")))
 
 ;; This is a fast implementation of making an example, but it could be better
 ;; - It could take advantage of generators (to be non-deterministic)

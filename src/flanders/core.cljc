@@ -96,6 +96,33 @@
     (ft/map->EitherType {:choices types
                          :tests tests})))
 
+(defn sig
+  "Build a SignatureType with the keyword arguments `opts`.
+
+    (sig :parameters [(int) (str)]
+         :return (str))
+    ;; =>
+    #flanders.types.SignatureType{:parameters [,,,]
+                                  :return #flanders.types.StringType{,,,}}
+
+  If the `:return` option is not specified the return type of the
+  signature is will be specified as `flanders.types.AnythingType`.
+
+  A signature can be variadic by specifying the `:rest-parameter`
+  argument."
+  [& {:keys [parameters rest-parameter return] :as opts}]
+  (if (some? parameters)
+    (assert (sequential? parameters) ":parameters argument must be `sequential?`"))
+  (let [return (if (some? return)
+                 return
+                 (ft/map->AnythingType {}))
+        parameter-list (ft/map->ParameterListType
+                        {:parameters (vec parameters)})]
+    (ft/map->SignatureType
+     (merge opts {:parameters parameter-list
+                  :rest-parameter rest-parameter
+                  :return return}))))
+
 ;; ----------------------------------------------------------------------
 ;; Defining Leaf Nodes
 ;; ----------------------------------------------------------------------

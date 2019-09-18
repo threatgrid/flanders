@@ -7,7 +7,7 @@
   (:import [flanders.types
             AnythingType BooleanType EitherType InstType IntegerType
             KeywordType MapEntry MapType NumberType SequenceOfType
-            SetOfType StringType]))
+            SetOfType SignatureType StringType]))
 
 (defprotocol SpecedNode
   (->spec' [node ns f]))
@@ -106,6 +106,30 @@
     (let [result-kw (keyword ns "set-of")]
       (eval `(s/def ~result-kw ~(f type (str ns "." "set-of"))))
       (eval `(s/coll-of ~result-kw :kind set?))))
+
+  SignatureType
+  (->spec' [{:keys [parameters rest-parameter return]} ns f]
+    (let [parameters (get parameters :parameters)
+          parameter-count (count parameters)
+          ;; Using gensym to produce a unique function name pending a
+          ;; better approach.
+          fn-name (str (gensym "fn__") "_" parameter-count
+                       (if (some? rest-parameter)
+                         "*"))
+          result-kw (keyword ns fn-name)]
+      (eval
+       `(s/fdef ~result-kw
+          :args (s/cat ~@(mapcat
+                          (fn [i parameter]
+                            (let [parameter-name (str "a" i)]
+                              [(keyword parameter-name) (f parameter (str ns "." parameter-name))]))
+                          (range)
+                          parameters)
+                       ~@(if (some? rest-parameter)
+                           [:a* `(s/* ~(f rest-parameter (str ns ".a*")))]))
+          :ret ~(if (some? return)
+                  (f return (str ns ".return"))
+                  `any?)))))
 
   ;; Leaves
 
