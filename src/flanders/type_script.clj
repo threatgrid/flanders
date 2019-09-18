@@ -41,7 +41,7 @@
     * FunctionType, or
     * ConstructorType
 
-  as defined in the TypeScript grammer."
+  as defined in the TypeScript grammar."
   [x]
   (if (satisfies? TypeScriptType x)
     (-type-script-type x)
