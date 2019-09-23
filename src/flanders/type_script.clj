@@ -47,22 +47,6 @@
     (-type-script-type x)
     "any"))
 
-(defn type-script-union
-  "Render `xs` as a TypeScript UnionType or \"any\"."
-  [xs]
-  {:pre [(sequential? xs)]}
-  (let [types (map type-script-type xs)]
-    (if (some #{nil "any"} types)
-      "any"
-      (string/join " | " (sort (distinct types))))))
-
-(defn union?
-  "true if `x` can be represented as a TypeScript union, false
-  otherwise."
-  {:private true}
-  [x]
-  (instance? flanders.types.EitherType x))
-
 (defprotocol TypeScriptInterfaceDeclaration
   (-type-script-interface-declaration [this]))
 
@@ -106,6 +90,27 @@
                  (get x :name))]
     (if (string? x-name)
       (type-script-munge x-name))))
+
+(defn type-script-qualified-type-name [x]
+  (or (type-script-type-name x)
+      (type-script-type x)
+      "any"))
+
+(defn type-script-union
+  "Render `xs` as a TypeScript UnionType or \"any\"."
+  [xs]
+  {:pre [(sequential? xs)]}
+  (let [types (map type-script-qualified-type-name xs)]
+    (if (some #{nil "any"} types)
+      "any"
+      (string/join " | " (sort (distinct types))))))
+
+(defn union?
+  "true if `x` can be represented as a TypeScript union, false
+  otherwise."
+  {:private true}
+  [x]
+  (instance? flanders.types.EitherType x))
 
 (defn type-alias-declaration
   [x]
@@ -252,11 +257,11 @@
           parameter-list (get parameters :parameters)
           ts-parameter-list (mapv
                              (fn [i parameter]
-                               (str "a_" i ": " (type-script-type parameter)))
+                               (str "a_" i ": " (type-script-qualified-type-name parameter)))
                              (range)
                              parameter-list)
           ts-rest-parameter (if (some? rest-parameter)
-                              (str "...a_n: " (type-script-type rest-parameter)))
+                              (str "...a_n: " (type-script-qualified-type-name rest-parameter)))
           ts-parameter-list (if (some? rest-parameter)
                               (conj ts-parameter-list ts-rest-parameter)
                               ts-parameter-list)
@@ -341,7 +346,6 @@
         (recur new-graph new-queue))
       graph)))
 
-
 (defn type-script-named-nodes
   {:private true}
   [type-graph]
@@ -363,7 +367,11 @@
               (fn [node]
                 (printf "  - %s (%s)\n"
                         (pr-str (get node :name))
-                        (.getName (class node))))
+                        (.getName (class node)))
+                (print "  ")
+                (prn node)
+                (print "  meta - ")
+                (prn (meta node)))
               nodes*)))))
      (group-by type-script-type-name named-nodes))))
 
