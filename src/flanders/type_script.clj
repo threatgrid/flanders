@@ -245,6 +245,24 @@
   (-type-script-type [this]
     (type-script-sequence-type (get this :type))))
 
+(extend-type flanders.types.SignatureType
+  TypeScriptType
+  (-type-script-type [this]
+    (let [{:keys [parameters rest-parameter return]} this
+          parameter-list (get parameters :parameters)
+          ts-parameter-list (mapv
+                             (fn [i parameter]
+                               (str "a_" i ": " (type-script-type parameter)))
+                             (range)
+                             parameter-list)
+          ts-rest-parameter (if (some? rest-parameter)
+                              (str "...a_n: " (type-script-type rest-parameter)))
+          ts-parameter-list (if (some? rest-parameter)
+                              (conj ts-parameter-list ts-rest-parameter)
+                              ts-parameter-list)
+          ts-return (type-script-type return)]
+      (str "(" (string/join ", " ts-parameter-list) ") => " ts-return))))
+
 (extend-type flanders.types.StringType
   TypeScriptType
   (-type-script-type [this]
