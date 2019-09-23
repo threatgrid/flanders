@@ -144,13 +144,60 @@
   (is (= "type T = number[];"
          (f.ts/type-script-declaration (f/set-of (f/int) :name "T")))))
 
-(let [TId (f/int :name "ID"
-                 :description "An ID")
-      TUser (f/map [(f/entry (f/key :name) (f/str))
-                    (f/entry (f/key :id) TId)]
-                   :name "User"
-                   :description "A User")
-      TUserList (f/seq-of TUser
-                          :name "User List"
-                          :description "A list of User")]
-  (f.ts/type-script-declarations [TId TUserList TUser]))
+(deftest sig-test
+  (is (= "() => any"
+         (f.ts/type-script-type
+          (f/sig))))
+
+  (is (= "(a_0: string) => any"
+         (f.ts/type-script-type
+          (f/sig :parameters [(f/str)]))))
+
+  (is (= "(a_0: string, a_1: number) => any"
+         (f.ts/type-script-type
+          (f/sig :parameters [(f/str) (f/int)]))))
+
+  (is (= "(...a_n: number) => any"
+         (f.ts/type-script-type
+          (f/sig :rest-parameter (f/int)))))
+
+  (is (= "() => number"
+         (f.ts/type-script-type
+          (f/sig :return (f/int)))))
+
+  (is (= "(a_0: string, a_1: number, ...a_n: number) => any"
+         (f.ts/type-script-type
+          (f/sig :parameters [(f/str) (f/int)]
+                 :rest-parameter (f/int)))))
+
+  (is (= "(a_0: string, a_1: number, ...a_n: number) => number"
+         (f.ts/type-script-type
+          (f/sig :parameters [(f/str) (f/int)]
+                 :rest-parameter (f/int)
+                 :return (f/int)))))
+
+  (is (nil?
+       (f.ts/type-script-type-name
+        (f/sig :parameters [(f/int)]
+               :rest-parameter (f/int)
+               :return (f/int)))))
+
+  (is (= "Add"
+         (f.ts/type-script-type-name
+          (f/sig :name "Add"
+                 :parameters [(f/int)]
+                 :rest-parameter (f/int)
+                 :return (f/int)))))
+
+  (is (nil?
+       (f.ts/type-script-declaration
+        (f/sig :parameters [(f/int)]
+               :rest-parameter (f/int)
+               :return (f/int)))))
+
+  (is (= "type Add = (a_0: number, ...a_n: number) => number;"
+         (f.ts/type-script-declaration
+          (f/sig :name "Add"
+                 :parameters [(f/int)]
+                 :rest-parameter (f/int)
+                 :return (f/int))))))
