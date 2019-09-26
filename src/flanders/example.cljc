@@ -84,7 +84,7 @@
 
   SignatureType
   (->example [_ _]
-    (constantly "anything")))
+    "function () {}"))
 
 ;; This is a fast implementation of making an example, but it could be better
 ;; - It could take advantage of generators (to be non-deterministic)
