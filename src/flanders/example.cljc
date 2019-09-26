@@ -83,8 +83,17 @@
     "string")
 
   SignatureType
-  (->example [_ _]
-    "function () {}"))
+  (->example [{:keys [parameters rest-parameter return]} f]
+    (let [arguments (mapv
+                     (fn [i parameter]
+                       [(str "arg" i) (f parameter)])
+                     (range)
+                     (:parameters parameters))
+          arguments (if (some? rest-parameter)
+                      (conj arguments ["argN"(f rest-parameter)])
+                      arguments)]
+      {:arguments (into {} arguments)
+       :returns (f return)})))
 
 ;; This is a fast implementation of making an example, but it could be better
 ;; - It could take advantage of generators (to be non-deterministic)
