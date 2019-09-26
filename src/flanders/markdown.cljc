@@ -265,15 +265,18 @@
                                (str (->short-description rest-parameter) " ...")
                                "")
           return-str (->short-description (get this :return))]
-      (str "# `" (get this :name) "`"
-           "\n\n"
+      (str (if-some [fn-name (get this :name)]
+             (str "# `" fn-name "`"
+                  "\n\n"))
            "### Signature"
            "\n\n"
            (->short-description this)
            "\n\n"
-           "### Description"
-           "\n\n"
-           (->description this))))
+           (let [description (->description this)]
+             (if (not (str/blank? description))
+               (str "### Description"
+                    "\n\n"
+                    description))))))
 
   (->short-description [this]
     (let [parameter-list-str (->short-description (get this :parameters))
