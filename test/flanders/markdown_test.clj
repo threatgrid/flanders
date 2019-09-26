@@ -4,19 +4,22 @@
             [flanders.markdown :as f.markdown]))
 
 (deftest signuature-type->markdown
-  (is (= (f.markdown/->markdown (f/sig :parameters []))
-         "() => Anything\n"))
+  (is (= "### Signature\n\n() => Anything\n\n\n"
+         (f.markdown/->markdown (f/sig :parameters []))))
 
-  (is (= (f.markdown/->markdown (f/sig :parameters [(f/int)]))
-         "(Integer) => Anything\n\n"))
+  (is (= "### Signature\n\n(Integer) => Anything\n\n\n\n"
+         (f.markdown/->markdown (f/sig :parameters [(f/int)]))))
 
-  (is (= (f.markdown/->markdown (f/sig :parameters [(f/int) (f/str)]))
-         "(Integer,  String) => Anything\n\n\n"))
+  (is (= "### Signature\n\n(Integer,  String) => Anything\n\n\n\n\n"
+         (f.markdown/->markdown (f/sig :parameters [(f/int) (f/str)]))))
 
-  (is (= (f.markdown/->markdown (f/sig :parameters [(f/int)]
-                                       :rest-parameter (f/str)))
-         "(Integer,  String ...) => Anything\n\n\n"))
+  (is (= "### Signature\n\n(Integer,  String ...) => Anything\n\n\n\n\n"
+         (f.markdown/->markdown (f/sig :parameters [(f/int)] :rest-parameter (f/str)))))
 
-  (is (= (f.markdown/->markdown (f/sig :parameters [(f/int)]
-                                       :rest-parameter (f/str)))
-         "(Integer,  String ...) => Anything\n\n\n")))
+  (is (= "### Signature\n\n(Integer,  String ...) => Anything\n\n\n\n\n"
+         (f.markdown/->markdown (f/sig :parameters [(f/int)] :rest-parameter (f/str)))))
+
+  (is (= "# `Foo`\n\n### Signature\n\n() => Anything\n\n### Description\n\nThe Foo.\n\n\n"
+         (f.markdown/->markdown (f/sig :name "Foo"
+                                       :description "The Foo."
+                                       :parameters [])))))
