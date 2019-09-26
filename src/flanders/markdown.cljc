@@ -237,8 +237,7 @@
            "* This entry's type is a set (allows zero or more distinct values)\n")
          (->comment this)
          (->usage this)
-         (->reference this)
-         ))
+         (->reference this)))
   (->short-description [_] "Property")
 
   SequenceOfType
@@ -261,7 +260,20 @@
 
   SignatureType
   (->markdown-part [this loc]
-    (->short-description this))
+    (let [parameter-list-str (get this :parameters)
+          rest-parameter-str (if-some [rest-parameter (get this :rest-parameter)]
+                               (str (->short-description rest-parameter) " ...")
+                               "")
+          return-str (->short-description (get this :return))]
+      (str "# `" (get this :name) "`"
+           "\n\n"
+           "### Signature"
+           "\n\n"
+           (->short-description this)
+           "\n\n"
+           "### Description"
+           "\n\n"
+           (->description this))))
 
   (->short-description [this]
     (let [parameter-list-str (->short-description (get this :parameters))
@@ -269,18 +281,18 @@
                                (str (->short-description rest-parameter) " ...")
                                "")
           return-str (->short-description (get this :return))]
-       (case [(str/blank? parameter-list-str) (str/blank? rest-parameter-str)]
-         [true true]
-         (str "() => " return-str)
+      (case [(str/blank? parameter-list-str) (str/blank? rest-parameter-str)]
+        [true true]
+        (str "() => " return-str)
 
-         [true false]
-         (str "(" rest-parameter-str ") => " return-str)
+        [true false]
+        (str "(" rest-parameter-str ") => " return-str)
 
-         [false true]
-         (str "(" parameter-list-str ") => " return-str)
+        [false true]
+        (str "(" parameter-list-str ") => " return-str)
 
-         [false false]
-         (str "(" parameter-list-str ", " rest-parameter-str ") => " return-str))))
+        [false false]
+        (str "(" parameter-list-str ", " rest-parameter-str ") => " return-str))))
 
   EitherType
   (->markdown-part [this loc]
