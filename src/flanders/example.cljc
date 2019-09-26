@@ -90,7 +90,7 @@
                      (range)
                      (:parameters parameters))
           arguments (if (some? rest-parameter)
-                      (conj arguments ["argN"(f rest-parameter)])
+                      (conj arguments ["argN" (f rest-parameter)])
                       arguments)]
       {:arguments (into {} arguments)
        :returns (f return)})))
