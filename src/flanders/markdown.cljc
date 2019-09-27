@@ -39,9 +39,11 @@
 (defn ->description
   ([node]
    (->description node false))
-  ([{:keys [description]} leaf?]
+  ([{:keys [description] :as node} leaf?]
    (when (seq description)
      (str (if leaf? "  * " "")
+          (if-some [name (get node :name)]
+            (str "*" name "* "))
           description
           (if leaf? "\n" "\n\n")))))
 
