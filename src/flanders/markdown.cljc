@@ -258,27 +258,26 @@
   (->markdown-part [this loc]
     nil)
   (->short-description [this]
-    (str/join ", " (map ->short-description (get this :parameters))))
+    (str/join ", " (map (fn [schema]
+                          (str (if-some [name (get schema :name)]
+                                 (str "*" name "* "))
+                               (->short-description schema)))
+                        (get this :parameters))))
 
   SignatureType
-  (->markdown-part [this loc]
-    (let [parameter-list-str (get this :parameters)
-          rest-parameter-str (if-some [rest-parameter (get this :rest-parameter)]
-                               (str (->short-description rest-parameter) " ...")
-                               "")
-          return-str (->short-description (get this :return))]
-      (str (if-some [fn-name (get this :name)]
-             (str "# `" fn-name "`"
-                  "\n\n"))
-           "### Signature"
-           "\n\n"
-           (->short-description this)
-           "\n\n"
-           (let [description (->description this)]
-             (if (not (str/blank? description))
-               (str "### Description"
-                    "\n\n"
-                    description))))))
+  (->markdown-part [{:keys [parameters] :as this} loc]
+    (str (if-some [fn-name (get this :name)]
+           (str "# `" fn-name "`" "\n\n"))
+         (let [description (get this :description)]
+           (if (not (str/blank? description))
+             (str "### Description"
+                  "\n\n"
+                  description
+                  "\n\n")))
+         "### Signature"
+         "\n\n"
+         (->short-description this)
+         "\n\n"))
 
   (->short-description [this]
     (let [parameter-list-str (->short-description (get this :parameters))
