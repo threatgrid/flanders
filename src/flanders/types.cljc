@@ -125,7 +125,8 @@
   (make-node [this new-parameters]
     (ParameterListType. (vec new-parameters))))
 
-(defrecord SignatureType [parameters :- ParameterListType
+(defrecord SignatureType [description :- (s/maybe s/Str)
+                          parameters :- ParameterListType
                           rest-parameter :- (s/maybe (s/protocol TreeNode))
                           return :- (s/protocol TreeNode)
                           name :- (s/maybe s/Str)]
@@ -136,7 +137,8 @@
       [parameters return rest-parameter]
       [parameters return]))
   (make-node [this [new-parameters new-return new-rest-parameter]]
-    (SignatureType. new-parameters
+    (SignatureType. description
+                    new-parameters
                     new-rest-parameter
                     new-return
                     name)))
