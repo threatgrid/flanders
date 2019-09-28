@@ -265,15 +265,14 @@
                         (get this :parameters))))
 
   SignatureType
-  (->markdown-part [{:keys [parameters] :as this} loc]
+  (->markdown-part [{:keys [description parameters] :as this} loc]
     (str (if-some [fn-name (get this :name)]
            (str "# `" fn-name "`" "\n\n"))
-         (let [description (get this :description)]
-           (if (not (str/blank? description))
-             (str "### Description"
-                  "\n\n"
-                  description
-                  "\n\n")))
+         (if (not (str/blank? description))
+           (str "### Description"
+                "\n\n"
+                description
+                "\n\n"))
          "### Signature"
          "\n\n"
          (->short-description this)
