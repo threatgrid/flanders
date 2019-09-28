@@ -284,7 +284,7 @@
           rest-parameter-str (if-some [rest-parameter (get this :rest-parameter)]
                                (str (str/trim (->short-description rest-parameter)) " ...")
                                "")
-          return-str (->short-description (get this :return))]
+          return-str (str/trim (->short-description (get this :return)))]
       (case [(str/blank? parameter-list-str) (str/blank? rest-parameter-str)]
         [true true]
         (str "() => " return-str)
