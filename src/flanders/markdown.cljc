@@ -279,12 +279,12 @@
          (->short-description this)
          "\n\n"))
 
-  (->short-description [this]
-    (let [parameter-list-str (str/trim (->short-description (get this :parameters)))
-          rest-parameter-str (if-some [rest-parameter (get this :rest-parameter)]
+  (->short-description [{:keys [parameters rest-parameter return]}]
+    (let [parameter-list-str (str/trim (->short-description parameters))
+          rest-parameter-str (if-some [rest-parameter rest-parameter]
                                (str (str/trim (->short-description rest-parameter)) " ...")
                                "")
-          return-str (str/trim (->short-description (get this :return)))]
+          return-str (str/trim (->short-description return))]
       (case [(str/blank? parameter-list-str) (str/blank? rest-parameter-str)]
         [true true]
         (str "() => " return-str)
