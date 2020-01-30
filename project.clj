@@ -1,6 +1,3 @@
-(def schema-tools-version "0.12.2")
-(def schema-version "1.1.12")
-
 (defproject threatgrid/flanders "0.1.23-SNAPSHOT"
   :description "flanders"
   :url "http://github.com/threatgrid/flanders"
@@ -10,8 +7,8 @@
                  [org.clojure/core.match "0.3.0"]
                  [cheshire "5.9.0"]
 
-                 [prismatic/schema ~schema-version]
+                 [prismatic/schema "1.1.12"]
                  [metosin/ring-swagger "0.26.2"]
-                 [metosin/schema-tools ~schema-tools-version]]
+                 [metosin/schema-tools "0.12.2"]]
   :profiles {:dev
              {:dependencies [[org.clojure/test.check "0.10.0"]]}})
