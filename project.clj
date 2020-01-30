@@ -1,4 +1,4 @@
-(def schema-tools-version "0.12.1")
+(def schema-tools-version "0.12.2")
 (def schema-version "1.1.12")
 
 (defproject threatgrid/flanders "0.1.23-SNAPSHOT"
