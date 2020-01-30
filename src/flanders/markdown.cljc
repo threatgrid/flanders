@@ -258,11 +258,11 @@
   (->markdown-part [this loc]
     nil)
   (->short-description [this]
-    (str/join ", " (map (fn [schema]
-                          (str (if-some [name (get schema :name)]
-                                 (str "*" name "* "))
-                               (->short-description schema)))
-                        (get this :parameters))))
+    (str/join "," (map (fn [schema]
+                         (str (if-some [name (get schema :name)]
+                                (str "*" name "* "))
+                              (->short-description schema)))
+                       (get this :parameters))))
 
   SignatureType
   (->markdown-part [{:keys [description parameters] :as this} loc]
