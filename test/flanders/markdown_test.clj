@@ -13,6 +13,9 @@
   (is (= "### Signature\n\n(Integer, String) => Anything\n\n\n\n\n"
          (f.markdown/->markdown (f/sig :parameters [(f/int) (f/str)]))))
 
+  (is (= "### Signature\n\n(Integer, String, Integer, String) => Anything\n\n\n\n\n\n\n"
+         (f.markdown/->markdown (f/sig :parameters [(f/int) (f/str) (f/int) (f/str)]))))
+
   (is (= "### Signature\n\n(Integer, String ...) => Anything\n\n\n\n\n"
          (f.markdown/->markdown (f/sig :parameters [(f/int)] :rest-parameter (f/str)))))
 
