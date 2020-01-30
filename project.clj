@@ -10,5 +10,6 @@
                  [prismatic/schema "1.1.12"]
                  [metosin/ring-swagger "0.26.2"]
                  [metosin/schema-tools "0.12.2"]]
+  :global-vars {*warn-on-reflection* true}
   :profiles {:dev
              {:dependencies [[org.clojure/test.check "0.10.0"]]}})
