@@ -3,6 +3,7 @@
   :url "http://github.com/threatgrid/flanders"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :pedantic? :abort
   :dependencies [[org.clojure/clojure "1.10.1"]
                  [org.clojure/core.match "0.3.0"]
                  [cheshire "5.9.0"]
