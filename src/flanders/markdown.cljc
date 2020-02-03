@@ -259,7 +259,7 @@
     nil)
   (->short-description [this]
     (str/join ", " (map (fn [schema]
-                          (str (if-some [name (get schema :name)]
+                          (str (when-some [name (get schema :name)]
                                  (str "*" name "* "))
                                (->short-description schema)))
                         (get this :parameters))))
@@ -353,7 +353,7 @@
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
-  (->short-description [this] (str (:name this) " String"))
+  (->short-description [this] (str (:name this) "String"))
 
   InstType
   (->markdown-part [this loc]
