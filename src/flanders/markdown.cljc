@@ -34,7 +34,7 @@
 
 (defn ->default [{:keys [default values]}]
   (when (and default (> (count values) 1))
-    (str "  * Default: " default "\n")))
+    (str "  * Default: `" (pr-str default) "`\n")))
 
 (defn ->description
   ([node]
@@ -62,7 +62,7 @@
 (defn ->equals [{:keys [values]} loc]
   (when (and (= 1 (count values))
              (not (fp/key loc)))
-    (str "  * Must equal: " (pr-str (first values)) "\n")))
+    (str "  * Must equal: `" (pr-str (first values)) "`\n")))
 
 (defn- ->header [loc & parts]
   (apply str (concat
@@ -103,10 +103,14 @@
 
 (defn- ->values [{v :values}]
   (when (and v (> (count v) 1))
-    (str "  * Allowed Values:\n"
-         (str/join
-           (->> (sort (seq v))
-                (map #(str "    * " % "\n")))))))
+    (->> v
+         seq
+         sort
+         (map #(str "    * `"
+                    (pr-str %)
+                    "`\n"))
+         str/join
+         (str "  * Allowed values:\n"))))
 
 (defn- ->comment
   ([node]
