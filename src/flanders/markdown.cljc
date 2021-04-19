@@ -75,15 +75,15 @@
               ["\n\n"])))
 
 (defn- ->entry-header [{:keys [key type]} loc]
-  (->header loc
-            " Property "
-            (let [key-schema (fs/->schema-at-loc key
-                                                 (z/down loc))]
-              (if (keyword? key-schema)
-                (name key-schema)
-                (->short-description key)))
-            " ∷ "
-            (->short-description type)))
+  (str "#" (->header loc
+                     " `"
+                     (let [key-schema (fs/->schema-at-loc key
+                                                          (z/down loc))]
+                       (if (keyword? key-schema)
+                         (name key-schema)
+                         (->short-description key)))
+                     "` ∷ "
+                     (->short-description type))))
 
 (defn- ->leaf-header [this loc]
   (let [type-str (->short-description this)]
