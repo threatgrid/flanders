@@ -24,7 +24,7 @@
   (->markdown-part [node depth])
   (->short-description [node]))
 
-(defleaf ReferenceNode [text anchor jump-anchor])
+(defleaf ReferenceNode [text anchor jump-anchor md-file-ref])
 
 (defn ready-for-table [str]
   (-> str
@@ -130,6 +130,13 @@
       (str/replace #"[^-\w]" "")
       (str/lower-case)))
 
+(defn maybe-link [x]
+  (let [{:keys [text anchor jump-anchor md-file-ref] :as ref} (when (instance? ReferenceNode x)
+                                                                x)]
+    (if ref
+      (str "[" text "](./" md-file-ref "#" jump-anchor ")")
+      (->short-description x))))
+
 (defn- make-entry-vec
   "used by ->map-summary once for each row-m"
   [{:keys [entry key type] :as _row-m_}]
@@ -139,8 +146,9 @@
                 (name key-schema)
                 (pr-str key-schema)) "]"
           "(#" (->entry-anchor entry) ")"))
+
    ;; type field
-   (->short-description (z/node type))
+   (-> type z/node maybe-link)
 
    ;; description of property
    (ready-for-table (or (:description (z/node entry)) " "))
@@ -218,12 +226,15 @@
       "Object"))
 
   ReferenceNode
-  (->markdown-part [{:keys [text anchor jump-anchor] :as this} loc]
-    (str "<a id=\"" anchor "\"></a>\n"
-         (->leaf-header this loc)
-         "  * Details: [" text "](#" jump-anchor ")\n"))
-  (->short-description [{:keys [text]}]
-    text)
+  (->markdown-part [{:keys [text anchor jump-anchor md-file-ref] :as this} loc]
+    (let [up-node (-> loc z/up z/node)]
+      ;; only render the node when it's not already indicated in the header:
+      (when (some (fn [x]
+                    (instance? x up-node))
+                  [EitherType])
+        (->leaf-header this loc))))
+  (->short-description [this]
+    (maybe-link this))
 
   MapEntry
   (->markdown-part [{:keys [key required?] :as this} loc]
@@ -246,13 +257,15 @@
   (->markdown-part [{:keys [description]} loc]
     nil)
   (->short-description [this]
-    (str (->short-description (:type this)) " List"))
+    (let [content (-> this :type maybe-link)]
+      (str "[" content "]")))
 
   SetOfType
   (->markdown-part [{:keys [description]} loc]
     nil)
   (->short-description [this]
-    (str "#{" (->short-description (:type this)) "}"))
+    (let [content (-> this :type maybe-link)]
+      (str "#{" content "}")))
 
   ParameterListType
   (->markdown-part [this loc]
@@ -398,10 +411,11 @@
         (and (instance? MapType node)
              (not= node root-node))
         (let [text (->short-description node)
+              md-file-ref (-> node :name (or "Object") (str ".md"))
               map-anchor (str "map" map-counter)
               ref-anchor (str map-anchor "-ref")]
           (recur (z/next (z/replace current-map-loc
-                                    (->ReferenceNode text ref-anchor map-anchor)))
+                                    (->ReferenceNode text ref-anchor map-anchor md-file-ref)))
                  (conj maps-to-walk (assoc node
                                            :anchor map-anchor
                                            :jump-anchor ref-anchor))
@@ -419,17 +433,19 @@
   (let [[first-map & rest-maps] (find-maps ddl-root)]
     (loop [current-map-loc (fu/->ddl-zip first-map)
            maps-to-walk rest-maps
-           markdown []]
+           markdown [[(:name first-map)]]]
       (cond
         ;; terminate
         (nil? current-map-loc)
-        (str/join \newline markdown)
+        markdown
 
         ;; end of current map, go to next map
         (z/end? current-map-loc)
-        (recur (some-> maps-to-walk first fu/->ddl-zip)
-               (rest maps-to-walk)
-               markdown)
+        (let [end (some-> maps-to-walk first fu/->ddl-zip)]
+          (recur end
+                 (rest maps-to-walk)
+                 (cond-> markdown
+                   end (conj [(-> maps-to-walk first :name (or "Object"))]))))
 
         ;; for a MapType, recur with deduped (and sorted) MapType
         (and (fp/map? (z/node current-map-loc))
@@ -449,5 +465,8 @@
                maps-to-walk
                (if-let [part (->markdown-part (z/node current-map-loc)
                                               current-map-loc)]
-                 (conj markdown part)
+                 (update markdown
+                         (dec (count markdown))
+                         conj
+                         part)
                  markdown))))))
