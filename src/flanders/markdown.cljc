@@ -161,13 +161,14 @@
    (ready-for-table (or (:description (z/node entry)) " "))
 
    ;; required? field
-   (when (:required? (z/node entry))
-     "&#10003;")])
+   (if (:required? (z/node entry))
+     "**Required**"
+     "_Optional_")])
 
 (defn sort-entry-vecs [rows]
   (sort (fn [r1 r2]
           ;; required first
-          (let [req (compare (last r2) (last r1))]
+          (let [req (- (compare (last r2) (last r1)))]
             (if (= 0 req)
               (compare (first r1) (first r2))
               req)))
@@ -214,7 +215,6 @@
                     (sort-entry-vecs row-vs)))
      "\n\n")))
 
-
 (extend-protocol MarkdownNode
   MapType
   (->markdown-part [{:keys [anchor] :as this} loc]
@@ -249,8 +249,8 @@
          (->entry-header this loc)
          (->description this)
          (if required?
-           "* This entry is required"
-           "* This entry is optional") "\n"
+           "* This entry is **required**"
+           "* This entry is _optional_") "\n"
          (when (some-> loc z/down z/rightmost z/node fp/sequence-of?)
            "* This entry's type is sequential (allows zero or more values)\n")
          (when (some-> loc z/down z/rightmost z/node fp/set-of?)
