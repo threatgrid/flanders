@@ -229,7 +229,7 @@
          (->usage this)))
   (->short-description [{name :name}]
     (if (seq name)
-      (str "*" name "* Object")
+      (str "*" name "*")
       "Object"))
 
   ReferenceNode
@@ -373,7 +373,11 @@
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
-  (->short-description [this] (str (:name this) "String"))
+  (->short-description [this]
+    (-> this
+        :name
+        (str "String")
+        (str/replace "StringString" "String")))
 
   InstType
   (->markdown-part [this loc]
@@ -381,7 +385,7 @@
          (->comment this :leaf)
          (->usage this :leaf)
          (->reference this :leaf)))
-  (->short-description [_] "Inst (Date)")
+  (->short-description [_] "DateTime")
 
   KeywordType
   (->markdown-part [this loc]
