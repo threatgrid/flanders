@@ -85,11 +85,17 @@
                      "` ∷ "
                      (->short-description type))))
 
+(defn children-of-composite-type? [loc]
+  (-> loc z/up z/node class #{EitherType}))
+
 (defn- ->leaf-header [this loc]
-  (let [type-str (->short-description this)]
+  (let [sep (if (children-of-composite-type? loc)
+              "  * "
+              "* ")
+        type-str (->short-description this)]
     (if (fp/key loc)
-      (str "* " type-str " Key\n")
-      (str "* " type-str " Value\n"))))
+      (str sep type-str " Key\n")
+      (str sep type-str "\n"))))
 
 (defn- ->schema-str [this loc]
   (let [schema (pr-str (fs/->schema-at-loc this loc))
@@ -234,12 +240,9 @@
 
   ReferenceNode
   (->markdown-part [{:keys [text anchor jump-anchor md-file-ref] :as this} loc]
-    (let [up-node (-> loc z/up z/node)]
-      ;; only render the node when it's not already indicated in the header:
-      (when (some (fn [x]
-                    (instance? x up-node))
-                  [EitherType])
-        (->leaf-header this loc))))
+    ;; only render the node when it's not already indicated in the header:
+    (when (children-of-composite-type? loc)
+      (->leaf-header this loc)))
   (->short-description [this]
     (maybe-link this))
 
@@ -323,7 +326,7 @@
          (->comment this)
          (->usage this :leaf)
          (->reference this :leaf)
-         "  * Only one of the following schemas will match\n"))
+         "* Only one of the following schemas will match:\n"))
   (->short-description [_] "Either")
 
   AnythingType
