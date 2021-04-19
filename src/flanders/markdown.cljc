@@ -51,13 +51,16 @@
   ([node]
    (->reference node false))
   ([{:keys [reference]} leaf?]
-   (when (seq reference)
-     (str (if leaf? "  *" "*")
-          " Reference: "
-          (if (vector? reference)
-            (str/join ", " reference)
-            reference)
-          "\n"))))
+   (when (and (seq reference)
+              (not (#{"#"} reference)))
+     (str/replace (str (if leaf? "  *" ">")
+                       " Reference: "
+                       (if (vector? reference)
+                         (str/join ", " reference)
+                         reference)
+                       "\n\n")
+                  "] ("
+                  "]("))))
 
 (defn ->equals [{:keys [values]} loc]
   (when (and (= 1 (count values))
