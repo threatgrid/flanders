@@ -222,11 +222,11 @@
          (if (nil? (z/up loc))
            (->header loc " " (->short-description this))
            (->leaf-header this loc))
+         (->reference this)
          (->description this)
          (->map-summary this loc)
          (->comment this)
-         (->usage this)
-         (->reference this)))
+         (->usage this)))
   (->short-description [{name :name}]
     (if (seq name)
       (str "*" name "* Object")
