@@ -1,15 +1,16 @@
 (ns flanders.predicates
-  (:refer-clojure
-    :exclude [key keyword keyword? map map? sequential?])
-  (:require [clojure.zip :as z]
-            [flanders.protocols :as prots]
-            #?(:clj  [flanders.types]
-               :cljs [flanders.types
-                      :refer [EitherType KeywordType MapEntry MapType
-                              SequenceOfType SetOfType]]))
-  (:import #?(:clj [flanders.types
-                    EitherType KeywordType MapEntry MapType SequenceOfType
-                    SetOfType])))
+  (:refer-clojure :exclude [key keyword keyword? map map? sequential?])
+  (:require
+   #?(:clj  [flanders.types]
+      :cljs [flanders.types
+             :refer [EitherType KeywordType MapEntry MapType
+                     SequenceOfType SetOfType]])
+   [clojure.zip :as z]
+   [flanders.protocols :as prots])
+  (:import
+   #?(:clj [flanders.types
+            EitherType KeywordType MapEntry MapType SequenceOfType
+            SetOfType])))
 
 ;; ----------------------------------------------------------------------
 ;; about nodes

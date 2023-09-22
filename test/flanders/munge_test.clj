@@ -1,8 +1,8 @@
 (ns flanders.munge-test
-  (:require [flanders
-             [core :as f]
-             [munge :as m]]
-            [clojure.test :refer [deftest is testing]]))
+  (:require
+   [clojure.test :refer [deftest is testing]]
+   [flanders.core :as f]
+   [flanders.munge :as m]))
 
 (deftest test-munge
   (testing "changing a field from optional to required"

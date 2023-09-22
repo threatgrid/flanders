@@ -1,20 +1,28 @@
 (ns flanders.example
-  (:require [flanders.predicates :as fp]
-            [flanders.schema :as fs]
-            #?(:clj  [flanders.types :as ft]
-               :cljs [flanders.types
-                      :as ft
-                      :refer [AnythingType BooleanType EitherType
-                              InstType IntegerType KeywordType
-                              MapEntry MapType NumberType
-                              SequenceOfType SetOfType SignatureType
-                              StringType]]))
-  #?(:clj (:import [flanders.types
-                    AnythingType BooleanType EitherType InstType
-                    IntegerType KeywordType MapEntry MapType
-                    NumberType SequenceOfType SetOfType SignatureType
-                    StringType]
-                   [java.util Date])))
+  (:require
+   #?(:clj  [flanders.types :as ft]
+      :cljs [flanders.types
+             :as ft
+             :refer [AnythingType BooleanType EitherType InstType IntegerType
+                     KeywordType MapEntry MapType NumberType SequenceOfType
+                     SetOfType SignatureType StringType]])
+   [flanders.schema :as fs])
+  #?(:clj (:import
+           [flanders.types
+            AnythingType
+            BooleanType
+            EitherType
+            InstType
+            IntegerType
+            KeywordType
+            MapEntry
+            MapType
+            NumberType
+            SequenceOfType
+            SetOfType
+            SignatureType
+            StringType]
+           [java.util Date])))
 
 (defprotocol JsonExampleNode
   (->example [node f]))

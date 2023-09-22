@@ -1,10 +1,11 @@
 (ns flanders.core-test
-  (:require [clojure.test :refer [deftest is]]
-            [flanders.core :as f])
-  (:import (flanders.types EitherType
-                           MapType
-                           SignatureType)))
+  (:require
+   [clojure.test :refer [deftest is]]
+   [flanders.core :as f])
+  (:import
+   (flanders.types EitherType MapType SignatureType)))
 
+#_{:clj-kondo/ignore [:inline-def :clojure-lsp/unused-public-var]}
 (deftest def-entity-type-test
   (is (thrown? clojure.lang.ExceptionInfo
                (f/def-entity-type Foo 'bad)))

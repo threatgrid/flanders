@@ -2,8 +2,24 @@
   "Render flanders.types types as TypeScript types.
 
   See: https://github.com/microsoft/TypeScript/blob/f30e8a284ac479a96ac660c94084ce5170543cc4/doc/spec.md#A"
-  (:require [clojure.string :as string]
-            [flanders.types]))
+  (:require
+   [clojure.string :as string]
+   [flanders.protocols :as fp])
+  (:import
+   [flanders.types
+    AnythingType
+    BooleanType
+    EitherType
+    InstType
+    IntegerType
+    KeywordType
+    MapEntry
+    MapType
+    NumberType
+    SequenceOfType
+    SetOfType
+    SignatureType
+    StringType]))
 
 (def ^{:dynamic true}
   *flags*
@@ -38,8 +54,8 @@
   "Render `x` as a TypeScript type e.g. one of
 
     * UnionOrIntersectionOrPrimaryType,
-    * FunctionType, or
-    * ConstructorType
+    * FunctionType, or
+    * ConstructorType
 
   as defined in the TypeScript grammar."
   [x]
@@ -52,14 +68,14 @@
 
 (defn type-script-interface-declaration
   [x]
-  (if (satisfies? TypeScriptInterfaceDeclaration x)
+  (when (satisfies? TypeScriptInterfaceDeclaration x)
     (-type-script-interface-declaration x)))
 
 (defprotocol TypeScriptEnumDeclaration
   (-type-script-enum-declaration [this]))
 
 (defn type-enum-declaration [x]
-  (if (satisfies? TypeScriptEnumDeclaration x)
+  (when (satisfies? TypeScriptEnumDeclaration x)
     (-type-script-enum-declaration x)))
 
 (defprotocol TypeScriptPropertyNames
@@ -67,7 +83,7 @@
 
 (defn type-script-property-names
   [x]
-  (if (satisfies? TypeScriptPropertyNames x)
+  (when (satisfies? TypeScriptPropertyNames x)
     (-type-script-property-names x)))
 
 (defprotocol TypeScriptPropertySignatures
@@ -75,7 +91,7 @@
 
 (defn type-script-property-signatures
   [x]
-  (if (satisfies? TypeScriptPropertySignatures x)
+  (when (satisfies? TypeScriptPropertySignatures x)
     (-type-script-property-signatures x)))
 
 (defprotocol TypeScriptTypeName
@@ -88,7 +104,7 @@
   (let [x-name (if (satisfies? TypeScriptTypeName x)
                  (-type-script-type-name x)
                  (get x :name))]
-    (if (string? x-name)
+    (when (string? x-name)
       (type-script-munge x-name))))
 
 (defn type-script-qualified-type-name [x]
@@ -110,12 +126,12 @@
   otherwise."
   {:private true}
   [x]
-  (instance? flanders.types.EitherType x))
+  (instance? EitherType x))
 
 (defn type-alias-declaration
   [x]
-  (if-some [type-name (type-script-type-name x)]
-    (if-some [type (type-script-type x)]
+  (when-some [type-name (type-script-type-name x)]
+    (when-some [type (type-script-type x)]
       (format "type %s = %s;" type-name type))))
 
 (defn type-script-declaration
@@ -139,24 +155,24 @@
 ;; ---------------------------------------------------------------------
 ;; Protocol implementation
 
-(extend-type flanders.types.AnythingType
+(extend-type AnythingType
   TypeScriptType
-  (-type-script-type [this]
+  (-type-script-type [_]
     "any"))
 
-(extend-type flanders.types.BooleanType
+(extend-type BooleanType
   TypeScriptType
-  (-type-script-type [this]
+  (-type-script-type [_]
     "boolean"))
 
-(extend-type flanders.types.EitherType
+(extend-type EitherType
   TypeScriptType
   (-type-script-type [this]
     (type-script-union (get this :choices))))
 
-(extend-type flanders.types.KeywordType
+(extend-type KeywordType
   TypeScriptType
-  (-type-script-type [this]
+  (-type-script-type [_]
     "string")
 
   TypeScriptPropertyNames
@@ -166,17 +182,17 @@
        (type-script-munge (name value)))
      (get this :values))))
 
-(extend-type flanders.types.IntegerType
+(extend-type IntegerType
   TypeScriptType
-  (-type-script-type [this]
+  (-type-script-type [_]
     "number"))
 
-(extend-type flanders.types.InstType
+(extend-type InstType
   TypeScriptType
-  (-type-script-type [this]
+  (-type-script-type [_]
     "Date | string"))
 
-(extend-type flanders.types.MapEntry
+(extend-type MapEntry
   TypeScriptPropertySignatures
   (-type-script-property-signatures [this]
     (let [? (if (get this :required?) "" "?")
@@ -189,7 +205,7 @@
          (format "%s%s: %s" field-name ? field-type-name))
        (type-script-property-names (get this :key))))))
 
-(extend-type flanders.types.MapType
+(extend-type MapType
   TypeScriptType
   (-type-script-type [this]
     (if-some [signatures (seq (type-script-property-signatures this))]
@@ -201,7 +217,7 @@
   
   TypeScriptInterfaceDeclaration
   (-type-script-interface-declaration [this]
-    (if-some [type-name (type-script-type-name this)]
+    (when-some [type-name (type-script-type-name this)]
       (format "interface %s %s" type-name (-type-script-type this))))
 
   TypeScriptPropertySignatures
@@ -221,7 +237,7 @@
                                   (string/join ", " (map pr-str (type-script-property-names k))))))
                      (conj entries
                            (or (some (fn [entry]
-                                       (if-not (get entry :required?)
+                                       (when-not (get entry :required?)
                                          entry))
                                      duplicate-entries)
                                (first duplicate-entries))))
@@ -232,25 +248,25 @@
   TypeScriptTypeName
   (-type-script-type-name [this]
     (let [this-name (get this :name)]
-      (if (string? this-name)
+      (when (string? this-name)
         this-name))))
 
-(extend-type flanders.types.NumberType
+(extend-type NumberType
   TypeScriptType
-  (-type-script-type [this]
+  (-type-script-type [_]
     "number"))
 
-(extend-type flanders.types.SetOfType
+(extend-type SetOfType
   TypeScriptType
   (-type-script-type [this]
     (type-script-sequence-type (get this :type))))
 
-(extend-type flanders.types.SequenceOfType
+(extend-type SequenceOfType
   TypeScriptType
   (-type-script-type [this]
     (type-script-sequence-type (get this :type))))
 
-(extend-type flanders.types.SignatureType
+(extend-type SignatureType
   TypeScriptType
   (-type-script-type [this]
     (let [{:keys [parameters rest-parameter return]} this
@@ -260,7 +276,7 @@
                                (str "a_" i ": " (type-script-qualified-type-name parameter)))
                              (range)
                              parameter-list)
-          ts-rest-parameter (if (some? rest-parameter)
+          ts-rest-parameter (when (some? rest-parameter)
                               (str "...a_n: " (type-script-qualified-type-name rest-parameter)))
           ts-parameter-list (if (some? rest-parameter)
                               (conj ts-parameter-list ts-rest-parameter)
@@ -268,9 +284,9 @@
           ts-return (type-script-type return)]
       (str "(" (string/join ", " ts-parameter-list) ") => " ts-return))))
 
-(extend-type flanders.types.StringType
+(extend-type StringType
   TypeScriptType
-  (-type-script-type [this]
+  (-type-script-type [_]
     "string"))
 
 ;; ---------------------------------------------------------------------
@@ -340,7 +356,7 @@
   (loop [graph graph
          queue (conj clojure.lang.PersistentQueue/EMPTY root)]
     (if-some [node (peek queue)]
-      (let [node-children (flanders.protocols/node-children node)
+      (let [node-children (fp/node-children node)
             new-graph (add-edges graph node node-children)
             new-queue (into (pop queue) node-children)]
         (recur new-graph new-queue))
@@ -357,22 +373,22 @@
   (let [named-nodes (type-script-named-nodes type-graph)]
     (run!
      (fn [[ts-name nodes]]
-       (let [nodes* (distinct nodes)]
-         (let [duplicate-count (count nodes*)]
-           (when (< 1 duplicate-count)
-             (printf "WARNING: %d types produce the TypeScript name `%s`:\n"
-                     duplicate-count
-                     ts-name)
-             (run!
-              (fn [node]
-                (printf "  - %s (%s)\n"
-                        (pr-str (get node :name))
-                        (.getName (class node)))
-                (print "  ")
-                (prn node)
-                (print "  meta - ")
-                (prn (meta node)))
-              nodes*)))))
+       (let [nodes* (distinct nodes)
+             duplicate-count (count nodes*)]
+         (when (< 1 duplicate-count)
+           (printf "WARNING: %d types produce the TypeScript name `%s`:\n"
+                   duplicate-count
+                   ts-name)
+           (run!
+            (fn [node]
+              (printf "  - %s (%s)\n"
+                      (pr-str (get node :name))
+                      (.getName (class node)))
+              (print "  ")
+              (prn node)
+              (print "  meta - ")
+              (prn (meta node)))
+            nodes*))))
      (group-by type-script-type-name named-nodes))))
 
 (defn type-script-declarations
@@ -394,7 +410,7 @@
            type-script-lines (sequence
                               (comp (mapcat
                                      (fn [node]
-                                       (if-some [ts (type-script-declaration node)]
+                                       (when-some [ts (type-script-declaration node)]
                                          (if-some [description (get node :description)]
                                            [(string/replace description #"(?m:^)" "// ") ts]
                                            [ts]))))

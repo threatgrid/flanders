@@ -1,12 +1,11 @@
 (ns flanders.core
   (:refer-clojure :exclude [int key keyword map name num str type])
-  (:require #?(:clj  [clojure.core :as core]
-               :cljs [cljs.core :as core])
-            #?(:clj [clojure.spec.alpha :as spec]
-               :cljs [cljs.spec.alpha :as spec])
-            [clojure.zip :as z]
-            [flanders.types :as ft]
-            [schema.core :as s]))
+  (:require
+   #?(:clj  [clojure.core :as core]
+      :cljs [cljs.core :as core])
+   #?(:clj  [clojure.spec.alpha :as spec]
+      :cljs [cljs.spec.alpha :as spec])
+   [flanders.types :as ft]))
 
 ;; ----------------------------------------------------------------------
 ;; Defining Branch Nodes
@@ -111,7 +110,7 @@
   A signature can be variadic by specifying the `:rest-parameter`
   argument."
   [& {:keys [parameters rest-parameter return] :as opts}]
-  (if (some? parameters)
+  (when (some? parameters)
     (assert (sequential? parameters) ":parameters argument must be `sequential?`"))
   (let [return (if (some? return)
                  return

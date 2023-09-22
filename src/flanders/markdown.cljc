@@ -1,24 +1,34 @@
 (ns flanders.markdown
   (:refer-clojure :exclude [type])
-  (:require [clojure.string :as str]
-            [clojure.zip :as z]
-            #?(:clj  [flanders.macros :refer [defleaf]]
-               :cljs [flanders.macros :refer-macros [defleaf]])
-            [flanders.predicates :as fp]
-            [flanders.schema :as fs]
-            #?(:clj  [flanders.types]
-               :cljs [flanders.types
-                      :refer [AnythingType BooleanType EitherType InstType
-                              IntegerType KeywordType MapEntry MapType
-                              ParameterListType NumberType
-                              SequenceOfType SetOfType SignatureType
-                              StringType]])
-            [flanders.utils :as fu])
-  #?(:clj (:import [flanders.types
-                    AnythingType BooleanType EitherType InstType
-                    IntegerType KeywordType MapEntry MapType
-                    NumberType ParameterListType SequenceOfType
-                    SetOfType SignatureType StringType])))
+  (:require
+   #?(:clj  [flanders.macros :refer [defleaf]]
+      :cljs [flanders.macros :refer-macros [defleaf]])
+   #?(:clj  [flanders.types]
+      :cljs [flanders.types
+             :refer [AnythingType BooleanType EitherType InstType IntegerType
+                     KeywordType MapEntry MapType NumberType ParameterListType
+                     SequenceOfType SetOfType SignatureType StringType]])
+   [clojure.string :as str]
+   [clojure.zip :as z]
+   [flanders.predicates :as fp]
+   [flanders.schema :as fs]
+   [flanders.utils :as fu])
+  #?(:clj (:import
+           [flanders.types
+            AnythingType
+            BooleanType
+            EitherType
+            InstType
+            IntegerType
+            KeywordType
+            MapEntry
+            MapType
+            NumberType
+            ParameterListType
+            SequenceOfType
+            SetOfType
+            SignatureType
+            StringType])))
 
 (defprotocol MarkdownNode
   (->markdown-part [node depth])
@@ -27,10 +37,8 @@
 (defleaf ReferenceNode [text anchor jump-anchor])
 
 (defn ready-for-table [str]
-  (-> str
-      (str/replace #"\n" " ")
-      (str/replace #"\|" "\\\\|")
-      ))
+  (str/replace str #"(\n|\|)" {"\n" " "
+                               "\\|" "\\\\|"}))
 
 (defn ->default [{:keys [default values]}]
   (when (and default (> (count values) 1))
@@ -42,7 +50,7 @@
   ([{:keys [description] :as node} leaf?]
    (when (seq description)
      (str (if leaf? "  * " "")
-          (if-some [name (get node :name)]
+          (when-some [name (get node :name)]
             (str "*" name "* "))
           description
           (if leaf? "\n" "\n\n")))))
@@ -88,25 +96,12 @@
       (str "* " type-str " Key\n")
       (str "* " type-str " Value\n"))))
 
-(defn- ->schema-str [this loc]
-  (let [schema (pr-str (fs/->schema-at-loc this loc))
-        schema (cond
-                 (str/starts-with? schema "(enum") "(enum ...)"
-                 (= "java.lang.String" schema) "Str"
-                 (= "java.lang.Boolean" schema) "Bool"
-                 :else schema)]
-    (str "  * Plumatic Schema: "
-         (if (fp/sequential? loc)
-           (str "[" schema "]")
-           schema)
-         "\n")))
-
 (defn- ->values [{v :values}]
   (when (and v (> (count v) 1))
     (str "  * Allowed Values:\n"
          (str/join
-           (->> (sort (seq v))
-                (map #(str "    * " % "\n")))))))
+          (->> (sort (seq v))
+               (map #(str "    * " % "\n")))))))
 
 (defn- ->comment
   ([node]
@@ -160,7 +155,7 @@
 
 (defn- ->map-summary
   "Build the TOC for the given map"
-  [map-node map-loc]
+  [_ map-loc]
   (let [row-vs (loop [loc (-> map-loc z/node fu/->ddl-zip)
                       row-m nil
                       entries []]
@@ -226,14 +221,14 @@
     text)
 
   MapEntry
-  (->markdown-part [{:keys [key required?] :as this} loc]
+  (->markdown-part [{:keys [_ required?] :as this} loc]
     (str "<a id=\"" (->entry-anchor loc) "\"></a>\n"
          (->entry-header this loc)
          (->description this)
          (if required?
            "* This entry is required"
            "* This entry is optional") "\n"
-         (when (some-> loc z/down z/rightmost z/node fp/sequence-of?)
+         (when (some-> loc z/down z/rightmost z/node fp/seq-of?)
            "* This entry's type is sequential (allows zero or more values)\n")
          (when (some-> loc z/down z/rightmost z/node fp/set-of?)
            "* This entry's type is a set (allows zero or more distinct values)\n")
@@ -243,19 +238,19 @@
   (->short-description [_] "Property")
 
   SequenceOfType
-  (->markdown-part [{:keys [description]} loc]
+  (->markdown-part [_ _]
     nil)
   (->short-description [this]
     (str (->short-description (:type this)) " List"))
 
   SetOfType
-  (->markdown-part [{:keys [description]} loc]
+  (->markdown-part [_ _]
     nil)
   (->short-description [this]
     (str "#{" (->short-description (:type this)) "}"))
 
   ParameterListType
-  (->markdown-part [this loc]
+  (->markdown-part [_ _]
     nil)
   (->short-description [this]
     (str/join ", " (map (fn [schema]
@@ -265,10 +260,10 @@
                         (get this :parameters))))
 
   SignatureType
-  (->markdown-part [{:keys [description parameters] :as this} loc]
-    (str (if-some [fn-name (get this :name)]
+  (->markdown-part [{:keys [description] :as this} _]
+    (str (when-some [fn-name (get this :name)]
            (str "# `" fn-name "`" "\n\n"))
-         (if (not (str/blank? description))
+         (when (not (str/blank? description))
            (str "### Description"
                 "\n\n"
                 description
@@ -298,7 +293,7 @@
         (str "(" parameter-list-str ", " rest-parameter-str ") => " return-str))))
 
   EitherType
-  (->markdown-part [this loc]
+  (->markdown-part [this _]
     (str (->description this :leaf)
          (->comment this)
          (->usage this :leaf)
@@ -307,7 +302,7 @@
   (->short-description [_] "Either")
 
   AnythingType
-  (->markdown-part [this loc]
+  (->markdown-part [this _]
     (str (->description this :leaf)
          (->comment this :leaf)
          (->usage this :leaf)
@@ -315,7 +310,7 @@
   (->short-description [_] "Anything")
 
   BooleanType
-  (->markdown-part [this loc]
+  (->markdown-part [this _]
     (str (->description this :leaf)
          (->comment this :leaf)
          (->usage this :leaf)
@@ -356,7 +351,7 @@
   (->short-description [this] (str (:name this) "String"))
 
   InstType
-  (->markdown-part [this loc]
+  (->markdown-part [this _]
     (str (->description this :leaf)
          (->comment this :leaf)
          (->usage this :leaf)
@@ -413,7 +408,7 @@
         (recur (z/next current-map-loc)
                maps-to-walk
                result-maps
-               map-counter )))))
+               map-counter)))))
 
 (defn ->markdown [ddl-root]
   (let [[first-map & rest-maps] (find-maps ddl-root)]
