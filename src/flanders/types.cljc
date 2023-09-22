@@ -1,10 +1,11 @@
 (ns flanders.types
   (:refer-clojure :exclude [defrecord type MapEntry ->MapEntry])
-  (:require #?(:clj  [flanders.macros :refer [defleaf]]
-               :cljs [flanders.macros :refer-macros [defleaf]])
-            [flanders.protocols :refer [TreeNode]]
-            #?(:clj  [schema.core :as s :refer [defrecord]]
-               :cljs [schema.core :as s :refer-macros [defrecord]])))
+  (:require
+   #?(:clj  [flanders.macros :refer [defleaf]]
+      :cljs [flanders.macros :refer-macros [defleaf]])
+   #?(:clj  [schema.core :as s :refer [defrecord]]
+      :cljs [schema.core :as s :refer-macros [defrecord]])
+   [flanders.protocols :refer [TreeNode]]))
 
 (defrecord MapEntry [key :- (s/protocol TreeNode)
                      type :- (s/protocol TreeNode)
@@ -122,7 +123,7 @@
   TreeNode
   (branch? [_] true)
   (node-children [_] (seq parameters))
-  (make-node [this new-parameters]
+  (make-node [_ new-parameters]
     (ParameterListType. (vec new-parameters))))
 
 (defrecord SignatureType [description :- (s/maybe s/Str)
@@ -136,7 +137,7 @@
     (if (some? rest-parameter)
       [parameters return rest-parameter]
       [parameters return]))
-  (make-node [this [new-parameters new-return new-rest-parameter]]
+  (make-node [_ [new-parameters new-return new-rest-parameter]]
     (SignatureType. description
                     new-parameters
                     new-rest-parameter

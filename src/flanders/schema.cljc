@@ -1,26 +1,34 @@
 (ns flanders.schema
   (:refer-clojure :exclude [type key])
-  (:require #?(:clj  [clojure.core.match :refer [match]]
-               :cljs [cljs.core.match :refer-macros [match]])
-            [clojure.zip :as z]
-            [flanders.predicates :as fp]
-            #?(:clj  [flanders.types]
-               :cljs [flanders.types
-                      :refer [AnythingType BooleanType EitherType
-                              InstType IntegerType KeywordType
-                              MapEntry MapType NumberType
-                              ParameterListType SequenceOfType
-                              SetOfType SignatureType StringType]])
-            [flanders.protocols :as prots]
-            [flanders.utils :as fu]
-            #?(:clj [ring.swagger.json-schema :as rs])
-            [schema.core :as s]
-            [schema-tools.core :as st])
-  #?(:clj (:import [flanders.types
-                    AnythingType BooleanType EitherType InstType
-                    IntegerType KeywordType MapEntry MapType
-                    NumberType ParameterListType SequenceOfType
-                    SetOfType SignatureType StringType])))
+  (:require
+   #?(:clj  [clojure.core.match :refer [match]]
+      :cljs [cljs.core.match :refer-macros [match]])
+   #?(:clj  [flanders.types]
+      :cljs [flanders.types
+             :refer [AnythingType BooleanType EitherType InstType IntegerType
+                     KeywordType MapEntry MapType NumberType ParameterListType
+                     SequenceOfType SetOfType SignatureType StringType]])
+   #?(:clj [ring.swagger.json-schema :as rs])
+   [flanders.predicates :as fp]
+   [flanders.protocols :as prots]
+   [schema-tools.core :as st]
+   [schema.core :as s])
+  #?(:clj (:import
+           [flanders.types
+            AnythingType
+            BooleanType
+            EitherType
+            InstType
+            IntegerType
+            KeywordType
+            MapEntry
+            MapType
+            NumberType
+            ParameterListType
+            SequenceOfType
+            SetOfType
+            SignatureType
+            StringType])))
 
 (defprotocol SchemaNode
   (->schema' [node f]))
@@ -86,7 +94,7 @@
     #{(f type)})
 
   SignatureType
-  (->schema' [{:keys [parameters rest-parameter return name]} f]
+  (->schema' [{:keys [parameters rest-parameter return]} f]
     (let [parameters (f parameters)]
       (s/make-fn-schema (f return)
                         (if (some? rest-parameter)
@@ -123,7 +131,7 @@
      description))
 
   KeywordType
-  (->schema' [{:keys [description key? open? values] :as node} _]
+  (->schema' [{:keys [description key? open? values]} _]
     (let [kw-schema
           (match [key? open? (seq values)]
                  [_    true  _         ] s/Keyword

@@ -1,32 +1,17 @@
 (ns flanders.munge
-  (:require [clojure
-             [zip :as z]]
-            [flanders
-             [navigation :as fn]
-             [predicates :as fp]
-             [protocols :as fprot]
-             [utils :as fu]]))
-
-(defn- dynaload
-  "Copyright (c) Rich Hickey (EPL 1.0). Copied from gen.clj"
-  [s]
-  (let [ns (namespace s)]
-    (assert ns)
-    (require (symbol ns))
-    (let [v (resolve s)]
-      (if v
-        @v
-        (throw (RuntimeException. (str "Var " s " is not on the classpath")))))))
-
-(def generator?
-  (let [g? (delay (dynaload 'clojure.test.check.generators/generator?))]
-    @g?))
+  (:require
+   [clojure.test.check.generators :as gen]
+   [clojure.zip :as z]
+   [flanders.navigation :as fn]
+   [flanders.predicates :as fp]
+   [flanders.protocols :as fprot]
+   [flanders.utils :as fu]))
 
 (defmulti munge-action (fn [_ rule]
                          (let [action (last rule)]
                            (cond
                              (fn? action) :apply-fn
-                             (generator? action) :use-gen
+                             (gen/generator? action) :use-gen
                              :else action))))
 
 (defn- entry-under-map [loc kw]

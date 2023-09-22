@@ -1,15 +1,10 @@
 (ns flanders.schema-test
-  (:require [clojure.test :refer [deftest is]]
-            [flanders.examples
-             :refer [Example
-                     OptionalKeywordMapEntryExample]]
-            [flanders.core :as f]
-            [flanders.utils :refer [optionalize-all]]
-            [flanders.schema :as fs]
-            [schema.core :as s
-             :refer [Keyword Any]])
-  (:import (flanders.types ParameterListType
-                           SignatureType)))
+  (:require
+   [clojure.test :refer [deftest is]]
+   [flanders.core :as f]
+   [flanders.examples :refer [Example OptionalKeywordMapEntryExample]]
+   [flanders.schema :as fs]
+   [schema.core :as s]))
 
 (deftest test-valid-schema
   (is
@@ -25,7 +20,7 @@
 (deftest test-optional-kw-map-entry
   (let [expected-schema
         {#schema.core.OptionalKey{:k :foo} java.lang.String
-         :relation_info {Keyword Any}}]
+         :relation_info {s/Keyword s/Any}}]
     (is (= expected-schema
            (fs/->schema OptionalKeywordMapEntryExample)))))
 

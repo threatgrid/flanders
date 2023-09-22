@@ -1,7 +1,8 @@
 (ns flanders.navigation
-  (:require [clojure.zip :as z]
-            [flanders.predicates :as fp]
-            [flanders.utils :as fu]))
+  (:require
+   [clojure.zip :as z]
+   [flanders.predicates :as fp]
+   [flanders.utils :as fu]))
 
 (defn- keyword-key
   "Given a zip location of a KeywordType, if it is the :key of a

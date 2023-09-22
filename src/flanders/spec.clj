@@ -1,13 +1,25 @@
 (ns flanders.spec
-  (:require [clojure.core.match :refer [match]]
-            [clojure.spec.alpha :as s]
-            [clojure.zip :as z]
-            [flanders.types]
-            [flanders.utils :as fu])
-  (:import [flanders.types
-            AnythingType BooleanType EitherType InstType IntegerType
-            KeywordType MapEntry MapType NumberType SequenceOfType
-            SetOfType SignatureType StringType]))
+  (:require
+   [clojure.core.match :refer [match]]
+   [clojure.spec.alpha :as s]
+   [clojure.zip :as z]
+   [flanders.types]
+   [flanders.utils :as fu])
+  (:import
+   [flanders.types
+    AnythingType
+    BooleanType
+    EitherType
+    InstType
+    IntegerType
+    KeywordType
+    MapEntry
+    MapType
+    NumberType
+    SequenceOfType
+    SetOfType
+    SignatureType
+    StringType]))
 
 (defprotocol SpecedNode
   (->spec' [node ns f]))
@@ -114,8 +126,7 @@
           ;; Using gensym to produce a unique function name pending a
           ;; better approach.
           fn-name (str (gensym "fn__") "_" parameter-count
-                       (if (some? rest-parameter)
-                         "*"))
+                       (when (some? rest-parameter) "*"))
           result-kw (keyword ns fn-name)]
       (eval
        `(s/fdef ~result-kw
@@ -125,7 +136,7 @@
                               [(keyword parameter-name) (f parameter (str ns "." parameter-name))]))
                           (range)
                           parameters)
-                       ~@(if (some? rest-parameter)
+                       ~@(when (some? rest-parameter)
                            [:a* `(s/* ~(f rest-parameter (str ns ".a*")))]))
           :ret ~(if (some? return)
                   (f return (str ns ".return"))
@@ -163,7 +174,7 @@
              :else           (set values))))
 
   KeywordType
-  (->spec' [{:keys [gen open? spec values] :as node} _ _]
+  (->spec' [{:keys [open? spec values] :as node} _ _]
     (with-gen node
       (match [(some? spec) open? values]
              [true _     _  ] spec
@@ -172,7 +183,7 @@
              :else            (set values))))
 
   NumberType
-  (->spec' [{:keys [gen open? spec values] :as node} _ _]
+  (->spec' [{:keys [open? spec values] :as node} _ _]
     (with-gen node
       (match [(some? spec) open? (seq values)]
              [true _    _  ] spec
@@ -181,7 +192,7 @@
              :else           (set values))))
 
   StringType
-  (->spec' [{:keys [gen open? spec values] :as node} _ _]
+  (->spec' [{:keys [open? spec values] :as node} _ _]
     (with-gen node
       (match [(some? spec) open? (seq values)]
              [true  _   _  ] spec
@@ -222,8 +233,8 @@
                                 (assoc-generator current-loc)))))))
 
 (s/fdef ->spec
-        :args (s/cat :node speced-node? :ns ns-str?)
-        :ret #(satisfies? s/Spec %))
+  :args (s/cat :node speced-node? :ns ns-str?)
+  :ret #(satisfies? s/Spec %))
 
 (defn ->spec [node ns]
   (letfn [(recursive-spec [node ns]
