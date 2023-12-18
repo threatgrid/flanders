@@ -5,7 +5,8 @@
     [flanders.types]
     [flanders.protocols :as prots]
     [flanders.utils :as fu]
-    [malli.core :as m])
+    [malli.core :as m]
+    [malli.util :as mu])
   (:import [flanders.types
             AnythingType BooleanType EitherType InstType
             IntegerType KeywordType MapEntry MapType
@@ -130,3 +131,15 @@
             [_     nil] :string
             :else       (into [:enum] values))
      description)))
+
+(def ^:private registry (merge (m/default-schemas) (mu/schemas)))
+
+;;FIXME merge with ->malli
+(defn ctim->malli
+  "Convert a ctim schema to malli. Malli opts must contain a registry
+  with support for :merge (usually via malli.util/schemas)."
+  ([ctim-schema] (ctim->malli ctim-schema {:registry registry}))
+  ([ctim-schema malli-opts]
+   (-> ctim-schema
+       (flanders/->malli {:registry malli-opts})
+       (m/schema malli-opts))))
