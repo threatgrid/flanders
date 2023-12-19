@@ -1,4 +1,5 @@
 (ns flanders.malli
+  "Requires malli as a dependency."
   (:require
     [flanders.types]
     [malli.core :as m]
