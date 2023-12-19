@@ -1,10 +1,6 @@
 (ns flanders.malli
   (:require
-    [clojure.core.match :refer [match]]
-    [flanders.predicates :as fp]
     [flanders.types]
-    [flanders.protocols :as prots]
-    [flanders.utils :as fu]
     [malli.core :as m]
     [malli.util :as mu])
   (:import [flanders.types
@@ -16,7 +12,8 @@
 (defprotocol MalliNode
   (->malli' [node opts]))
 
-(defn- describe [schema description]
+;;TODO
+(defn- describe [schema _description]
   schema)
 
 (defn maybe-key [{:keys [description key? open? values] :as node} opts base]
@@ -39,7 +36,7 @@
   ;; Branches
 
   EitherType
-  (->malli' [{:keys [choices tests key?]} opts]
+  (->malli' [{:keys [choices key?]} opts]
     ;;TODO `choices` allows dispatch like :multi, but they're in the wrong format
     (let [f #(->malli' % opts)
           choice-schemas (map f choices)
@@ -108,7 +105,7 @@
         s)))
 
   SignatureType
-  (->malli' [{:keys [parameters rest-parameter return name key?]} opts]
+  (->malli' [{:keys [parameters rest-parameter return key?]} opts]
     (let [f #(->malli' % opts)
           parameters (f parameters)
           parameters (if rest-parameter
@@ -125,7 +122,8 @@
   (->malli' [{:keys [description key?]} opts]
     (if key?
       {:op :default-key :schema :any}
-      (m/schema (describe :any description))))
+      (m/schema (describe :any description)
+                opts)))
 
   BooleanType
   (->malli' [{:keys [open? key? default description]} opts]
@@ -143,7 +141,7 @@
 
   InstType
   (->malli' [{:keys [description key?]} opts]
-    (let [s (m/schema (describe inst? description))]
+    (let [s (m/schema (describe inst? description) opts)]
       (if key?
         {:op :default-key :schema s}
         s)))

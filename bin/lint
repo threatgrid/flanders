@@ -1,0 +1,3 @@
+#!/bin/sh
+set -xe
+clj-kondo --lint ./src --lint ./test

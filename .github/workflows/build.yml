@@ -62,7 +62,7 @@ jobs:
 
       - name: Check clojure code
         run:
-          clj-kondo --lint ./src --lint ./test
+          ./bin/lint
   test:
     needs: setup
     strategy:

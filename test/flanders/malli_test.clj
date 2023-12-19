@@ -4,11 +4,8 @@
              :refer [Example
                      OptionalKeywordMapEntryExample]]
             [flanders.core :as f]
-            [flanders.utils :refer [optionalize-all]]
             [flanders.malli :as fm]
-            [malli.core :as m])
-  (:import (flanders.types ParameterListType
-                           SignatureType)))
+            [malli.core :as m]))
 
 (deftest test-basic-schemas
   (testing "str"
