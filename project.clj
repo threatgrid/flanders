@@ -1,4 +1,4 @@
-(defproject threatgrid/flanders "1.0.0-SNAPSHOT"
+(defproject threatgrid/flanders "1.0.0"
   :description "flanders"
   :url "http://github.com/threatgrid/flanders"
   :license {:name "Eclipse Public License"
