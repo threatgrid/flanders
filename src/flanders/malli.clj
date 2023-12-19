@@ -76,7 +76,7 @@
     (let [f #(->malli' % opts)
           s (-> (into [:merge] (map (fn [e] [:map (f e)])) entries)
                 (m/schema opts)
-                m/deref
+                m/deref ;; eliminate :merge
                 (mu/update-properties assoc :closed true)
                 (describe description))]
       (if key?
