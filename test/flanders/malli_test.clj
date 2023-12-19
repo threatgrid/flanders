@@ -13,30 +13,51 @@
 (deftest test-basic-schemas
   (testing "str"
     (is (= :string (-> (f/str) fm/->malli m/form)))
-    (is (= [:enum "a"] (-> (f/str :equals "a") fm/->malli m/form))))
+    (is (= [:enum "a"] (-> (f/str :equals "a") fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of :string :any]]] (-> (f/map [(f/entry (f/str) f/any)]) fm/->malli m/form)))
+    (is (= [:map ["b" :any]] (-> (f/map [(f/entry (f/str :equals "b") f/any)]) fm/->malli m/form))))
   (testing "int"
     (is (= :int (-> (f/int) fm/->malli m/form)))
-    (is (= [:enum 1] (-> (f/int :equals 1) fm/->malli m/form))))
+    (is (= [:enum 1] (-> (f/int :equals 1) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of :int :any]]] (-> (f/map [(f/entry (f/int) f/any)]) fm/->malli m/form)))
+    (is (= [:map [1 :any]] (-> (f/map [(f/entry (f/int :equals 1) f/any)]) fm/->malli m/form))))
   (testing "num"
     (is (= 'number? (-> (f/num) fm/->malli m/form)))
-    (is (= [:enum 1] (-> (f/num :equals 1) fm/->malli m/form))))
+    (is (= [:enum 1] (-> (f/num :equals 1) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of 'number? :any]]] (-> (f/map [(f/entry (f/num) f/any)]) fm/->malli m/form)))
+    (is (= [:map [1 :any]] (-> (f/map [(f/entry (f/num :equals 1) f/any)]) fm/->malli m/form))))
   (testing "keyword"
     (is (= :keyword (-> (f/keyword) fm/->malli m/form)))
-    (is (= [:enum :a] (-> (f/keyword :equals :a) fm/->malli m/form))))
+    (is (= [:enum :a] (-> (f/keyword :equals :a) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of :keyword :any]]] (-> (f/map [(f/entry (f/keyword) f/any)]) fm/->malli m/form)))
+    (is (= [:map [:a :any]] (-> (f/map [(f/entry (f/keyword :equals :a) f/any)]) fm/->malli m/form))))
   (testing "inst"
-    (is (= 'inst? (-> (f/inst) fm/->malli m/form))))
+    (is (= 'inst? (-> (f/inst) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of 'inst? :any]]] (-> (f/map [(f/entry (f/inst) f/any)]) fm/->malli m/form))))
   (testing "bool"
     (is (= :boolean (-> (f/bool) fm/->malli m/form)))
     (is (= [:enum false] (-> (f/bool :equals false) fm/->malli m/form)))
-    (is (= [:enum true] (-> (f/bool :equals true) fm/->malli m/form))))
+    (is (= [:enum true] (-> (f/bool :equals true) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of :boolean :any]]] (-> (f/map [(f/entry (f/bool) f/any)]) fm/->malli m/form)))
+    (is (= [:map [true :any]] (-> (f/map [(f/entry (f/bool :equals true) f/any)]) fm/->malli m/form)))
+    (is (= [:map [false :any]] (-> (f/map [(f/entry (f/bool :equals false) f/any)]) fm/->malli m/form))))
   (testing "anything"
-    (is (= :any (-> (f/anything) fm/->malli m/form))))
+    (is (= :any (-> (f/anything) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of :any :any]]] (-> (f/map [(f/entry (f/anything) f/any)]) fm/->malli m/form))))
   (testing "set-of"
-    (is (= [:set :boolean] (-> (f/set-of (f/bool)) fm/->malli m/form))))
+    (is (= [:set :boolean] (-> (f/set-of (f/bool)) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of [:set :boolean] :any]]] (-> (f/map [(f/entry (f/set-of (f/bool)) f/any)]) fm/->malli m/form))))
   (testing "seq-of"
-    (is (= [:sequential :boolean] (-> (f/seq-of (f/bool)) fm/->malli m/form))))
+    (is (= [:sequential :boolean] (-> (f/seq-of (f/bool)) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of [:sequential :boolean] :any]]] (-> (f/map [(f/entry (f/seq-of (f/bool)) f/any)]) fm/->malli m/form))))
   (testing "either"
-    (is (= [:or :boolean :string] (-> (f/either :choices [(f/bool) (f/str)]) fm/->malli m/form)))))
+    (is (= [:or :boolean :string] (-> (f/either :choices [(f/bool) (f/str)]) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of [:or :boolean :string] :any]]]
+           (-> (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)]) fm/->malli m/form))))
+  (testing "sig"
+    (is (= [:=> [:cat :int] :int] (-> (f/sig :parameters [(f/int)] :return (f/int)) fm/->malli m/form)))
+    (is (= [:map [:malli.core/default [:map-of [:=> [:cat :int] :int] :any]]]
+           (-> (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)]) fm/->malli m/form)))))
 
 (deftest test-valid-schema
   (is (= [:map

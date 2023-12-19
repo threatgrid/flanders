@@ -90,7 +90,6 @@
 
   SequenceOfType
   (->malli' [{:keys [type key?]} opts]
-    (assert (not key?))
     (let [f #(->malli' % opts)
           s (m/schema [:sequential (f type)])]
       (if key?
@@ -107,7 +106,6 @@
 
   SignatureType
   (->malli' [{:keys [parameters rest-parameter return name key?]} opts]
-    (assert (not key?))
     (let [f #(->malli' % opts)
           parameters (f parameters)
           parameters (if rest-parameter
