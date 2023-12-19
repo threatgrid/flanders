@@ -32,6 +32,8 @@
         (describe description)
         (m/schema opts))))
 
+;; Note: we use m/schema eagerly mostly for prettier map schemas.
+;; This won't work if flanders supports recursive schemas.
 (extend-protocol MalliNode
 
   ;; Branches
