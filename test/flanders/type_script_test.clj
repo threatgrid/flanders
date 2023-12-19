@@ -1,8 +1,8 @@
 (ns flanders.type-script-test
-  (:require [clojure.test :refer [deftest is]]
-            [flanders.core :as f]
-            [flanders.type-script :as f.ts]
-            [flanders.types :as f.t]))
+  (:require
+   [clojure.test :refer [deftest is]]
+   [flanders.core :as f]
+   [flanders.type-script :as f.ts]))
 
 (deftest anything-type-test
   (is (= "any" (f.ts/type-script-type (f/anything))))

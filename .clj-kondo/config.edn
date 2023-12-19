@@ -1,0 +1,2 @@
+{:lint-as {flanders.macros/defleaf schema.core/defrecord
+           flanders.core/def-entity-type clojure.core/def}}

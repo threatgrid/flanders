@@ -1,5 +1,6 @@
 (ns flanders.examples
-  (:require [flanders.core :as f]))
+  (:require
+   [flanders.core :as f]))
 
 (f/def-entity-type Example
   {:description "Example"}

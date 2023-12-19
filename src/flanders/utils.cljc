@@ -1,8 +1,9 @@
 (ns flanders.utils
-  (:require [clojure.zip :as z]
-            [flanders.predicates :as fp]
-            [flanders.protocols :refer [branch? node-children make-node]]
-            [flanders.types :as ft]))
+  (:require
+   [clojure.zip :as z]
+   [flanders.predicates :as fp]
+   [flanders.protocols :refer [branch? make-node node-children]]
+   [flanders.types :as ft]))
 
 (defn right-loc-seq
   "Lazy seq of loc and its right siblings"

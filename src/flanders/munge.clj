@@ -1,11 +1,9 @@
 (ns flanders.munge
-  (:require [clojure
-             [zip :as z]]
-            [flanders
-             [navigation :as fn]
-             [predicates :as fp]
-             [protocols :as fprot]
-             [utils :as fu]]))
+  (:require [clojure.zip :as z]
+            [flanders.navigation :as fn]
+            [flanders.predicates :as fp]
+            [flanders.protocols :as fprot]
+            [flanders.utils :as fu]))
 
 (defn- dynaload
   "Copyright (c) Rich Hickey (EPL 1.0). Copied from gen.clj"
@@ -20,7 +18,7 @@
 
 (def generator?
   (let [g? (delay (dynaload 'clojure.test.check.generators/generator?))]
-    @g?))
+    (fn [v] (@g? v))))
 
 (defmulti munge-action (fn [_ rule]
                          (let [action (last rule)]
