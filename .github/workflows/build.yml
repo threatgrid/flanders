@@ -91,7 +91,7 @@ jobs:
           lein: 2.9.8
       - run: |
           set -x
-          env -i LEIN_OFFLINE=true sh -c "lein do clean, compile :all, ${CMD}"
+          env -i LEIN_OFFLINE=true bash -c "lein do clean, compile :all, ${CMD}"
         env:
           CMD: ${{ matrix.cmd }}
   all-pr-checks:
