@@ -21,13 +21,15 @@ jobs:
         uses: DeLaGuardo/setup-clojure@3.7
         with:
           lein: 2.9.8
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
+      - name: Cache project dependencies
+        uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-clojure
       - name: Warm deps cache
         run: |
           for i in {1..10}; do lein deps :tree && break; done
@@ -35,14 +37,32 @@ jobs:
         run: |
           set -x
           case "${GITHUB_EVENT_NAME}" in
-            scheduled)
-              echo '::set-output name=matrix::{"jdk":["8","11","17"],"cmd":["test"]}}'
-              ;;
-            # jdk 17 is slow for some reason, defer to scheduled job
+            #scheduled)
+            #  echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
+            # ;;
             *)
-              echo '::set-output name=matrix::{"jdk":["8","11"     ],"cmd":["test"]}}'
+              echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
               ;;
           esac
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@12.1
+        with:
+          clj-kondo: '2023.12.15'
+
+      - name: Check clojure code
+        run:
+          clj-kondo --lint ./src --lint ./test
   test:
     needs: setup
     strategy:
@@ -51,13 +71,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
+      - name: Cache project dependencies
+        uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
           restore-keys: |
-            ${{ runner.os }}-maven-
+            ${{ runner.os }}-clojure
       - name: Prepare java
         uses: actions/setup-java@v2
         with:
@@ -69,11 +91,11 @@ jobs:
           lein: 2.9.8
       - run: |
           set -x
-          eval 'lein do clean, compile :all, ${CMD}'
+          env -i LEIN_OFFLINE=true sh -c "lein do clean, compile :all, ${CMD}"
         env:
           CMD: ${{ matrix.cmd }}
   all-pr-checks:
     runs-on: ubuntu-20.04
-    needs: test
+    needs: [test, lint]
     steps:
       - run: echo "All tests pass!"
