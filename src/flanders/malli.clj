@@ -134,7 +134,7 @@
         (describe
           (if open?
             :boolean
-            [:enum default])
+            [:enum (boolean default)])
           description)
         opts)))
 
@@ -147,7 +147,7 @@
 
   IntegerType (->malli' [node opts] (maybe-key node opts :int))
   KeywordType (->malli' [node opts] (maybe-key node opts :keyword))
-  NumberType  (->malli' [node opts] (maybe-key node opts :number))
+  NumberType  (->malli' [node opts] (maybe-key node opts number?))
   StringType  (->malli' [node opts] (maybe-key node opts :string)))
 
 (def ^:private registry (merge (m/default-schemas) (mu/schemas)))

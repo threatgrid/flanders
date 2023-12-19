@@ -58,3 +58,10 @@
     (is (= [(fs/->schema a) (fs/->schema b) [(fs/->schema c)]]
            (first (:input-schemas (fs/->schema (f/sig :parameters [a b]
                                                       :rest-parameter c))))))))
+(deftest bool-test
+  (is (= Boolean
+         (fs/->schema (f/bool))))
+  (is (= (s/enum true)
+         (fs/->schema (f/bool :equals true))))
+  (is (= (s/enum false)
+         (fs/->schema (f/bool :equals false)))))

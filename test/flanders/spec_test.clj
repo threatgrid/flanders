@@ -130,3 +130,11 @@
 
           _
           false))))
+
+(deftest bool-test
+  (is (= 'clojure.core/boolean?
+         (s/form (fs/->spec (f/bool) "bool"))))
+  (is (= #{true}
+         (s/form (fs/->spec (f/bool :equals true) "bool"))))
+  (is (= #{false}
+         (s/form (fs/->spec (f/bool :equals false) "bool")))))
