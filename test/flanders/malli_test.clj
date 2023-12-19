@@ -38,9 +38,6 @@
   (testing "either"
     (is (= [:or :boolean :string] (-> (f/either :choices [(f/bool) (f/str)]) fm/->malli m/form)))))
 
-(deftest test-map-schema
-  )
-
 (deftest test-valid-schema
   (is (= [:map
           [:foo :string]
