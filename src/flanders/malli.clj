@@ -77,6 +77,7 @@
           s (-> (into [:merge] (map (fn [e] [:map (f e)])) entries)
                 (m/schema opts)
                 m/deref
+                (mu/update-properties assoc :closed true)
                 (describe description))]
       (if key?
         {:op :default-key :schema s}
