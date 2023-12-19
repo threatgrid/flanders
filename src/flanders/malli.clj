@@ -93,7 +93,9 @@
     (assert (not key?))
     (let [f #(->malli' % opts)
           s (m/schema [:sequential (f type)])]
-      ))
+      (if key?
+        {:op :default-key :schema s}
+        s)))
 
   SetOfType
   (->malli' [{:keys [type key?]} opts]

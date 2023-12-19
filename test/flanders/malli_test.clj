@@ -28,7 +28,18 @@
   (testing "bool"
     (is (= :boolean (-> (f/bool) fm/->malli m/form)))
     (is (= [:enum false] (-> (f/bool :equals false) fm/->malli m/form)))
-    (is (= [:enum true] (-> (f/bool :equals true) fm/->malli m/form)))))
+    (is (= [:enum true] (-> (f/bool :equals true) fm/->malli m/form))))
+  (testing "anything"
+    (is (= :any (-> (f/anything) fm/->malli m/form))))
+  (testing "set-of"
+    (is (= [:set :boolean] (-> (f/set-of (f/bool)) fm/->malli m/form))))
+  (testing "seq-of"
+    (is (= [:sequential :boolean] (-> (f/seq-of (f/bool)) fm/->malli m/form))))
+  (testing "either"
+    (is (= [:or :boolean :string] (-> (f/either :choices [(f/bool) (f/str)]) fm/->malli m/form)))))
+
+(deftest test-map-schema
+  )
 
 (deftest test-valid-schema
   (is (= [:map
