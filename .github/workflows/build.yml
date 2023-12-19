@@ -1,0 +1,101 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  schedule:
+    # 12:00AM on the first of every month
+    - cron: "0 0 1 * *"
+
+jobs:
+  setup:
+    runs-on: ubuntu-20.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@3.7
+        with:
+          lein: 2.9.8
+      - name: Cache project dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-clojure
+      - name: Warm deps cache
+        run: |
+          for i in {1..10}; do lein deps :tree && break; done
+      - id: set-matrix
+        run: |
+          set -x
+          case "${GITHUB_EVENT_NAME}" in
+            #scheduled)
+            #  echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
+            # ;;
+            *)
+              echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
+              ;;
+          esac
+  lint:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '8'
+
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@12.1
+        with:
+          clj-kondo: '2023.12.15'
+
+      - name: Check clojure code
+        run:
+          ./bin/lint
+  test:
+    needs: setup
+    strategy:
+      matrix: ${{fromJson(needs.setup.outputs.matrix)}}
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Cache project dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gitlibs
+          key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
+          restore-keys: |
+            ${{ runner.os }}-clojure
+      - name: Prepare java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.jdk }}
+      - name: Install clojure tools
+        uses: DeLaGuardo/setup-clojure@3.7
+        with:
+          lein: 2.9.8
+      - run: |
+          set -x
+          eval 'lein do clean, compile :all, ${CMD}'
+        env:
+          CMD: ${{ matrix.cmd }}
+  all-pr-checks:
+    runs-on: ubuntu-20.04
+    needs: [test, lint]
+    steps:
+      - run: echo "All tests pass!"

@@ -132,8 +132,8 @@
 (defn bool [& {:keys [equals] :as opts}]
   (ft/map->BooleanType
    (merge opts
-          {:open? (not equals)
-           :default (when equals equals)})))
+          {:open? (nil? equals)
+           :default (when (some? equals) equals)})))
 
 (defn inst [& {:as opts}]
   (ft/map->InstType opts))

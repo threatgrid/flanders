@@ -13,4 +13,5 @@
                  [metosin/schema-tools "0.12.2"]]
   :global-vars {*warn-on-reflection* true}
   :profiles {:dev
-             {:dependencies [[org.clojure/test.check "1.0.0"]]}})
+             {:dependencies [[org.clojure/test.check "1.1.1"]
+                             [metosin/malli "0.13.0"]]}})
