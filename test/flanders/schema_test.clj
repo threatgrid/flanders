@@ -109,7 +109,7 @@
   (is (= {:example {} :description "Description"} (->swagger (deref (f/def-entity-type Bar {:description "Description"})))))
   (is (= {:example {} :description "Description"} (->swagger (deref (f/def-entity-type Bar {:description "Description"})))))
   (is (= {:example {:start_time #inst "2016-01-01T01:01:01.000-00:00"
-                    :related_identities [{:identity "string", :confidence "string", :information_source "string", :relationship "string"}]}
+                    :related_identities [{:identity 10.0, :confidence "High", :information_source 10.0, :relationship 10.0}]}
           :description "Period of time when a cyber observation is valid. `start_time` must come before `end_time` (if specified)."}
          (->swagger (deref (f/def-map-type Bar
                              [(f/entry :start_time Time
@@ -126,7 +126,7 @@
   (is (= {:example #inst "2016-01-01T01:01:01.000-00:00"
           :description "Schema definition for all date or timestamp values.  Serialized as a string, the field should follow the rules of the [ISO8601](https://en.wikipedia.org/wiki/ISO_8601) standard."}
          (->swagger Time)))
-  (is (= {:example [{:identity "string", :confidence "string", :information_source "string", :relationship "string"}]
+  (is (= {:example [{:identity 10.0, :confidence "High", :information_source 10.0, :relationship 10.0}]
           :description "Period of time when a cyber observation is valid. `start_time` must come before `end_time` (if specified)."}
          (->swagger (f/seq-of RelatedIdentity :description (str "Period of time when a cyber observation is valid. "
                                                                 "`start_time` must come before `end_time` (if specified).")

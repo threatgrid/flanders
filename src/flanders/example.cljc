@@ -77,21 +77,22 @@
     10)
 
   KeywordType
-  (->example [{:keys [key? open? values]} _]
-    (or (match [key? open? (seq values)]
-               [_    true  _         ] (first values)
-               [_    _     nil       ] :keyword
-               [true false ([k] :seq)] k
-               :else                   (first values))
+  (->example [{:keys [default values example]} _]
+    (or default
+        (-> values sort first)
         :keyword))
 
   NumberType
-  (->example [_ _]
-    10.0)
+  (->example [{:keys [default values example]} _]
+    (or default
+        (-> values sort first)
+        10.0))
 
   StringType
-  (->example [_ _]
-    "string")
+  (->example [{:keys [default values example]} _]
+    (or default
+        (-> values sort first)
+        "string"))
 
   SignatureType
   (->example [{:keys [parameters rest-parameter return]} f]
@@ -114,5 +115,7 @@
   "Get a JSON example for a DDL node"
   [ddl]
   (if-some [[_ example] (find ddl :example)]
-    example
+    (do (when (instance? MapEntry ddl)
+          (throw (ex-info "Cannot add :example to MapEntry, add to value schema instead." {:ddl ddl})))
+        example)
     (->example ddl ->example-tree)))
