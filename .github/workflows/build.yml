@@ -5,6 +5,8 @@ on:
     branches:
       - master
   pull_request:
+    branches:
+      - master
   schedule:
     # 12:00AM on the first of every month
     - cron: "0 0 1 * *"
