@@ -1,12 +1,13 @@
 (ns flanders.example
   (:require
+   #?(:clj  [clojure.core.match :refer [match]]
+      :cljs [cljs.core.match :refer-macros [match]])
    #?(:clj  [flanders.types :as ft]
       :cljs [flanders.types
              :as ft
              :refer [AnythingType BooleanType EitherType InstType IntegerType
                      KeywordType MapEntry MapType NumberType SequenceOfType
-                     SetOfType SignatureType StringType]])
-   [flanders.schema :as fs])
+                     SetOfType SignatureType StringType]]))
   #?(:clj (:import
            [flanders.types
             AnythingType
@@ -63,8 +64,8 @@
     {:anything "anything"})
 
   BooleanType
-  (->example [_ _]
-    true)
+  (->example [{:keys [default] :or {default true}} _]
+    default)
 
   InstType
   (->example [_ _]
@@ -76,11 +77,13 @@
     10)
 
   KeywordType
-  (->example [node _]
-    (let [schema (fs/->schema node)]
-      (if (keyword? schema)
-        (name schema)
-        "keyword")))
+  (->example [{:keys [key? open? values]} _]
+    (or (match [key? open? (seq values)]
+               [_    true  _         ] (first values)
+               [_    _     nil       ] :keyword
+               [true false ([k] :seq)] k
+               :else                   (first values))
+        :keyword))
 
   NumberType
   (->example [_ _]

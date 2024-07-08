@@ -61,3 +61,11 @@
          (fs/->schema (f/bool :equals true))))
   (is (= (s/enum false)
          (fs/->schema (f/bool :equals false)))))
+
+(defn- ->swagger [dll] (:json-schema (meta (fs/->schema dll))))
+
+(deftest swagger-test
+  (is (= {:example false} (->swagger (f/bool :equals false))))
+  (is (= {:example true :description "Foo"} (->swagger (f/bool :equals true :description "Foo"))))
+  (is (= {:example 10 :description "foo"} (->swagger (f/int :description "foo"))))
+  (is (= {:example 10 :description "foo"} (->swagger (f/int :description "foo")))))

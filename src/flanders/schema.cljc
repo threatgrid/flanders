@@ -10,6 +10,7 @@
                      SequenceOfType SetOfType SignatureType StringType]])
    #?(:clj [ring.swagger.json-schema :as rs])
    [flanders.predicates :as fp]
+   [flanders.example :as example]
    [flanders.protocols :as prots]
    [schema-tools.core :as st]
    [schema.core :as s])
@@ -41,22 +42,24 @@
 (def get-schema
   (memoize ->schema))
 
-(defn- describe [schema description]
-  (if description
-    (#?(:cljs (fn [s _] s)
-        :clj  rs/describe)
-     schema
-     description)
-    schema))
+(defn- describe [schema {:keys [description] :as dll}]
+  #?(:cljs schema
+     :default (rs/field
+                schema
+                (cond-> {:example (if-some [[_ example] (find dll :example)]
+                                    example
+                                    (example/->example-tree dll))}
+                  description (assoc :description description)))))
 
 (extend-protocol SchemaNode
 
   ;; Branches
 
   EitherType
-  (->schema' [{:keys [choices tests]} f]
-    (let [choice-schemas (map f choices)]
-      (apply s/conditional (mapcat vector tests choice-schemas))))
+  (->schema' [{:keys [choices tests] :as dll} f]
+    (-> (let [choice-schemas (map f choices)]
+          (apply s/conditional (mapcat vector tests choice-schemas)))
+        (describe dll)))
 
   MapEntry
   (->schema' [{:keys [key type required?] :as entry} f]
@@ -73,65 +76,64 @@
      (f type)])
 
   MapType
-  (->schema' [{:keys [description entries]} f]
+  (->schema' [{:keys [entries] :as dll} f]
     (describe
      (reduce (fn [m [k v]]
                (st/assoc m k v))
              {}
              (map f entries))
-     description))
+     dll))
 
   ParameterListType
   (->schema' [{:keys [parameters]} f]
     (mapv f parameters))
 
   SequenceOfType
-  (->schema' [{:keys [type]} f]
-    [(f type)])
+  (->schema' [{:keys [type] :as dll} f]
+    (describe [(f type)] dll))
 
   SetOfType
-  (->schema' [{:keys [type]} f]
-    #{(f type)})
+  (->schema' [{:keys [type] :as dll} f]
+    (describe #{(f type)} dll))
 
   SignatureType
-  (->schema' [{:keys [parameters rest-parameter return]} f]
-    (let [parameters (f parameters)]
-      (s/make-fn-schema (f return)
-                        (if (some? rest-parameter)
-                          [(conj parameters [(f rest-parameter)])]
-                          [parameters]))))
+  (->schema' [{:keys [parameters rest-parameter return] :as dll} f]
+    (-> (let [parameters (f parameters)]
+          (s/make-fn-schema (f return)
+                            (if (some? rest-parameter)
+                              [(conj parameters [(f rest-parameter)])]
+                              [parameters])))
+        (describe dll)))
 
   ;; Leaves
 
   AnythingType
-  (->schema' [{:keys [description]} _]
-    (describe
-     s/Any
-     description))
+  (->schema' [dll _]
+    (describe s/Any dll))
 
   BooleanType
-  (->schema' [{:keys [open? default description]} _]
+  (->schema' [{:keys [open? default] :as dll} _]
     (describe
      (match [open? default]
             [true  _] s/Bool
             [_     d] (s/enum d))
-     description))
+     dll))
 
   InstType
-  (->schema' [{:keys [description]} _]
-    (describe s/Inst description))
+  (->schema' [dll _]
+    (describe s/Inst dll))
 
   IntegerType
-  (->schema' [{:keys [description open? values]} _]
+  (->schema' [{:keys [open? values] :as dll} _]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Int
             [_     nil] s/Int
             :else       (apply s/enum values))
-     description))
+     dll))
 
   KeywordType
-  (->schema' [{:keys [description key? open? values]} _]
+  (->schema' [{:keys [key? open? values] :as dll} _]
     (let [kw-schema
           (match [key? open? (seq values)]
                  [_    true  _         ] s/Keyword
@@ -140,25 +142,25 @@
                  :else                   (apply s/enum values))]
       (if key?
         kw-schema
-        (describe kw-schema description))))
+        (describe kw-schema dll))))
 
   NumberType
-  (->schema' [{:keys [description open? values]} _]
+  (->schema' [{:keys [open? values] :as dll} _]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Num
             [_     nil] s/Num
             :else       (apply s/enum values))
-     description))
+     dll))
 
   StringType
-  (->schema' [{:keys [description open? values]} _]
+  (->schema' [{:keys [open? values] :as dll} _]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Str
             [_     nil] s/Str
             :else       (apply s/enum values))
-     description)))
+     dll)))
 
 (defn ->schema-at-loc
   "Get the schema for a node, with location awareness"
