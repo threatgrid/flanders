@@ -61,7 +61,7 @@
 
   AnythingType
   (->example [_ _]
-    {:anything "anything"})
+    "anything")
 
   BooleanType
   (->example [{:keys [default] :or {default true}} _]

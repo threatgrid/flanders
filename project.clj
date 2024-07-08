@@ -8,9 +8,9 @@
                  [org.clojure/core.match "1.0.0"]
                  [cheshire "5.9.0"]
 
-                 [prismatic/schema "1.1.12"]
-                 [metosin/ring-swagger "0.26.2"]
-                 [metosin/schema-tools "0.12.2"]]
+                 [prismatic/schema "1.2.0"]
+                 [metosin/ring-swagger "1.0.0"]
+                 [metosin/schema-tools "0.12.3"]]
   :global-vars {*warn-on-reflection* true}
   :release-tasks [["clean"]
                   ["vcs" "assert-committed"]
