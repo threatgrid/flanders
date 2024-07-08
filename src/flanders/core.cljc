@@ -179,13 +179,12 @@
 (defn enum [values & {:keys [open?]
                       :or {open? false}
                       :as opts}]
-  (let [v (first values)
-        default (-> values sort first)]
+  (let [v (-> values sort first)]
     (cond
-      (integer? v) (ft/map->IntegerType (merge {:default default} opts {:values values :open? open?}))
-      (number? v)  (ft/map->NumberType  (merge {:default default} opts {:values values :open? open?}))
-      (keyword? v) (ft/map->KeywordType (merge {:default default} opts {:values values :open? open?}))
-      (string? v)  (ft/map->StringType  (merge {:default default} opts {:values values :open? open?})))))
+      (integer? v) (ft/map->IntegerType (merge {:default v} opts {:values values :open? open?}))
+      (number? v)  (ft/map->NumberType  (merge {:default v} opts {:values values :open? open?}))
+      (keyword? v) (ft/map->KeywordType (merge {:default v} opts {:values values :open? open?}))
+      (string? v)  (ft/map->StringType  (merge {:default v} opts {:values values :open? open?})))))
 
 (defn eq [value & {:keys [description reference comment usage name]}]
   (enum #{value}
