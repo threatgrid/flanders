@@ -65,23 +65,21 @@
   (->schema' [{:keys [key type required?] :as entry} f]
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
-    [(let [kw (assoc key :key? true)
-           description (some :description [key entry])
-           optionalize (if (and (not required?)
-                                (not (:open? key))
-                                (seq (:values key)))
-                         s/optional-key
-                         #?(:cljs identity
-                            :default (if description
-                                       (fn [k]
-                                         (if (instance? clojure.lang.IObj k)
-                                           k
-                                           (s/->RequiredKey k)))
-                                       identity)))]
-       (-> (optionalize (f kw))
-           #?(:cljs identity
-              :default (cond-> description (rs/describe description)))))
-     (f type)])
+    (let [description (some :description [key entry type])
+          [example example?] (some #(when-some [[_ example] (find % :example)]
+                                      [example true])
+                                   [entry type])]
+      [((if (and (not required?)
+                 (not (:open? key))
+                 (seq (:values key)))
+          s/optional-key
+          identity)
+        (f (assoc key :key? true)))
+       (f (cond-> type
+            ;; TODO ideally we would attach these to the key, but this is unreliable.
+            ;; for starters, st/optional-key and any related operations clears the metadata.
+            description (assoc :description description)
+            example? (assoc :example example)))]))
 
   MapType
   (->schema' [{:keys [entries] :as dll} f]
