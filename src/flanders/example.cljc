@@ -113,6 +113,6 @@
 (defn ->example-tree
   "Get a JSON example for a DDL node"
   [ddl]
-  (if-some [[_ example] (find dll :example)]
+  (if-some [[_ example] (find ddl :example)]
     example
     (->example ddl ->example-tree)))
