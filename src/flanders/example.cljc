@@ -77,28 +77,20 @@
            :cljs (js/date. 1451610061000))))
 
   IntegerType
-  (->example [{:keys [default values]} _]
-    (or default
-        (-> values sort first)
-        10))
+  (->example [{:keys [default]} _]
+    (or default 10))
 
   KeywordType
-  (->example [{:keys [default values]} _]
-    (or default
-        (-> values sort first)
-        :keyword))
+  (->example [{:keys [default]} _]
+    (or default :keyword))
 
   NumberType
-  (->example [{:keys [default values]} _]
-    (or default
-        (-> values sort first)
-        10.0))
+  (->example [{:keys [default]} _]
+    (or default 10.0))
 
   StringType
-  (->example [{:keys [default values]} _]
-    (or default
-        (-> values sort first)
-        "string"))
+  (->example [{:keys [default]} _]
+    (or default "string"))
 
   SignatureType
   (->example [{:keys [parameters rest-parameter return]} f]

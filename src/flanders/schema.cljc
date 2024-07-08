@@ -46,8 +46,9 @@
   #?(:cljs schema
      :clj (rs/field
             schema
-            (into {:example (example/->example-tree dll)}
-                  (select-keys dll [:description])))))
+            (let [{:keys [description]} dll]
+              (cond-> {:example (example/->example-tree dll)}
+                description (assoc :description description))))))
 
 (extend-protocol SchemaNode
 
