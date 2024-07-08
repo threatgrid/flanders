@@ -37,10 +37,12 @@
     (f (first choices)))
 
   MapEntry
-  (->example [{:keys [key type]} f]
-    [(f (assoc key
-               :key? true))
-     (f type)])
+  (->example [{:keys [key type] :as ddl} f]
+    (let [[_ example :as example?] (find ddl :example)]
+      [(f (assoc key
+                 :key? true))
+       (f (cond-> type
+            example? (assoc :example example)))]))
 
   MapType
   (->example [{:keys [entries]} f]
@@ -114,8 +116,7 @@
 (defn ->example-tree
   "Get a JSON example for a DDL node"
   [ddl]
-  (if-some [[_ example] (find ddl :example)]
-    (do (when (instance? MapEntry ddl)
-          (throw (ex-info "Cannot add :example to MapEntry, add to value schema instead." {:ddl ddl})))
-        example)
+  (if-some [[_ example] (when-not (instance? MapEntry ddl)
+                          (find ddl :example))]
+    example
     (->example ddl ->example-tree)))

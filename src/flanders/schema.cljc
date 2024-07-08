@@ -65,23 +65,34 @@
   (->schema' [{:keys [key type required?] :as entry} f]
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
-    [((if (and (not required?)
-               (not (:open? key))
-               (seq (:values key)))
-        s/optional-key
-        identity)
-      (f (assoc key
-                :key? true
-                :description (some :description [key entry]))))
+    [(let [kw (assoc key :key? true)
+           description (some :description [key entry])
+           optionalize (if (and (not required?)
+                                (not (:open? key))
+                                (seq (:values key)))
+                         s/optional-key
+                         #?(:cljs identity
+                            :default (if description
+                                       (fn [k]
+                                         (if (instance? clojure.lang.IObj k)
+                                           k
+                                           (s/->RequiredKey k)))
+                                       identity)))]
+       (-> (optionalize (f kw))
+           #?(:cljs identity
+              :default (cond-> description (rs/describe description)))))
      (f type)])
 
   MapType
   (->schema' [{:keys [entries] :as dll} f]
     (describe
-     (reduce (fn [m [k v]]
-               (st/assoc m k v))
-             {}
-             (map f entries))
+     (with-meta
+       (reduce (fn [m [k v]]
+                 (st/assoc m k v))
+               {}
+               (map f entries))
+       (when (:name dll)
+         {:name (symbol (:name dll))}))
      dll))
 
   ParameterListType
