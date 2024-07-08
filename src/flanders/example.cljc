@@ -33,65 +33,71 @@
   ;; Branches
 
   EitherType
-  (->example [{:keys [choices]} f]
-    (f (first choices)))
+  (->example [{:keys [choices] :as ddl} f]
+    (let [[_ example :as example?] (find ddl :default)]
+      (if example?
+        example
+        (f (first choices)))))
 
   MapEntry
   (->example [{:keys [key type] :as ddl} f]
-    (let [[_ example :as example?] (find ddl :example)]
-      [(f (assoc key
-                 :key? true))
+    (let [[_ example :as example?] (find ddl :default)]
+      [(f (assoc key :key? true))
        (f (cond-> type
-            example? (assoc :example example)))]))
+            example? (assoc :default example)))]))
 
   MapType
-  (->example [{:keys [entries]} f]
-    (reduce (fn [m [k v]]
-              (assoc m k v))
-            {}
-            (map f entries)))
+  (->example [{:keys [entries default]} f]
+    (or default
+        (reduce (fn [m [k v]]
+                  (assoc m k v))
+                {}
+                (map f entries))))
 
   SequenceOfType
-  (->example [{:keys [type]} f]
-    [(f type)])
+  (->example [{:keys [type default]} f]
+    (or default [(f type)]))
 
   SetOfType
-  (->example [{:keys [type]} f]
-    #{(f type)})
+  (->example [{:keys [type default]} f]
+    (or default #{(f type)}))
 
   ;; Leaves
 
   AnythingType
-  (->example [_ _]
-    "anything")
+  (->example [{:keys [default]} _]
+    (or default "anything"))
 
   BooleanType
   (->example [{:keys [default] :or {default true}} _]
     default)
 
   InstType
-  (->example [_ _]
-    #?(:clj  (Date. 1451610061000)
-       :cljs (js/date. 1451610061000)))
+  (->example [{:keys [default]} _]
+    (or default
+        #?(:clj  (Date. 1451610061000)
+           :cljs (js/date. 1451610061000))))
 
   IntegerType
-  (->example [_ _]
-    10)
+  (->example [{:keys [default values]} _]
+    (or default
+        (-> values sort first)
+        10))
 
   KeywordType
-  (->example [{:keys [default values example]} _]
+  (->example [{:keys [default values]} _]
     (or default
         (-> values sort first)
         :keyword))
 
   NumberType
-  (->example [{:keys [default values example]} _]
+  (->example [{:keys [default values]} _]
     (or default
         (-> values sort first)
         10.0))
 
   StringType
-  (->example [{:keys [default values example]} _]
+  (->example [{:keys [default values]} _]
     (or default
         (-> values sort first)
         "string"))
@@ -116,7 +122,4 @@
 (defn ->example-tree
   "Get a JSON example for a DDL node"
   [ddl]
-  (if-some [[_ example] (when-not (instance? MapEntry ddl)
-                          (find ddl :example))]
-    example
-    (->example ddl ->example-tree)))
+  (->example ddl ->example-tree))
