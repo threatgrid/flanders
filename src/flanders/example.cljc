@@ -1,7 +1,5 @@
 (ns flanders.example
   (:require
-   #?(:clj  [clojure.core.match :refer [match]]
-      :cljs [cljs.core.match :refer-macros [match]])
    #?(:clj  [flanders.types :as ft]
       :cljs [flanders.types
              :as ft

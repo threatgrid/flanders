@@ -1,4 +1,4 @@
-(ns flanders.schema
+(ns #_:clj-kondo/ignore flanders.schema
   (:refer-clojure :exclude [type key])
   (:require
    #?(:clj  [clojure.core.match :refer [match]]
@@ -42,14 +42,12 @@
 (def get-schema
   (memoize ->schema))
 
-(defn- describe [schema {:keys [description] :as dll}]
+(defn- describe [schema dll]
   #?(:cljs schema
-     :default (rs/field
-                schema
-                (cond-> {:example (if-some [[_ example] (find dll :example)]
-                                    example
-                                    (example/->example-tree dll))}
-                  description (assoc :description description)))))
+     :clj (rs/field
+            schema
+            (into {:example (example/->example-tree dll)}
+                  (select-keys dll [:description])))))
 
 (extend-protocol SchemaNode
 

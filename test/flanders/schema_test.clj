@@ -1,4 +1,4 @@
-(ns flanders.schema-test
+(ns #_:clj-kondo/ignore flanders.schema-test
   (:require
    [clojure.test :refer [deftest is testing]]
    [flanders.core :as f]
