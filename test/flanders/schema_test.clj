@@ -134,4 +134,5 @@
   (is (= {:example "anything" :description "AnYtHiNg"} (->swagger (assoc f/any :description "AnYtHiNg"))))
   (is (= {:example :keyword :description "Kw"} (->swagger (assoc f/any-keyword :description "Kw"))))
   (is (= {:example "string" :description "Str"} (->swagger (assoc f/any-str :description "Str"))))
+  (is (= {:example "an example" :description "Str"} (->swagger (assoc f/any-str :description "Str" :example "an example"))))
   )
