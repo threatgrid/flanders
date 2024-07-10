@@ -31,66 +31,82 @@
   ;; Branches
 
   EitherType
-  (->example [{:keys [choices] :as ddl} f]
-    (let [[_ example :as example?] (find ddl :default)]
-      (if example?
-        example
-        (f (first choices)))))
+  (->example [{:keys [choices default] :as ddl} f]
+    (if (some? default)
+      default
+      (f (first choices))))
 
   MapEntry
-  (->example [{:keys [key type] :as ddl} f]
-    (let [[_ example :as example?] (find ddl :default)]
-      [(f (assoc key :key? true))
-       (f (cond-> type
-            example? (assoc :default example)))]))
+  (->example [{:keys [key type default] :as ddl} f]
+    [(f (assoc key :key? true))
+     (f (cond-> type
+          (some? default) (assoc :default default)))])
 
   MapType
   (->example [{:keys [entries default]} f]
-    (or default
-        (reduce (fn [m [k v]]
-                  (assoc m k v))
-                {}
-                (map f entries))))
+    (if (some? default)
+      default
+      (reduce (fn [m [k v]]
+                (assoc m k v))
+              {}
+              (map f entries))))
 
   SequenceOfType
   (->example [{:keys [type default]} f]
-    (or default [(f type)]))
+    (if (some? default)
+      default
+      [(f type)]))
 
   SetOfType
   (->example [{:keys [type default]} f]
-    (or default #{(f type)}))
+    (if (some? default)
+      default
+      #{(f type)}))
 
   ;; Leaves
 
   AnythingType
   (->example [{:keys [default]} _]
-    (or default "anything"))
+    (if (some? default)
+      default
+      "anything"))
 
   BooleanType
-  (->example [{:keys [default] :or {default true}} _]
-    default)
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      true))
 
   InstType
   (->example [{:keys [default]} _]
-    (or default
-        #?(:clj  (Date. 1451610061000)
-           :cljs (js/date. 1451610061000))))
+    (if (some? default)
+      default
+      #?(:clj  (Date. 1451610061000)
+         :cljs (js/date. 1451610061000))))
 
   IntegerType
   (->example [{:keys [default]} _]
-    (or default 10))
+    (if (some? default)
+      default
+      10))
 
   KeywordType
   (->example [{:keys [default]} _]
-    (or default :keyword))
+    (if (some? default)
+      default
+      :keyword))
 
   NumberType
   (->example [{:keys [default]} _]
-    (or default 10.0))
+    (if (some? default)
+      default
+      10.0))
 
   StringType
   (->example [{:keys [default]} _]
-    (or default "string"))
+    (if (some? default)
+      default
+      "string"))
 
   SignatureType
   (->example [{:keys [parameters rest-parameter return]} f]
