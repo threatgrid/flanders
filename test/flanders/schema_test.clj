@@ -105,7 +105,7 @@
   (is (= {:example false} (->swagger (f/bool :equals false))))
   (is (= {:example true :description "Foo"} (->swagger (f/bool :equals true :description "Foo"))))
   (is (= {:example 10 :description "foo"} (->swagger (f/int :description "foo"))))
-  (is (= {:example 10 :description "foo"} (->swagger (f/int :description "foo"))))
+  (is (= {:example 9 :description "foo"} (->swagger (f/int :default 9 :description "foo"))))
   (is (= {:example 10 :description "outer"}
          (->swagger (f/either :description "outer"
                               :tests [(constantly true)]
