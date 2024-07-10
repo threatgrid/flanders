@@ -31,13 +31,13 @@
   ;; Branches
 
   EitherType
-  (->example [{:keys [choices default] :as ddl} f]
+  (->example [{:keys [choices default]} f]
     (if (some? default)
       default
       (f (first choices))))
 
   MapEntry
-  (->example [{:keys [key type default] :as ddl} f]
+  (->example [{:keys [key type default]} f]
     [(f (assoc key :key? true))
      (f (cond-> type
           (some? default) (assoc :default default)))])
