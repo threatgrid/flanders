@@ -1,10 +1,10 @@
-(defproject threatgrid/flanders "1.0.1-iroh-8946-SNAPSHOT"
+(defproject threatgrid/flanders "1.0.1-SNAPSHOT"
   :description "flanders"
   :url "http://github.com/threatgrid/flanders"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :pedantic? :abort
-  :dependencies [[org.clojure/clojure "1.11.1"]
+  :dependencies [[org.clojure/clojure "1.11.3"]
                  [org.clojure/core.match "1.0.0"]
                  [cheshire "5.9.0"]
 
