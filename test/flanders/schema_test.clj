@@ -131,11 +131,12 @@
                                                "`start_time` must come before `end_time` (if specified).")
                              :reference "[ValidTimeType](http://stixproject.github.io/data-model/1.2/indicator/ValidTimeType/)")))))
   (testing "Description on map entry overrides value description"
-    (is (= {:start_time {:example #inst "2016-01-01T01:01:01.000-00:00", :description "Time of the observation. If the observation was made over a period of time, than this field indicates the start of that period.", :type "string", :format "date-time"}
+    (is (= {:start_time {:example #inst "2525-01-01T01:01:01.000-00:00", :description "Time of the observation. If the observation was made over a period of time, than this field indicates the start of that period.", :type "string", :format "date-time"}
             :related_identities {:example [{:identity "https://example.com", :confidence "High", :information_source "MapEntry default for information_source", :relationship "string"}], :description "Identifies other entity Identities related to this Identity.", :type "array", :items {:$ref "#/definitions/RelatedIdentity"}}}
            (js/properties
              (fs/->schema (deref (f/def-map-type Bar
                                    [(f/entry :start_time Time
+                                             :default #inst "2525-01-01T01:01:01.000-00:00" 
                                              :description (str "Time of the observation. If the observation was "
                                                                "made over a period of time, than this field "
                                                                "indicates the start of that period."))

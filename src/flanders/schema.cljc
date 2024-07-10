@@ -65,9 +65,7 @@
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
     (let [description (some :description [key entry type])
-          [example example?] (some #(when-some [[_ example] (find % :example)]
-                                      [example true])
-                                   [entry type])]
+          default (first (keep :default [entry type]))]
       [((if (and (not required?)
                  (not (:open? key))
                  (seq (:values key)))
@@ -78,7 +76,7 @@
             ;; TODO ideally we would attach these to the key, but this is unreliable.
             ;; for starters, st/optional-key and any related operations clears the metadata.
             description (assoc :description description)
-            example? (assoc :example example)))]))
+            (some? default) (assoc :default default)))]))
 
   MapType
   (->schema' [{:keys [entries] :as dll} f]
