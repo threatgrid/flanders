@@ -74,7 +74,7 @@
         (f (assoc key :key? true)))
        (f (cond-> type
             ;; TODO ideally we would attach these to the key, but this is unreliable.
-            ;; for starters, st/optional-key and any related operations clears the metadata.
+            ;; for starters, st/optional-keys and any related operations clears the metadata.
             description (assoc :description description)
             (some? default) (assoc :default default)))]))
 
