@@ -108,8 +108,10 @@
   (is (= {:example 9 :description "foo"} (->swagger (f/int :default 9 :description "foo"))))
   (is (= {:example 10 :description "outer"}
          (->swagger (f/either :description "outer"
-                              :tests [(constantly true)]
-                              :choices [(f/int :description "inner")]))))
+                              :tests [(constantly true)
+                                      (constantly true)]
+                              :choices [(f/int :description "inner")
+                                        (f/bool :equals true :description "Foo")]))))
   (is (= {:example {} :description "Description"} (->swagger (deref (f/def-entity-type Bar {:description "Description"})))))
   (is (= {:example {:start_time #inst "2016-01-01T01:01:01.000-00:00"
                     :related_identities [{:identity "https://example.com"
