@@ -129,35 +129,38 @@
 (defn anything [& {:as opts}]
   (ft/map->AnythingType opts))
 
-(defn bool [& {:keys [equals] :as opts}]
+(defn bool [& {:keys [equals default] :as opts}]
   (ft/map->BooleanType
    (merge opts
           {:open? (nil? equals)
-           :default (when (some? equals) equals)})))
+           :default (if (some? equals)
+                      equals
+                      (when (some? default)
+                        default))})))
 
 (defn inst [& {:as opts}]
   (ft/map->InstType opts))
 
-(defn int [& {:keys [equals] :as opts}]
+(defn int [& {:keys [equals default] :as opts}]
   (ft/map->IntegerType
    (merge opts
           {:open? (not equals)
            :values (when equals #{equals})
-           :default (when equals equals)})))
+           :default (or equals default)})))
 
-(defn num [& {:keys [equals] :as opts}]
+(defn num [& {:keys [equals default] :as opts}]
   (ft/map->NumberType
    (merge opts
           {:open? (not equals)
            :values (when equals #{equals})
-           :default (when equals equals)})))
+           :default (or equals default)})))
 
-(defn keyword [& {:keys [equals] :as opts}]
+(defn keyword [& {:keys [equals default] :as opts}]
   (ft/map->KeywordType
    (merge opts
           {:open? (not equals)
            :values (when equals #{equals})
-           :default (when equals equals)})))
+           :default (or equals default)})))
 
 (defn key [equals & {:as opts}]
   (ft/map->KeywordType
@@ -166,22 +169,22 @@
            :values #{equals}
            :default equals})))
 
-(defn str [& {:keys [equals] :as opts}]
+(defn str [& {:keys [equals default] :as opts}]
   (ft/map->StringType
    (merge opts
           {:open? (not equals)
            :values (when equals #{equals})
-           :default (when equals equals)})))
+           :default (or equals default)})))
 
 (defn enum [values & {:keys [open?]
                       :or {open? false}
                       :as opts}]
-  (let [v (first values)]
+  (let [v (-> values sort first)]
     (cond
-      (integer? v) (ft/map->IntegerType (merge opts {:values values :open? open?}))
-      (number? v)  (ft/map->NumberType  (merge opts {:values values :open? open?}))
-      (keyword? v) (ft/map->KeywordType (merge opts {:values values :open? open?}))
-      (string? v)  (ft/map->StringType  (merge opts {:values values :open? open?})))))
+      (integer? v) (ft/map->IntegerType (merge {:default v} opts {:values values :open? open?}))
+      (number? v)  (ft/map->NumberType  (merge {:default v} opts {:values values :open? open?}))
+      (keyword? v) (ft/map->KeywordType (merge {:default v} opts {:values values :open? open?}))
+      (string? v)  (ft/map->StringType  (merge {:default v} opts {:values values :open? open?})))))
 
 (defn eq [value & {:keys [description reference comment usage name]}]
   (enum #{value}

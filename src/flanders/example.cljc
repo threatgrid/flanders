@@ -5,8 +5,7 @@
              :as ft
              :refer [AnythingType BooleanType EitherType InstType IntegerType
                      KeywordType MapEntry MapType NumberType SequenceOfType
-                     SetOfType SignatureType StringType]])
-   [flanders.schema :as fs])
+                     SetOfType SignatureType StringType]]))
   #?(:clj (:import
            [flanders.types
             AnythingType
@@ -32,63 +31,82 @@
   ;; Branches
 
   EitherType
-  (->example [{:keys [choices]} f]
-    (f (first choices)))
+  (->example [{:keys [choices default]} f]
+    (if (some? default)
+      default
+      (f (first choices))))
 
   MapEntry
-  (->example [{:keys [key type]} f]
-    [(f (assoc key
-               :key? true))
-     (f type)])
+  (->example [{:keys [key type default]} f]
+    [(f (assoc key :key? true))
+     (f (cond-> type
+          (some? default) (assoc :default default)))])
 
   MapType
-  (->example [{:keys [entries]} f]
-    (reduce (fn [m [k v]]
-              (assoc m k v))
-            {}
-            (map f entries)))
+  (->example [{:keys [entries default]} f]
+    (if (some? default)
+      default
+      (reduce (fn [m [k v]]
+                (assoc m k v))
+              {}
+              (map f entries))))
 
   SequenceOfType
-  (->example [{:keys [type]} f]
-    [(f type)])
+  (->example [{:keys [type default]} f]
+    (if (some? default)
+      default
+      [(f type)]))
 
   SetOfType
-  (->example [{:keys [type]} f]
-    #{(f type)})
+  (->example [{:keys [type default]} f]
+    (if (some? default)
+      default
+      #{(f type)}))
 
   ;; Leaves
 
   AnythingType
-  (->example [_ _]
-    {:anything "anything"})
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      "anything"))
 
   BooleanType
-  (->example [_ _]
-    true)
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      true))
 
   InstType
-  (->example [_ _]
-    #?(:clj  (Date. 1451610061000)
-       :cljs (js/date. 1451610061000)))
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      #?(:clj  (Date. 1451610061000)
+         :cljs (js/date. 1451610061000))))
 
   IntegerType
-  (->example [_ _]
-    10)
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      10))
 
   KeywordType
-  (->example [node _]
-    (let [schema (fs/->schema node)]
-      (if (keyword? schema)
-        (name schema)
-        "keyword")))
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      :keyword))
 
   NumberType
-  (->example [_ _]
-    10.0)
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      10.0))
 
   StringType
-  (->example [_ _]
-    "string")
+  (->example [{:keys [default]} _]
+    (if (some? default)
+      default
+      "string"))
 
   SignatureType
   (->example [{:keys [parameters rest-parameter return]} f]
