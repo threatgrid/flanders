@@ -37,8 +37,9 @@
 (defleaf ReferenceNode [text anchor jump-anchor])
 
 (defn ready-for-table [str]
-  (str/replace str #"(\n|\|)" {"\n" " "
-                               "\\|" "\\\\|"}))
+  (-> str
+      (str/replace \newline \space)
+      (str/replace "|" "\\\\|")))
 
 (defn ->default [{:keys [default values]}]
   (when (and default (> (count values) 1))
