@@ -10,8 +10,10 @@
             [malli.swagger :as ms]
             [malli.util :as mu]))
 
+(def swagger-props #{:json-schema/description :json-schema/example})
+
 (defn- strip-swagger-from-props [props]
-  (dissoc props :json-schema/description :json-schema/example))
+  (apply dissoc props swagger-props))
 
 (defn- strip-swagger [schema]
   ;; TODO strip properties in entry vals like [:map [:a {HERE} s]] during walk
@@ -25,9 +27,11 @@
     ;; FIXME replace this dirty tree walk with strip-swagger
     (-> (w/postwalk (fn [v]
                       (cond-> v
-                        (map? v) (-> strip-swagger-from-props not-empty)))
+                        (and (map? v)
+                             (some v swagger-props))
+                        (-> strip-swagger-from-props not-empty)))
                     frm)
-        ;; convert [:string {}] to :string
+        ;; convert [:string nil] to :string
         (m/form options))))
 
 (defn- ->malli-frm [dll]
