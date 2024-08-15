@@ -19,8 +19,9 @@
   (-> ?schema
       (m/schema opts)
       (mu/update-properties
-        merge (cond-> {:json-schema/example (example/->example-tree dll)}
-                description (assoc :json-schema/description description)))))
+        #(-> %
+             (assoc :json-schema/example (example/->example-tree dll))
+             (cond-> description (assoc :json-schema/description description))))))
 
 (defn maybe-key [{:keys [key? open? values] :as dll} opts base]
   (if key?
