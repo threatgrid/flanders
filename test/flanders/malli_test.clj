@@ -1,82 +1,148 @@
 (ns flanders.malli-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.walk :as w]
             [flanders.examples
              :refer [Example
                      OptionalKeywordMapEntryExample]]
             [flanders.core :as f]
             [flanders.malli :as fm]
-            [malli.core :as m]))
+            [malli.core :as m]
+            [malli.swagger :as ms]
+            [malli.util :as mu]))
+
+(defn- strip-swagger-from-props [props]
+  (dissoc props :json-schema/description :json-schema/example))
+
+(defn- strip-swagger [schema]
+  ;; TODO strip properties in entry vals like [:map [:a {HERE} s]] during walk
+  (m/walk schema (fn [schema _ _ _]
+                   (mu/update-properties schema strip-swagger-from-props))
+          {::m/walk-entry-vals true}))
+
+(defn- form-no-swagger [schema]
+  (let [options (m/options schema)
+        frm (-> schema strip-swagger m/form)]
+    ;; FIXME replace this dirty tree walk with strip-swagger
+    (-> (w/postwalk (fn [v]
+                      (cond-> v
+                        (map? v) (-> strip-swagger-from-props not-empty)))
+                    frm)
+        ;; convert [:string {}] to :string
+        (m/form options))))
+
+(defn- ->malli-frm [dll]
+  (-> dll fm/->malli form-no-swagger))
 
 (deftest test-basic-schemas
   (testing "str"
-    (is (= :string (-> (f/str) fm/->malli m/form)))
-    (is (= [:enum "a"] (-> (f/str :equals "a") fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :string :any]]] (-> (f/map [(f/entry (f/str) f/any)]) fm/->malli m/form)))
-    (is (= [:map {:closed true} ["b" :any]] (-> (f/map [(f/entry (f/str :equals "b") f/any)]) fm/->malli m/form))))
+    (is (= :string (->malli-frm (f/str))))
+    (is (= [:enum "a"] (->malli-frm (f/str :equals "a"))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of :string :any]]]
+           (->malli-frm (f/map [(f/entry (f/str) f/any)]))))
+    (is (= [:map {:closed true} ["b" :any]]
+           (->malli-frm (f/map [(f/entry (f/str :equals "b") f/any)])))))
   (testing "int"
-    (is (= :int (-> (f/int) fm/->malli m/form)))
-    (is (= [:enum 1] (-> (f/int :equals 1) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :int :any]]] (-> (f/map [(f/entry (f/int) f/any)]) fm/->malli m/form)))
-    (is (= [:map {:closed true} [1 :any]] (-> (f/map [(f/entry (f/int :equals 1) f/any)]) fm/->malli m/form))))
+    (is (= :int (->malli-frm (f/int))))
+    (is (= [:enum 1] (->malli-frm (f/int :equals 1))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of :int :any]]]
+           (->malli-frm (f/map [(f/entry (f/int) f/any)]))))
+    (is (= [:map {:closed true} [1 :any]]
+           (->malli-frm (f/map [(f/entry (f/int :equals 1) f/any)])))))
   (testing "num"
-    (is (= 'number? (-> (f/num) fm/->malli m/form)))
-    (is (= [:enum 1] (-> (f/num :equals 1) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of 'number? :any]]] (-> (f/map [(f/entry (f/num) f/any)]) fm/->malli m/form)))
-    (is (= [:map {:closed true} [1 :any]] (-> (f/map [(f/entry (f/num :equals 1) f/any)]) fm/->malli m/form))))
+    (is (= 'number? (->malli-frm (f/num))))
+    (is (= [:enum 1] (->malli-frm (f/num :equals 1))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of 'number? :any]]]
+           (->malli-frm (f/map [(f/entry (f/num) f/any)]))))
+    (is (= [:map {:closed true} [1 :any]]
+           (->malli-frm (f/map [(f/entry (f/num :equals 1) f/any)])))))
   (testing "keyword"
-    (is (= :keyword (-> (f/keyword) fm/->malli m/form)))
-    (is (= [:enum :a] (-> (f/keyword :equals :a) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :keyword :any]]] (-> (f/map [(f/entry (f/keyword) f/any)]) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:a :any]] (-> (f/map [(f/entry (f/keyword :equals :a) f/any)]) fm/->malli m/form))))
+    (is (= :keyword (->malli-frm (f/keyword))))
+    (is (= [:enum :a] (->malli-frm (f/keyword :equals :a))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of :keyword :any]]]
+           (->malli-frm (f/map [(f/entry (f/keyword) f/any)]))))
+    (is (= [:map {:closed true} [:a :any]]
+           (->malli-frm (f/map [(f/entry (f/keyword :equals :a) f/any)])))))
   (testing "inst"
-    (is (= 'inst? (-> (f/inst) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of 'inst? :any]]] (-> (f/map [(f/entry (f/inst) f/any)]) fm/->malli m/form))))
+    (is (= 'inst? (->malli-frm (f/inst))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of 'inst? :any]]]
+           (->malli-frm (f/map [(f/entry (f/inst) f/any)])))))
   (testing "bool"
-    (is (= :boolean (-> (f/bool) fm/->malli m/form)))
-    (is (= [:enum false] (-> (f/bool :equals false) fm/->malli m/form)))
-    (is (= [:enum true] (-> (f/bool :equals true) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :boolean :any]]] (-> (f/map [(f/entry (f/bool) f/any)]) fm/->malli m/form)))
-    (is (= [:map {:closed true} [true :any]] (-> (f/map [(f/entry (f/bool :equals true) f/any)]) fm/->malli m/form)))
-    (is (= [:map {:closed true} [false :any]] (-> (f/map [(f/entry (f/bool :equals false) f/any)]) fm/->malli m/form))))
+    (is (= :boolean (->malli-frm (f/bool))))
+    (is (= [:= false] (->malli-frm (f/bool :equals false))))
+    (is (= [:= true] (->malli-frm (f/bool :equals true))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of :boolean :any]]]
+           (->malli-frm (f/map [(f/entry (f/bool) f/any)]))))
+    (is (= [:map {:closed true} [true :any]]
+           (->malli-frm (f/map [(f/entry (f/bool :equals true) f/any)]))))
+    (is (= [:map {:closed true} [false :any]]
+           (->malli-frm (f/map [(f/entry (f/bool :equals false) f/any)])))))
   (testing "anything"
-    (is (= :any (-> (f/anything) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :any :any]]] (-> (f/map [(f/entry (f/anything) f/any)]) fm/->malli m/form))))
+    (is (= :any (->malli-frm (f/anything))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of :any :any]]]
+           (->malli-frm (f/map [(f/entry (f/anything) f/any)])))))
   (testing "set-of"
-    (is (= [:set :boolean] (-> (f/set-of (f/bool)) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of [:set :boolean] :any]]] (-> (f/map [(f/entry (f/set-of (f/bool)) f/any)]) fm/->malli m/form))))
+    (is (= [:set :boolean]
+           (->malli-frm (f/set-of (f/bool)))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of [:set :boolean] :any]]]
+           (->malli-frm (f/map [(f/entry (f/set-of (f/bool)) f/any)])))))
   (testing "seq-of"
-    (is (= [:sequential :boolean] (-> (f/seq-of (f/bool)) fm/->malli m/form)))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of [:sequential :boolean] :any]]] (-> (f/map [(f/entry (f/seq-of (f/bool)) f/any)]) fm/->malli m/form))))
+    (is (= [:sequential :boolean] (->malli-frm (f/seq-of (f/bool)))))
+    (is (= [:map {:closed true} [:malli.core/default [:map-of [:sequential :boolean] :any]]]
+           (->malli-frm (f/map [(f/entry (f/seq-of (f/bool)) f/any)])))))
   (testing "either"
-    (is (= [:or :boolean :string] (-> (f/either :choices [(f/bool) (f/str)]) fm/->malli m/form)))
+    (is (= [:or :boolean :string]
+           (->malli-frm (f/either :choices [(f/bool) (f/str)]))))
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:or :boolean :string] :any]]]
-           (-> (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)]) fm/->malli m/form))))
+           (->malli-frm (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)])))))
   (testing "sig"
-    (is (= [:=> [:cat :int] :int] (-> (f/sig :parameters [(f/int)] :return (f/int)) fm/->malli m/form)))
+    (is (= [:=> [:cat :int] :int]
+           (->malli-frm (f/sig :parameters [(f/int)] :return (f/int)))))
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:=> [:cat :int] :int] :any]]]
-           (-> (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)]) fm/->malli m/form)))))
+           (->malli-frm (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)]))))))
 
 (deftest test-valid-schema
-  (is (= [:map {:closed true}
-          [:foo :string]
-          [:bar [:map {:closed true}
-                 ["integer" :int]
-                 [:seq [:sequential :keyword]]
-                 [:set [:set [:enum 1 2 3]]]]]
-          [:yes? :boolean]
-          [:spam {:optional true} [:enum :eggs]]]
-        (-> Example
-          fm/->malli
-          m/form)))
-  (is
-   (m/validate
-    (fm/->malli Example)
-    {:foo "foo"
-     :bar {"integer" 100
-           :seq [:a :b :c]
-           :set #{1 3}}
-     :yes? true
-     :spam :eggs}))
+  (is (= [:map {:closed true
+                :json-schema/example {:foo "string"
+                                      :bar {"integer" 10, :seq [:keyword], :set #{1}}
+                                      :yes? true
+                                      :spam :eggs}
+                :json-schema/description "Example"}
+          [:foo
+           {:json-schema/example "string"}
+           [:string {:json-schema/example "string"}]]
+          [:bar {:json-schema/example {"integer" 10, :seq [:keyword], :set #{1}}}
+           [:map {:closed true
+                  :json-schema/example {"integer" 10, :seq [:keyword], :set #{1}}}
+            ["integer"
+             {:json-schema/example 10}
+             [:int {:json-schema/example 10}]]
+            [:seq {:json-schema/example [:keyword]}
+             [:sequential [:keyword {:json-schema/example :keyword}]]]
+            [:set {:json-schema/example #{1}}
+             [:set [:enum {:json-schema/example 1} 1 2 3]]]]]
+          [:yes? {:json-schema/example true} [:boolean {:json-schema/example true}]]
+          [:spam {:json-schema/example :eggs, :optional true}
+           [:enum {:json-schema/example :eggs} :eggs]]]
+         (-> Example
+             fm/->malli
+             m/form)))
+  (is (m/validate
+        (fm/->malli Example)
+        {:foo "foo"
+         :bar {"integer" 100
+               :seq [:a :b :c]
+               :set #{1 3}}
+         :yes? true
+         :spam :eggs}))
+  (is (= [{:in [:foo], :value 1}
+          {:in [:bar], :value nil}
+          {:in [:spam], :value "ham"}]
+         (mapv #(select-keys % [:in :value])
+               (:errors (m/explain
+                          (fm/->malli Example)
+                          {:foo 1
+                           :yes? true
+                           :spam "ham"})))))
   (testing "closed"
     (is
       (= '[[[:extra] :malli.core/extra-key]]
@@ -108,7 +174,7 @@
          [:foo {:optional true} :string]
          [:relation_info [:map {:closed true} [:malli.core/default [:map-of :keyword :any]]]]]]
     (is (= expected-schema
-           (m/form (fm/->malli OptionalKeywordMapEntryExample)))))
+           (->malli-frm OptionalKeywordMapEntryExample))))
   (is (m/validate
         (fm/->malli OptionalKeywordMapEntryExample)
         {:foo "a"
@@ -126,21 +192,32 @@
 
 (deftest signature-type->malli
   (is (= [:=> :cat :any]
-         (m/form (fm/->malli (f/sig :parameters [])))))
+         (->malli-frm (f/sig :parameters []))))
+  (is (= [:=> :cat :int]
+         (->malli-frm (f/sig :parameters []
+                             :return (f/int)))))
+  (is (= [:=> [:cat :int :int] :any]
+         (->malli-frm (f/sig :parameters [(f/int) (f/int)]))))
+  (is (= [:=> [:cat [:cat :int :int] [:* :string]] :any]
+         (->malli-frm (f/sig :parameters [(f/int) (f/int)]
+                             :rest-parameter (f/str))))))
 
-  (let [return (f/int)]
-    (is (= [:=> :cat :int]
-           (m/form (fm/->malli (f/sig :parameters []
-                                      :return return))))))
-
-  (let [a (f/int)
-        b (f/int)]
-    (is (= [:=> [:cat :int :int] :any]
-           (m/form (fm/->malli (f/sig :parameters [a b]))))))
-
-  (let [a (f/int)
-        b (f/int)
-        c (f/str)]
-    (is (= [:=> [:cat [:cat :int :int] [:* :string]] :any]
-           (m/form (fm/->malli (f/sig :parameters [a b]
-                                      :rest-parameter c)))))))
+(deftest swagger-test
+  (is (= {:type "object"
+          :properties {:foo {:type "string", :example "string"}
+                       :bar {:type "object"
+                             :properties {"integer" {:type "integer", :format "int64", :example 10}
+                                          :seq {:type "array", :items {:type "string", :example :keyword}, :example [:keyword]}
+                                          :set {:type "array", :items {:type "integer", :enum [1 2 3], :example 1}
+                                                :uniqueItems true, :example #{1}}}
+                             :required ["integer" :seq :set]
+                             :additionalProperties false, :example {"integer" 10, :seq [:keyword], :set #{1}}}
+                       :yes? {:type "boolean", :example true}
+                       :spam {:type "string", :enum [:eggs], :example :eggs}}
+          :required [:foo :bar :yes?]
+          :additionalProperties false
+          :example {:foo "string", :bar {"integer" 10, :seq [:keyword], :set #{1}}, :yes? true, :spam :eggs}
+          :description "Example"}
+         (-> Example
+             fm/->malli
+             ms/transform))))
