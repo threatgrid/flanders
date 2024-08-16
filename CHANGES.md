@@ -1,5 +1,9 @@
 # NEXT
 
+# 1.0.2 - 16th July 2024
+
+- fix string escaping when generating markdown
+
 # 1.0.1 - 12th July 2024
 
 - populate `:default` for all schemas and use it for Swagger's `:example` field
