@@ -1,7 +1,9 @@
 (ns flanders.malli
   "Requires malli as a dependency."
+  (:refer-clojure :exclude [type])
   (:require
     [flanders.types]
+    [flanders.example :as example]
     [malli.core :as m]
     [malli.util :as mu])
   (:import [flanders.types
@@ -13,22 +15,25 @@
 (defprotocol MalliNode
   (->malli' [node opts]))
 
-;;TODO
-(defn- describe [schema _description]
-  schema)
+(defn- describe [?schema {:keys [description] :as dll} opts]
+  (-> ?schema
+      (m/schema opts)
+      (mu/update-properties
+        #(-> %
+             (assoc :json-schema/example (example/->example-tree dll))
+             (cond-> description (assoc :json-schema/description description))))))
 
-(defn maybe-key [{:keys [description key? open? values] :as node} opts base]
+(defn maybe-key [{:keys [key? open? values] :as dll} opts base]
   (if key?
     (cond
       (= 1 (count values)) {:op :specific-key :schema (first values)}
       open? {:op :default-key :schema (m/schema base opts)}
-      :else (throw (ex-info (format "Cannot convert schema %s to key" node)
+      :else (throw (ex-info (format "Cannot convert schema %s to key" dll)
                             {})))
     (-> (if (or open? (empty? values))
           base
           (into [:enum] (sort values)))
-        (describe description)
-        (m/schema opts))))
+        (describe dll opts))))
 
 ;; Note: we use m/schema eagerly mostly for prettier map schemas.
 ;; This won't work if flanders supports recursive schemas.
@@ -56,29 +61,29 @@
                          (not (:open? key))
                          (seq (:values key)))
           description (some :description [key entry])
-          opts (cond-> nil
-                 optional? (assoc :optional true)
-                 description (assoc :json-schema/description description))
+          props (cond-> {:json-schema/example (example/->example-tree type)}
+                  optional? (assoc :optional true)
+                  description (assoc :json-schema/description description))
           default-or-specific-key (f (assoc key :key? true))]
       (case (:op default-or-specific-key)
         :specific-key (-> [(:schema default-or-specific-key)]
-                          (cond-> opts (conj opts))
+                          (cond-> props (conj props))
                           (conj (f type)))
         :default-key (-> [::m/default]
-                         (cond-> opts (conj opts))
+                         (cond-> props (conj props))
                          (conj
                            [:map-of
                             (:schema default-or-specific-key)
                             (f type)])))))
 
   MapType
-  (->malli' [{:keys [description entries key?]} opts]
+  (->malli' [{:keys [entries key?] :as dll} opts]
     (let [f #(->malli' % opts)
           s (-> (into [:merge] (map (fn [e] [:map (f e)])) entries)
                 (m/schema opts)
                 m/deref ;; eliminate :merge
                 (mu/update-properties assoc :closed true)
-                (describe description))]
+                (describe dll opts))]
       (if key?
         {:op :default-key :schema s}
         s)))
@@ -120,29 +125,25 @@
   ;; Leaves
 
   AnythingType
-  (->malli' [{:keys [description key?]} opts]
+  (->malli' [{:keys [key?] :as dll} opts]
     (if key?
       {:op :default-key :schema :any}
-      (m/schema (describe :any description)
-                opts)))
+      (describe :any dll opts)))
 
   BooleanType
-  (->malli' [{:keys [open? key? default description]} opts]
+  (->malli' [{:keys [default open? key?] :as dll} opts]
     (if key?
       (if open?
         {:op :default-key :schema :boolean}
         {:op :specific-key :schema default})
-      (m/schema
-        (describe
-          (if open?
+      (-> (if open?
             :boolean
-            [:enum (boolean default)])
-          description)
-        opts)))
+            [:= (boolean default)])
+          (describe dll opts))))
 
   InstType
-  (->malli' [{:keys [description key?]} opts]
-    (let [s (m/schema (describe inst? description) opts)]
+  (->malli' [{:keys [key?] :as dll} opts]
+    (let [s (describe inst? dll opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
