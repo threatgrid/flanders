@@ -90,7 +90,8 @@
           (if (nil? p+t) [types tests]
               (recur more
                      (conj types t)
-                     (conj tests (if (= :else p) any? p)))))]
+                     (conj tests (let [p (if (= :else p) (constantly true) p)]
+                                   #(when (p %) %))))))]
     (ft/map->EitherType {:choices types
                          :tests tests})))
 

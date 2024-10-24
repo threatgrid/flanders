@@ -51,7 +51,7 @@
       (if-some [tests (some-> (not-empty tests) vec)]
         (let [ntests (count tests)]
           (into [:multi {:dispatch (fn [v]
-                                     (or (some #(when ((nth tests %) v) %) (range ntests))
+                                     (or (some #(when (some? ((nth tests %) v)) %) (range ntests))
                                          :dispatch-failed))}]
                 (map-indexed (fn [i s]
                                [i (let [s (m/schema s opts)]
