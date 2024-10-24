@@ -225,3 +225,15 @@
          (-> Example
              fm/->malli
              ms/transform))))
+
+(deftest conditional-test
+  (is (m/validate
+        (fm/->malli (f/conditional
+                      boolean? f/any-bool))
+        false))
+  ;;FIXME should add tests to schema
+  (is (not (m/validate
+             ;;TODO
+             (fm/->malli (f/conditional
+                           (constantly false) f/any-bool))
+             false))))
