@@ -46,3 +46,7 @@
 (deftest sig-test
   (is (instance? SignatureType (f/sig)))
   (is (thrown? java.lang.AssertionError (f/sig :parameters 10))))
+
+(deftest boolean-generator-test
+  (is ())
+  )
