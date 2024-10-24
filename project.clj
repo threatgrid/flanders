@@ -25,4 +25,4 @@
   :profiles {:dev
              {:dependencies [[org.clojure/test.check "1.1.1"]
                              [metosin/malli "0.16.4"]
-                             [org.babashka/sci "0.9.44"]]}})
+                             [prismatic/schema-generators "0.1.5" :exclusions [prismatic/schema]]]}})

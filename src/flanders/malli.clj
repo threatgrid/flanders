@@ -46,24 +46,32 @@
     ;; e.g., (f/conditional #(= false %) f/any-bool) will choose true as an example
     (let [f #(->malli' % opts)
           ;; note: if test is more narrow than the choice, the example will be wrong.
-          choice-schemas (eduction (map f) choices)
+          choice-schemas (mapv f choices)
           g (gensym)]
       (if-some [tests (some-> (not-empty tests) vec)]
-        (let [ntests (count tests)]
+        (let [ntests (count tests)
+              _ (run! (fn [i]
+                        (let [guard (nth tests i)
+                              schema (nth choice-schemas i)]
+                          (when-not (-> schema (m/properties opts) :json-schema/example guard)
+                            (println (format "[flanders.malli] WARNING: generated example for %s does not satisfy guard: %s"
+                                             (m/form schema)
+                                             (str guard))))))
+                      (range ntests))]
           (into [:multi {:dispatch (fn [v]
                                      (or (some #(when ((nth tests %) v) %) (range ntests))
                                          :dispatch-failed))}]
                 (map-indexed (fn [i s]
-                               [i (let [s (m/schema s opts)]
-                                    (m/-update-properties s assoc :gen/schema
-                                                          ;; :multi assumes schemas for generators passes preds, must assert
-                                                          ;; explicitly. :and + :fn could fail, but throws an error pointing
-                                                          ;; to this schema, so putting a property to help debugging.
-                                                          ;; if you find yourself here, trying looking for `conditional` schemas
-                                                          ;; in CTIM where the predicate does not match the same values as the schema.
-                                                          ;; e.g., (f/conditional #(= false %) f/any-bool)
-                                                          ;; should be (f/conditional #(= false %) (f/enum false))
-                                                          [:and {::if-this-fails-see :flanders.malli/->malli} s [:fn (nth tests i)]]))]))
+                               [i (m/-update-properties s assoc :gen/schema
+                                                        ;; :multi assumes schemas for generators passes preds, must assert
+                                                        ;; explicitly. :and + :fn could fail, but throws an error pointing
+                                                        ;; to this schema, so putting a property to help debugging.
+                                                        ;; if you find yourself here, trying looking for `conditional` schemas
+                                                        ;; in CTIM where the predicate does not match the same values as the schema.
+                                                        ;; e.g., (f/conditional #(= false %) f/any-bool)
+                                                        ;; should be (f/conditional #(= false %) (f/enum false))
+                                                        (m/form [:and {::if-this-fails-see :flanders.malli/->malli} s [:fn (nth tests i)]]
+                                                                opts))]))
                 choice-schemas))
         (let [s (m/schema (into [:or] choice-schemas))]
           (if key?

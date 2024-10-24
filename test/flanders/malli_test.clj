@@ -1,5 +1,6 @@
 (ns flanders.malli-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.string :as str]
+            [clojure.test :refer [deftest is testing]]
             [clojure.walk :as w]
             [flanders.examples
              :refer [Example
@@ -100,9 +101,14 @@
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:or :boolean :string] :any]]]
            (->malli-frm (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)])))))
   (testing "conditional"
-    (is (= [:multi {:dispatch true} [0 :boolean]]
+    (is (= [:multi {:dispatch true} [0 [:boolean #:gen{:schema
+                                                       [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
+                                                        ;;this prints as [:boolean nil] ??
+                                                        [:boolean {:json-schema/example true}]
+                                                        [:fn boolean?]]}]]]
            (-> (->malli-frm (f/conditional boolean? f/any-bool))
-               (update-in [1 :dispatch] fn?))))
+               (update-in [1 :dispatch] fn?)
+               )))
     (is (= [:multi {:dispatch true} [0 :boolean] [1 :string]]
            (-> (->malli-frm (f/conditional boolean? f/any-bool string? f/any-str))
                (update-in [1 :dispatch] fn?)))))
@@ -111,8 +117,11 @@
            (->malli-frm (f/sig :parameters [(f/int)] :return (f/int)))))
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:=> [:cat :int] :int] :any]]]
            (->malli-frm (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)])))))
-
   )
+
+(m/form [:and {::if-this-fails-see :flanders.malli/->malli} [:boolean {:json-schema/example true}] [:fn any?]])
+(m/form [:schema {:gen/schema [:and {::if-this-fails-see :flanders.malli/->malli} (m/schema [:boolean {:json-schema/example true}]) [:fn any?]]}
+         any?])
 
 (deftest test-valid-schema
   (is (= [:map {:closed true
@@ -237,21 +246,43 @@
              ms/transform))))
 
 (deftest conditional-test
-  (is (m/validate
-        (fm/->malli (f/conditional
-                      boolean? f/any-bool))
-        false))
-  (is (not (m/validate
-             (fm/->malli (f/conditional
-                           (constantly false) f/any-bool))
-             false)))
-  ;;TODO examples will be wrong if predicate doesn't exactly match schema.
-  ;; could solve this probabilistically or throw an error.
-  #_ 
-  (is (false? (fm/->malli (f/conditional
-                            (constantly false) f/any-bool))))
-  (is (thrown-with-msg? Exception
-                        #":malli\.generator/and-generator-failure"
-                        (mg/generate (fm/->malli (f/conditional
-                                                   (constantly false) f/any-bool))))))
-
+  (testing "predicates that return true for false work"
+    (is (m/validate
+          (fm/->malli (f/conditional
+                        boolean? f/any-bool))
+          false))
+    (is (m/validate
+          (fm/->malli (f/conditional
+                        false? (f/bool :equals false)))
+          false)))
+  (testing "predicates that return true for nil work"
+    (with-out-str ;; suppress expected warning on conditions
+      (is (m/validate
+            (fm/->malli (f/conditional
+                          nil? f/any))
+            nil))))
+  (testing "predicates that return false for false and nil work"
+    (with-out-str ;; suppress expected warning on conditions
+      (is (not (m/validate
+                 (fm/->malli (f/conditional
+                               (constantly false) f/any))
+                 false)))
+      (is (not (m/validate
+                 (fm/->malli (f/conditional
+                               (constantly false) f/any))
+                 nil)))))
+  (testing "warning if predicate and schema disagree"
+    (is (str/starts-with?
+          (binding [*print-length* nil
+                    *print-level* nil
+                    *print-namespace-maps* false]
+            (with-out-str
+              (fm/->malli (f/conditional
+                            false? f/any-bool))))
+          "[flanders.malli] WARNING: generated example for [:boolean {:json-schema/example true}] does not satisfy guard: clojure.core$false_QMARK")))
+  (testing "condition predicates are taken into account in generators"
+    (is (thrown-with-msg? Exception
+                          #":malli\.generator/and-generator-failure"
+                          (with-out-str ;; suppress expected generated example warning
+                                        (mg/generate (fm/->malli (f/conditional
+                                                                   (constantly false) f/any-bool))))))))

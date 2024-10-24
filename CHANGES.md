@@ -1,5 +1,7 @@
 # NEXT
 
+- fix `f/conditional` schemas that accept `nil` or `false`
+
 # 1.0.2 - 16th July 2024
 
 - fix string escaping when generating markdown
