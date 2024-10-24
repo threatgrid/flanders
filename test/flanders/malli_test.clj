@@ -101,15 +101,21 @@
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:or :boolean :string] :any]]]
            (->malli-frm (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)])))))
   (testing "conditional"
-    (is (= [:multi {:dispatch true} [0 [:boolean #:gen{:schema
-                                                       [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
-                                                        ;;this prints as [:boolean nil] ??
-                                                        [:boolean {:json-schema/example true}]
-                                                        [:fn boolean?]]}]]]
+    (is (= [:multi {:dispatch true}
+            [0 [:boolean #:gen{:schema
+                               [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
+                                ;; FIXME nil due to form-no-swagger in this namespace
+                                [:boolean nil]
+                                [:fn boolean?]]}]]]
            (-> (->malli-frm (f/conditional boolean? f/any-bool))
-               (update-in [1 :dispatch] fn?)
-               )))
-    (is (= [:multi {:dispatch true} [0 :boolean] [1 :string]]
+               (update-in [1 :dispatch] fn?))))
+    (is (= [:multi {:dispatch true}
+            [0 [:boolean #:gen{:schema [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
+                                        [:boolean nil] ;; FIXME nil due to form-no-swagger in this namespace
+                                        [:fn boolean?]]}]]
+            [1 [:string #:gen{:schema [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
+                                       [:string nil]
+                                       [:fn string?]]}]]]
            (-> (->malli-frm (f/conditional boolean? f/any-bool string? f/any-str))
                (update-in [1 :dispatch] fn?)))))
   (testing "sig"

@@ -70,8 +70,9 @@
                                                         ;; in CTIM where the predicate does not match the same values as the schema.
                                                         ;; e.g., (f/conditional #(= false %) f/any-bool)
                                                         ;; should be (f/conditional #(= false %) (f/enum false))
-                                                        (m/form [:and {::if-this-fails-see :flanders.malli/->malli} s [:fn (nth tests i)]]
-                                                                opts))]))
+                                                        (m/form [:and {::if-this-fails-see :flanders.malli/->malli}
+                                                                 s
+                                                                 [:fn (nth tests i)]]))]))
                 choice-schemas))
         (let [s (m/schema (into [:or] choice-schemas))]
           (if key?
