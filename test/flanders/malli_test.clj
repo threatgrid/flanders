@@ -7,6 +7,7 @@
             [flanders.core :as f]
             [flanders.malli :as fm]
             [malli.core :as m]
+            [malli.generator :as mg]
             [malli.swagger :as ms]
             [malli.util :as mu]))
 
@@ -98,11 +99,20 @@
            (->malli-frm (f/either :choices [(f/bool) (f/str)]))))
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:or :boolean :string] :any]]]
            (->malli-frm (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)])))))
+  (testing "conditional"
+    (is (= [:multi {:dispatch true} [0 :boolean]]
+           (-> (->malli-frm (f/conditional boolean? f/any-bool))
+               (update-in [1 :dispatch] fn?))))
+    (is (= [:multi {:dispatch true} [0 :boolean] [1 :string]]
+           (-> (->malli-frm (f/conditional boolean? f/any-bool string? f/any-str))
+               (update-in [1 :dispatch] fn?)))))
   (testing "sig"
     (is (= [:=> [:cat :int] :int]
            (->malli-frm (f/sig :parameters [(f/int)] :return (f/int)))))
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:=> [:cat :int] :int] :any]]]
-           (->malli-frm (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)]))))))
+           (->malli-frm (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)])))))
+
+  )
 
 (deftest test-valid-schema
   (is (= [:map {:closed true
@@ -231,9 +241,17 @@
         (fm/->malli (f/conditional
                       boolean? f/any-bool))
         false))
-  ;;FIXME should add tests to schema
   (is (not (m/validate
-             ;;TODO
              (fm/->malli (f/conditional
                            (constantly false) f/any-bool))
-             false))))
+             false)))
+  ;;TODO examples will be wrong if predicate doesn't exactly match schema.
+  ;; could solve this probabilistically or throw an error.
+  #_ 
+  (is (false? (fm/->malli (f/conditional
+                            (constantly false) f/any-bool))))
+  (is (thrown-with-msg? Exception
+                        #":malli\.generator/and-generator-failure"
+                        (mg/generate (fm/->malli (f/conditional
+                                                   (constantly false) f/any-bool))))))
+

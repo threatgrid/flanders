@@ -13,54 +13,43 @@ on:
 
 jobs:
   setup:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@3.7
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
-          lein: 2.9.8
+          lein: 2.11.2
       - name: Cache project dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.m2/repository
             ~/.gitlibs
           key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
           restore-keys: |
-            ${{ runner.os }}-clojure
+            ${{ runner.os }}-clojure-
       - name: Warm deps cache
         run: |
           for i in {1..10}; do lein deps :tree && break; done
-      - id: set-matrix
-        run: |
-          set -x
-          case "${GITHUB_EVENT_NAME}" in
-            #scheduled)
-            #  echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
-            # ;;
-            *)
-              echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
-              ;;
-          esac
   lint:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Install Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '8'
+          java-version: '21'
 
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@12.1
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
-          clj-kondo: '2023.12.15'
+          clj-kondo: '2024.09.27'
 
       - name: Check clojure code
         run:
@@ -68,36 +57,33 @@ jobs:
   test:
     needs: setup
     strategy:
-      matrix: ${{fromJson(needs.setup.outputs.matrix)}}
-    runs-on: ubuntu-20.04
+      matrix:
+        jdk: ["21" "22"]
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Cache project dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.m2/repository
             ~/.gitlibs
           key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
           restore-keys: |
-            ${{ runner.os }}-clojure
+            ${{ runner.os }}-clojure-
       - name: Prepare java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: ${{ matrix.jdk }}
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@3.7
+        uses: DeLaGuardo/setup-clojure@12.5
         with:
-          lein: 2.9.8
-      - run: |
-          set -x
-          eval 'lein do clean, compile :all, ${CMD}'
-        env:
-          CMD: ${{ matrix.cmd }}
+          lein: 2.11.2
+      - run: lein do clean, compile :all, test
   all-pr-checks:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [test, lint]
     steps:
       - run: echo "All tests pass!"

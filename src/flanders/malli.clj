@@ -42,14 +42,33 @@
   ;; Branches
 
   EitherType
-  (->malli' [{:keys [choices key?]} opts]
-    ;;TODO `choices` allows dispatch like :multi, but they're in the wrong format
+  (->malli' [{:keys [tests choices key?]} opts]
+    ;; e.g., (f/conditional #(= false %) f/any-bool) will choose true as an example
     (let [f #(->malli' % opts)
-          choice-schemas (map f choices)
-          s (m/schema (into [:or] choice-schemas))]
-      (if key?
-        {:op :default-key :schema s}
-        s)))
+          ;; note: if test is more narrow than the choice, the example will be wrong.
+          choice-schemas (eduction (map f) choices)
+          g (gensym)]
+      (if-some [tests (some-> (not-empty tests) vec)]
+        (let [ntests (count tests)]
+          (into [:multi {:dispatch (fn [v]
+                                     (or (some #(when ((nth tests %) v) %) (range ntests))
+                                         :dispatch-failed))}]
+                (map-indexed (fn [i s]
+                               [i (let [s (m/schema s opts)]
+                                    (m/-update-properties s assoc :gen/schema
+                                                          ;; :multi assumes schemas for generators passes preds, must assert
+                                                          ;; explicitly. :and + :fn could fail, but throws an error pointing
+                                                          ;; to this schema, so putting a property to help debugging.
+                                                          ;; if you find yourself here, trying looking for `conditional` schemas
+                                                          ;; in CTIM where the predicate does not match the same values as the schema.
+                                                          ;; e.g., (f/conditional #(= false %) f/any-bool)
+                                                          ;; should be (f/conditional #(= false %) (f/enum false))
+                                                          [:and {::if-this-fails-see :flanders.malli/->malli} s [:fn (nth tests i)]]))]))
+                choice-schemas))
+        (let [s (m/schema (into [:or] choice-schemas))]
+          (if key?
+            {:op :default-key :schema s}
+            s)))))
 
   MapEntry
   (->malli' [{:keys [key type required? key?] :as entry} opts]

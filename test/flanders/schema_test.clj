@@ -160,6 +160,7 @@
   (is (= {:example "a" :description "Str"} (->swagger (f/enum #{"b" "c" "a"} :description "Str"))))
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
 
+;; idea: convert EitherType => s/conditional using preconditions
 (deftest conditional-test
   (is (nil? (s/check
               (fs/->schema (f/conditional
