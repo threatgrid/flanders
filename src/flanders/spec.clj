@@ -63,7 +63,9 @@
   ;; Branches
 
   EitherType
-  (->spec' [{:keys [choices]} ns f]
+  (->spec' [{:keys [tests choices]} ns f]
+    (when (seq tests)
+      (throw (ex-info (str "WARNING: "))))
     (let [choices (->> choices
                        (map-indexed
                         (fn [i c]
