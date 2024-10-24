@@ -4,7 +4,7 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :pedantic? :abort
-  :dependencies [[org.clojure/clojure "1.11.3"]
+  :dependencies [[org.clojure/clojure "1.11.4"]
                  [org.clojure/core.match "1.0.0"]
                  [cheshire "5.9.0"]
 
@@ -24,4 +24,5 @@
 
   :profiles {:dev
              {:dependencies [[org.clojure/test.check "1.1.1"]
-                             [metosin/malli "0.13.0"]]}})
+                             [metosin/malli "0.16.4"]
+                             [prismatic/schema-generators "0.1.5" :exclusions [prismatic/schema]]]}})

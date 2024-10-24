@@ -6,7 +6,8 @@
    [flanders.schema :as fs]
    [ring.swagger.json-schema :as js]
    [schema.core :as s]
-   [schema-tools.core :as st]))
+   [schema-tools.core :as st]
+   [schema-generators.generators :as sg]))
 
 (deftest test-valid-schema
   (is
@@ -159,3 +160,38 @@
   (is (= {:example "string" :description "Str"} (->swagger (assoc f/any-str :description "Str"))))
   (is (= {:example "a" :description "Str"} (->swagger (f/enum #{"b" "c" "a"} :description "Str"))))
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
+
+(deftest conditional-test
+  (testing "predicates that return true for false work"
+    (is (nil? (s/check
+                (fs/->schema (f/conditional
+                               :else f/any-bool))
+                false)))
+    (is (nil? (s/check
+                (fs/->schema (f/conditional
+                               false? (f/bool :equals false)))
+                false))))
+  (testing "predicates that return true for nil work"
+    (is (nil? (s/check
+                (fs/->schema (f/conditional
+                               :else f/any))
+                nil)))
+    (is (nil? (s/check
+                (fs/->schema (f/conditional
+                               nil? f/any))
+                nil))))
+  (testing "predicates that return false for false and nil work"
+    (is (s/check
+          (fs/->schema (f/conditional
+                         (constantly false) f/any))
+          false))
+    (is (s/check
+          (fs/->schema (f/conditional
+                         (constantly false) f/any))
+          nil)))
+  (testing "condition predicates are taken into account in generators"
+    (is (thrown-with-msg? Exception
+                          #"Couldn't satisfy such-that predicate"
+                          (sg/generate
+                            (fs/->schema (f/conditional
+                                           (constantly false) f/any-bool)))))))

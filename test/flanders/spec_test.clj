@@ -1,5 +1,6 @@
 (ns flanders.spec-test
   (:require
+   [clojure.string :as str]
    [clojure.core.match :refer [match]]
    [clojure.spec.alpha :as s]
    [clojure.spec.test.alpha :as stest]
@@ -12,8 +13,8 @@
 (use-fixtures :once
   (fn [t]
     (stest/instrument 'fs/->spec)
-    (t)
-    (stest/unstrument 'fs/->spec)))
+    (try (t)
+         (finally (stest/unstrument 'fs/->spec)))))
 
 (deftest test-valid-spec
   (is
@@ -139,3 +140,42 @@
          (s/form (fs/->spec (f/bool :equals true) "bool"))))
   (is (= #{false}
          (s/form (fs/->spec (f/bool :equals false) "bool")))))
+
+(deftest conditional-test
+  (testing "predicates that return true for false work"
+    (is (s/valid?
+          (fs/->spec (f/conditional
+                        boolean? f/any-bool)
+                     (str `conditional-test))
+          false))
+    (is (s/valid?
+          (fs/->spec (f/conditional
+                        false? (f/bool :equals false))
+                     (str "conditional-test"))
+          false)))
+  (testing "predicates that return true for nil work"
+    (is (s/valid?
+          (fs/->spec (f/conditional
+                       nil? f/any)
+                     (str "conditional-test"))
+          nil)))
+  (testing "predicates that return false for false and nil work"
+    (is (not (s/valid?
+               (fs/->spec (f/conditional
+                            (constantly false) f/any)
+                          (str "conditional-test"))
+               false)))
+    (is (not (s/valid?
+               (fs/->spec (f/conditional
+                            (constantly false) f/any)
+                          (str "conditional-test"))
+               nil))))
+  (testing "condition predicates are taken into account in generators"
+    (is (s/exercise (fs/->spec (f/conditional
+                                 :else f/any-bool)
+                               "conditional-test")))
+    (is (thrown-with-msg? Exception
+                          #":spec\.generator/and-generator-failure"
+                          (s/exercise (fs/->spec (f/conditional
+                                                   (constantly false) f/any-bool)
+                                                 "conditional-test"))))))

@@ -1,5 +1,6 @@
 (ns flanders.malli-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [clojure.string :as str]
+            [clojure.test :refer [deftest is testing]]
             [clojure.walk :as w]
             [flanders.examples
              :refer [Example
@@ -7,6 +8,7 @@
             [flanders.core :as f]
             [flanders.malli :as fm]
             [malli.core :as m]
+            [malli.generator :as mg]
             [malli.swagger :as ms]
             [malli.util :as mu]))
 
@@ -98,6 +100,24 @@
            (->malli-frm (f/either :choices [(f/bool) (f/str)]))))
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:or :boolean :string] :any]]]
            (->malli-frm (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)])))))
+  (testing "conditional"
+    (is (= [:multi {:dispatch true}
+            [0 [:boolean #:gen{:schema
+                               [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
+                                ;; FIXME nil due to form-no-swagger in this namespace
+                                [:boolean nil]
+                                [:fn boolean?]]}]]]
+           (-> (->malli-frm (f/conditional boolean? f/any-bool))
+               (update-in [1 :dispatch] fn?))))
+    (is (= [:multi {:dispatch true}
+            [0 [:boolean #:gen{:schema [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
+                                        [:boolean nil] ;; FIXME nil due to form-no-swagger in this namespace
+                                        [:fn boolean?]]}]]
+            [1 [:string #:gen{:schema [:and #:flanders.malli{:if-this-fails-see :flanders.malli/->malli}
+                                       [:string nil]
+                                       [:fn string?]]}]]]
+           (-> (->malli-frm (f/conditional boolean? f/any-bool string? f/any-str))
+               (update-in [1 :dispatch] fn?)))))
   (testing "sig"
     (is (= [:=> [:cat :int] :int]
            (->malli-frm (f/sig :parameters [(f/int)] :return (f/int)))))
@@ -225,3 +245,45 @@
          (-> Example
              fm/->malli
              ms/transform))))
+
+(deftest conditional-test
+  (testing "predicates that return true for false work"
+    (is (m/validate
+          (fm/->malli (f/conditional
+                        boolean? f/any-bool))
+          false))
+    (is (m/validate
+          (fm/->malli (f/conditional
+                        false? (f/bool :equals false)))
+          false)))
+  (testing "predicates that return true for nil work"
+    (with-out-str ;; suppress expected warning on conditions
+      (is (m/validate
+            (fm/->malli (f/conditional
+                          nil? f/any))
+            nil))))
+  (testing "predicates that return false for false and nil work"
+    (with-out-str ;; suppress expected warning on conditions
+      (is (not (m/validate
+                 (fm/->malli (f/conditional
+                               (constantly false) f/any))
+                 false)))
+      (is (not (m/validate
+                 (fm/->malli (f/conditional
+                               (constantly false) f/any))
+                 nil)))))
+  (testing "warning if predicate and schema disagree"
+    (is (str/starts-with?
+          (binding [*print-length* nil
+                    *print-level* nil
+                    *print-namespace-maps* false]
+            (with-out-str
+              (fm/->malli (f/conditional
+                            false? f/any-bool))))
+          "[flanders.malli] WARNING: generated example for [:boolean {:json-schema/example true}] does not satisfy guard: clojure.core$false_QMARK")))
+  (testing "condition predicates are taken into account in generators"
+    (is (thrown-with-msg? Exception
+                          #":malli\.generator/and-generator-failure"
+                          (with-out-str ;; suppress expected generated example warning
+                                        (mg/generate (fm/->malli (f/conditional
+                                                                   (constantly false) f/any-bool))))))))

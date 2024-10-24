@@ -63,13 +63,17 @@
   ;; Branches
 
   EitherType
-  (->spec' [{:keys [choices]} ns f]
+  (->spec' [{:keys [tests choices]} ns f]
     (let [choices (->> choices
                        (map-indexed
                         (fn [i c]
                           (let [label (str "choice" i)
                                 spec (f c (str ns "." label))]
-                            (eval `(s/def ~(keyword ns label) ~spec))
+                            (prn spec)
+                            (eval `(s/def ~(keyword ns label) ~(if-some [t (nth tests i nil)]
+                                                                 ;;hmm this doesn't s/exercise 
+                                                                 `(s/and ~spec ~t)
+                                                                 spec)))
                             (assoc c
                                    :label (keyword label)
                                    :spec spec)))))
