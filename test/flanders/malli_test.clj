@@ -122,12 +122,7 @@
     (is (= [:=> [:cat :int] :int]
            (->malli-frm (f/sig :parameters [(f/int)] :return (f/int)))))
     (is (= [:map {:closed true} [:malli.core/default [:map-of [:=> [:cat :int] :int] :any]]]
-           (->malli-frm (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)])))))
-  )
-
-(m/form [:and {::if-this-fails-see :flanders.malli/->malli} [:boolean {:json-schema/example true}] [:fn any?]])
-(m/form [:schema {:gen/schema [:and {::if-this-fails-see :flanders.malli/->malli} (m/schema [:boolean {:json-schema/example true}]) [:fn any?]]}
-         any?])
+           (->malli-frm (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)]))))))
 
 (deftest test-valid-schema
   (is (= [:map {:closed true
