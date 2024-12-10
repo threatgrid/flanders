@@ -11,7 +11,7 @@
     (string? k) k
     :else (throw (ex-info "Cannot normalize" {:k k}))))
 
-(defrecord JSONSchemaRef [s])
+(defrecord JSONSchemaRef [v opts])
 
 ;https://datatracker.ietf.org/doc/html/rfc6901
 (defn resolve-ref [v opts]
@@ -23,25 +23,35 @@
   (cond
     ;; TODO "default", "example", "description", "title"
     (map? v) (let [{:strs [$defs $dynamicAnchor $dynamicRef $id $vocabulary $schema]} (update-keys v -normalize)
+                   ;; TODO
                    _ (when $schema (assert (= "http://json-schema.org/draft-07/schema#" $schema) (pr-str $schema)))
-                   _ (assert (not $dynamicAnchor))
-                   _ (assert (not $dynamicRef))
-                   _ (assert (not $id))
+                   _ (assert (not $dynamicAnchor)) ;; TODO
+                   _ (assert (not $dynamicRef)) ;; TODO
                    $defs (some-> $defs (update-keys -normalize))
-                   opts (update opts ::defs (fnil into {})
-                                (map (fn [[k v]]
-                                       (prn "kv" k v)
-                                       [(-normalize k) (->flanders v opts)]))
-                                $defs)]
+                   opts (-> opts
+                            (update ::base-id (fn [parent-id]
+                                                ;; TODO subschemas start new id https://json-schema.org/draft/2020-12/json-schema-core#section-8.2.1
+                                                (when (and parent-id $id)
+                                                  (throw (ex-info "$id only supported at top-level" {})))
+                                                (or $id parent-id
+                                                    ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
+                                                    (throw (ex-info "Must supply $id" {})))))
+                            (as-> opts
+                              (update opts ::defs (fnil into {})
+                                      (map (fn [[k v]]
+                                             (let [k (-normalize k)]
+                                               [(-normalize k)
+                                                (->flanders v (update opts ::path (fnil conj []) "$defs" k))])))
+                                      $defs)))]
                (or ;; https://datatracker.ietf.org/doc/html/draft-pbryan-zyp-json-ref-03#section-3
                    (when (get v "$ref")
-                     (->JSONSchemaRef v))
+                     (->JSONSchemaRef v opts))
                    (when-some [disjuncts (get v "anyOf")]
-                     (f/either :choices (mapv #(->flanders % opts) disjuncts)))
+                     (f/either :choices (into [] (map-indexed #(->flanders %2 (update opts ::path (fnil conj []) "anyOf" %1))) disjuncts)))
                    (when-some [conjuncts (get v "allOf")]
                      (when-not (= 1 (count conjuncts))
                        (throw (ex-info "Only a single allOf schema supported" {})))
-                     (->flanders (first conjuncts) opts))
+                     (->flanders (first conjuncts) (update opts ::path (fnil conj []) "allOf" 0)))
                    (case (-normalize (doto (get v "type") prn))
                      "integer" (if-some [enum (seq (get v "enum"))]
                                  (f/enum (mapv long enum))
@@ -49,12 +59,15 @@
                      "number" (if-some [enum (seq (get v "enum"))]
                                 (f/enum (mapv num enum))
                                 (f/num))
-                     "string" (if-some [enum (seq (get v "enum"))]
-                                (f/enum (mapv -normalize enum))
-                                (f/str))
+                     "string" (let [{fmt "format" :strs [enum]} v]
+                                (assert (not fmt) (pr-str fmt))
+                                (if (seq enum)
+                                  (f/enum (mapv -normalize enum))
+                                  (f/str)))
                      "null" (throw (ex-info "Flanders cannot check for nil" {}))
-                     "array" (let [{:strs [items]} v]
-                               (f/seq-of (->flanders items opts)))
+                     "array" (let [{:strs [items uniqueItems]} v]
+                               (assert (not uniqueItems))
+                               (f/seq-of (->flanders items (update opts ::path (fnil conj []) "items"))))
                      "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                     required (not-empty (into #{} (map keyword) (get v "required")))
                                     additionalProperties (some-> (get v "additionalProperties") (->flanders opts))]
@@ -62,7 +75,13 @@
                                   (throw (ex-info "Cannot combine properties and additionalProperties" {})))
                                 (if properties
                                   (f/map (mapv (fn [[k s]]
-                                                 (f/entry k (->flanders s opts) :required? (contains? required k)))
-                                               properties))
-                                  (f/map-of))))))
+                                                 (f/entry k (->flanders s (update opts ::path (fnil conj []) (-normalize k))
+                                                                        :required? (contains? required k)))
+                                                 properties)))
+                                  (assert nil "TODO f/map-of")
+                                  #_(f/map-of)))
+                     nil)
+                   (when-some [enum (seq (get v "enum"))]
+                     (f/enum (mapv -normalize enum)))
+                   (throw (ex-info "Unknown JSON Schema" {:v v}))))
     :else (throw (ex-info "Unknown JSON Schema" {:v v}))))
