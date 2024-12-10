@@ -97,7 +97,9 @@
                             (when-some [this-id (some-> $ref (resolve-id opts))]
                               (when (contains? (::seen opts) this-id)
                                 (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
-                              (or (get-in opts [::defs this-id])
+                              (or ;; TODO assoc other fields from v at this level
+                                  ;; TODO ref object?
+                                  (get-in opts [::defs this-id])
                                   (throw (ex-info "Could not resolve id" {:absolute-id this-id :relative-id $ref}))))
                             (when-some [disjuncts (get v "anyOf")]
                               (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" %1))) disjuncts)))
