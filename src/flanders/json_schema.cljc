@@ -1,5 +1,6 @@
 (ns flanders.json-schema
-  (:require [flanders.core :as f]))
+  (:require [clojure.string :as str]
+            [flanders.core :as f]))
 
 (defn- -normalize
   "normalize to string"
@@ -13,8 +14,30 @@
 
 (defrecord JSONSchemaRef [v opts])
 
+(defn resolve-id [{::keys [base-id]} id]
+  (assert (string? base-id))
+  (cond
+    (str/starts-with? id "#") (str/replace-first id "#" base-id)
+    :else (throw (ex-info (str "Unresolvable id: " id) {:id id})))
+  )
+
+(comment
+  (resolve-id {::base-id "https://schema.ocsf.io/schema/classes/security_finding"}
+              "#/$defs/fingerprint")
+  (resolve-id {::base-id "https://schema.ocsf.io/schema/classes/security_finding"}
+              "#")
+  )
+
 ;https://datatracker.ietf.org/doc/html/rfc6901
 (defn resolve-ref [v opts]
+  )
+
+(defn absolute-id [{::keys [base-id path] :as opts}]
+  (str base-id (when (seq path) (str \# (str/join "/" path)))))
+
+(comment
+  (absolute-id {::base-id "https://schema.ocsf.io/schema/classes/security_finding"
+                ::path ["$defs" "fingerprint"]})
   )
 
 (defn ->flanders
@@ -25,8 +48,8 @@
     (map? v) (let [{:strs [$defs $dynamicAnchor $dynamicRef $id $vocabulary $schema]} (update-keys v -normalize)
                    ;; TODO
                    _ (when $schema (assert (= "http://json-schema.org/draft-07/schema#" $schema) (pr-str $schema)))
-                   _ (assert (not $dynamicAnchor)) ;; TODO
-                   _ (assert (not $dynamicRef)) ;; TODO
+                   _ (assert (nil? $dynamicAnchor)) ;; TODO
+                   _ (assert (nil? $dynamicRef)) ;; TODO
                    $defs (some-> $defs (update-keys -normalize))
                    opts (-> opts
                             (update ::base-id (fn [parent-id]
@@ -39,7 +62,8 @@
                             (as-> opts
                               (update opts ::defs (fnil into {})
                                       (map (fn [[k v]]
-                                             (let [k (-normalize k)]
+                                             (let [{::keys [base-id path]} opts
+                                                   k (-normalize k)]
                                                [(-normalize k)
                                                 (->flanders v (update opts ::path (fnil conj []) "$defs" k))])))
                                       $defs)))]
@@ -60,13 +84,13 @@
                                 (f/enum (mapv num enum))
                                 (f/num))
                      "string" (let [{fmt "format" :strs [enum]} v]
-                                (assert (not fmt) (pr-str fmt))
+                                (assert (nil? fmt) (pr-str fmt))
                                 (if (seq enum)
                                   (f/enum (mapv -normalize enum))
                                   (f/str)))
                      "null" (throw (ex-info "Flanders cannot check for nil" {}))
                      "array" (let [{:strs [items uniqueItems]} v]
-                               (assert (not uniqueItems))
+                               (assert (nil? uniqueItems))
                                (f/seq-of (->flanders items (update opts ::path (fnil conj []) "items"))))
                      "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                     required (not-empty (into #{} (map keyword) (get v "required")))
@@ -82,6 +106,7 @@
                                   #_(f/map-of)))
                      nil)
                    (when-some [enum (seq (get v "enum"))]
-                     (f/enum (mapv -normalize enum)))
+                     (f/enum (cond-> enum
+                               (some (some-fn ident? string?) enum) (mapv -normalize))))
                    (throw (ex-info "Unknown JSON Schema" {:v v}))))
     :else (throw (ex-info "Unknown JSON Schema" {:v v}))))
