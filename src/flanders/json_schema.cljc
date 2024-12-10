@@ -115,7 +115,7 @@
                                                                                         (let [{the-ref :v :keys [id]} v]
                                                                                           (if (seen id)
                                                                                             (throw (ex-info "Recursive schemas not supported" {:id id :seen seen}))
-                                                                                            (resolve-refs {:schema (resolve-ref the-ref opts)} (update opts ::seen conj id))))
+                                                                                            (resolve-refs {:schema (resolve-ref the-ref opts)} (update opts ::seen (fnil conj #{}) id))))
                                                                                         v))))))
                                                                parsed-defs))]
                                       (into (or outer-defs {})
