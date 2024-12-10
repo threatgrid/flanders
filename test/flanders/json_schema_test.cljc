@@ -178,5 +178,4 @@
 
 (deftest ocsf-test
   (is (= nil
-         (sut/->flanders (security-finding-json) nil)))
-  )
+         (sut/->flanders (security-finding-json) nil))))

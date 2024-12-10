@@ -1,7 +1,8 @@
 (ns flanders.json-schema
   (:require [clojure.string :as str]
             [clojure.set :as set]
-            [flanders.core :as f]))
+            [flanders.core :as f]
+            [clojure.walk :as w]))
 
 (defn- -normalize
   "normalize to string"
@@ -12,8 +13,6 @@
     (symbol? k) (str k)
     (string? k) k
     :else (throw (ex-info "Cannot normalize" {:k k}))))
-
-(defrecord JSONSchemaRef [v opts])
 
 (defn resolve-id [id {::keys [base-id]}]
   (assert (string? base-id))
@@ -29,8 +28,16 @@
   )
 
 ;https://datatracker.ietf.org/doc/html/rfc6901
-(defn resolve-ref [id opts]
-  )
+;https://datatracker.ietf.org/doc/html/draft-pbryan-zyp-json-ref-03#section-3
+(defn resolve-ref [{:strs [$ref] :as v} opts]
+  (let [this-id (resolve-id $ref opts)]
+    (when (contains? (::seen opts) this-id)
+      (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
+    (or ;; TODO assoc other fields from v at this level
+        ;; TODO ref object?
+        (get-in opts [::defs this-id])
+        (throw (ex-info (str "Could not resolve id: " this-id)
+                        {:current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref})))))
 
 (defn absolute-id [{::keys [base-id path] :as opts}]
   (assert base-id)
@@ -61,6 +68,25 @@
 (defn unknown-schema! [v {::keys [path] :as opts}]
   (throw (ex-info (format "Unknown JSON Schema at path %s: %s" (pr-str path) (pr-str v)) {:v v :opts (select-keys opts [::path ::base-id])})))
 
+(defn- dirty-tree-walk-collect-refs [v opts]
+  (let [refs (volatile! #{})]
+    (w/postwalk (fn [v]
+                  (when (map? v)
+                    (when-some [$ref (get v "$ref")]
+                      (vswap! refs conj $ref)))
+                  v))
+    @refs))
+
+(defn- topologically-sort-defs
+  "Attempt to topologically sort defs by refs. If this fails, a runtime
+  error will be thrown at $ref parsing because a $def is not in scope.
+  This either means there's (mutually) recursive schemas (which we don't support)
+  or this algorithm could be improved. This function helps us not have to introduce
+  a new flanders type for an unresolved ref."
+  [defs]
+  (let []
+    ))
+
 (defn ->flanders
   "Converts parsed JSON Schema to Flanders."
   [v opts]
@@ -84,7 +110,7 @@
                           (update ::defs
                                   (fn [defs]
                                     (let [defs (or defs {})
-                                          $defs (normalize-map $defs)]
+                                          $defs (-> $defs normalize-map (update-vals normalize-map) topologically-sort-defs)]
                                       (when-some [clashes (seq (set/intersection (-> defs keys set)
                                                                                  (-> $defs keys set)))]
                                         (throw (ex-info "Clashing $def's" {:clashes clashes})))
@@ -95,14 +121,15 @@
                                                      [this-id
                                                       (->flanders v (update opts ::seen (fnil conj #{}) this-id))])))
                                             $defs)))))
-                   base (or ;; https://datatracker.ietf.org/doc/html/draft-pbryan-zyp-json-ref-03#section-3
+                   base (or (when $ref (resolve-ref v opts))
                             (when-some [this-id (some-> $ref (resolve-id opts))]
                               (when (contains? (::seen opts) this-id)
                                 (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
                               (or ;; TODO assoc other fields from v at this level
                                   ;; TODO ref object?
                                   (get-in opts [::defs this-id])
-                                  (throw (ex-info "Could not resolve id" {:absolute-id this-id :relative-id $ref}))))
+                                  (throw (ex-info (str "Could not resolve id: " this-id)
+                                                  {:current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref}))))
                             (when-some [disjuncts (get v "anyOf")]
                               (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))) disjuncts)))
                             (when-some [conjuncts (get v "allOf")]
@@ -127,15 +154,18 @@
                                         (f/seq-of (->flanders items (conj-path opts "items"))))
                               "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                              required (not-empty (into #{} (map keyword) (get v "required")))
-                                             additionalProperties (some-> (get v "additionalProperties") (->flanders opts))]
+                                             additionalProperties (get v "additionalProperties")]
+                                         (assert ((some-fn nil? boolean?) additionalProperties))
                                          (when (and additionalProperties (or properties required)) ;;TODO
                                            (throw (ex-info "Cannot combine properties and additionalProperties" {})))
                                          (if properties
                                            (f/map (mapv (fn [[k s]]
-                                                          (f/entry k (->flanders s (conj-path opts (-normalize k))) :required? (contains? required k))
-                                                          properties)))
-                                           (assert nil "TODO f/map-of")
-                                           #_(f/map-of)))
+                                                          (f/entry k (->flanders s (conj-path opts (-normalize k))) :required? (contains? required k)))
+                                                        properties))
+                                           
+                                           (if additionalProperties
+                                             (f/map-of {})
+                                             (assert nil (str "TODO closed map" (pr-str v))))))
                               nil)
                             (when-some [enum (seq (get v "enum"))]
                               (f/enum (cond-> enum
