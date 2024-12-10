@@ -2,7 +2,8 @@
   (:require [clojure.string :as str]
             [clojure.set :as set]
             [flanders.core :as f]
-            [clojure.walk :as w]))
+            [clojure.walk :as w]
+            [clojure.math.combinatorics :as comb]))
 
 (defn- -normalize
   "normalize to string"
@@ -35,9 +36,13 @@
       (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
     (or ;; TODO assoc other fields from v at this level
         ;; TODO ref object?
-        (get-in opts [::defs this-id])
+        (when-some [s (get-in opts [::defs this-id])]
+          (if (fn? s)
+            (s) ;; block until defined
+            s))
         (throw (ex-info (str "Could not resolve id: " this-id)
-                        {:current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref})))))
+                        {::error :unresolved-ref
+                         :current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref})))))
 
 (defn absolute-id [{::keys [base-id path] :as opts}]
   (assert base-id)
@@ -68,25 +73,6 @@
 (defn unknown-schema! [v {::keys [path] :as opts}]
   (throw (ex-info (format "Unknown JSON Schema at path %s: %s" (pr-str path) (pr-str v)) {:v v :opts (select-keys opts [::path ::base-id])})))
 
-(defn- dirty-tree-walk-collect-refs [v opts]
-  (let [refs (volatile! #{})]
-    (w/postwalk (fn [v]
-                  (when (map? v)
-                    (when-some [$ref (get v "$ref")]
-                      (vswap! refs conj $ref)))
-                  v))
-    @refs))
-
-(defn- topologically-sort-defs
-  "Attempt to topologically sort defs by refs. If this fails, a runtime
-  error will be thrown at $ref parsing because a $def is not in scope.
-  This either means there's (mutually) recursive schemas (which we don't support)
-  or this algorithm could be improved. This function helps us not have to introduce
-  a new flanders type for an unresolved ref."
-  [defs]
-  (let []
-    ))
-
 (defn ->flanders
   "Converts parsed JSON Schema to Flanders."
   [v opts]
@@ -107,29 +93,29 @@
                                                      (throw (ex-info "Must supply $id" {})))))
                    opts (cond-> opts
                           (seq $defs)
+                          ;; simpler if we supported refs in flanders
                           (update ::defs
-                                  (fn [defs]
-                                    (let [defs (or defs {})
-                                          $defs (-> $defs normalize-map (update-vals normalize-map) topologically-sort-defs)]
-                                      (when-some [clashes (seq (set/intersection (-> defs keys set)
-                                                                                 (-> $defs keys set)))]
-                                        (throw (ex-info "Clashing $def's" {:clashes clashes})))
-                                      (into defs
-                                            (map (fn [[k v]]
-                                                   (let [opts (conj-path opts "$defs" k)
-                                                         this-id (absolute-id opts)]
-                                                     [this-id
-                                                      (->flanders v (update opts ::seen (fnil conj #{}) this-id))])))
-                                            $defs)))))
+                                  (fn [outer-defs]
+                                    (let [err (volatile! nil)
+                                          parse-defs (fn [$defs]
+                                                       (try
+                                                         (into {} (map (fn [[k v]]
+                                                                         (let [id (resolve-id k opts)]
+                                                                           {id (->flanders v (conj-path opts "$defs" k))})))
+                                                               $defs)
+                                                         (catch Exception e
+                                                           (vreset! err e)
+                                                           (when-not (= :unresolved-ref (::error (ex-data e)))
+                                                             (throw e)))))]
+                                      (or (parse-defs $defs) ;; fast path
+                                          ;; try all other permutations
+                                          (->> $defs
+                                               vec
+                                               comb/permutations
+                                               (pmap parse-defs)
+                                               (some identity))
+                                          (throw @err))))))
                    base (or (when $ref (resolve-ref v opts))
-                            (when-some [this-id (some-> $ref (resolve-id opts))]
-                              (when (contains? (::seen opts) this-id)
-                                (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
-                              (or ;; TODO assoc other fields from v at this level
-                                  ;; TODO ref object?
-                                  (get-in opts [::defs this-id])
-                                  (throw (ex-info (str "Could not resolve id: " this-id)
-                                                  {:current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref}))))
                             (when-some [disjuncts (get v "anyOf")]
                               (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))) disjuncts)))
                             (when-some [conjuncts (get v "allOf")]

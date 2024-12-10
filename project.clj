@@ -6,11 +6,10 @@
   :pedantic? :abort
   :dependencies [[org.clojure/clojure "1.11.3"]
                  [org.clojure/core.match "1.0.0"]
-                 [cheshire "5.9.0"]
-
                  [prismatic/schema "1.2.0"]
                  [metosin/ring-swagger "1.0.0"]
-                 [metosin/schema-tools "0.12.3"]]
+                 [metosin/schema-tools "0.12.3"]
+                 [org.clojure/math.combinatorics "0.3.0"]]
   :global-vars {*warn-on-reflection* true}
   :release-tasks [["clean"]
                   ["vcs" "assert-committed"]
@@ -24,5 +23,6 @@
 
   :profiles {:dev
              {:dependencies [[org.clojure/test.check "1.1.1"]
+                             [cheshire "5.9.0"]
                              [metosin/malli "0.13.0"]]
               :resource-paths ["test-resources"]}})
