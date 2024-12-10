@@ -93,22 +93,31 @@
                           ;; simpler if we supported refs in flanders
                           (update ::defs
                                   (fn [outer-defs]
-                                    (let [parsed-defs (into {} (map (fn [[k v]]
-                                                                      (let [opts (conj-path opts "$defs" k)
-                                                                            id (absolute-id opts)]
-                                                                        {id (->flanders v (assoc opts ::resolve-ref (fn [v opts] (->FlandersRef id v))))})))
-                                                            $defs)
+                                    (let [parsed-defs (reduce-kv (fn [{:keys [parsed-defs opts]} k v]
+                                                                   (let [opts (conj-path opts "$defs" k)
+                                                                         id (absolute-id opts)
+                                                                         refs (atom #{})
+                                                                         s (->flanders v (assoc opts ::resolve-ref (fn [v opts]
+                                                                                                                     (or (get-in opts [::defs id])
+                                                                                                                         (do (swap! refs conj id)
+                                                                                                                             (->FlandersRef id v))))))]
+                                                                     {:parsed-defs (assoc parsed-defs id {:schema s :refs @refs})
+                                                                      :opts opts}))
+                                                                 {:parsed-defs {} :opts opts}
+                                                                 $defs)
                                           resolve-refs (fn resolve-refs [parsed-defs {::keys [seen] :as opts}]
-                                                         (w/postwalk (fn [v]
-                                                                       (if (instance? FlandersRef v)
-                                                                         (let [{the-ref :v :keys [id]} v]
-                                                                           (if (seen id)
-                                                                             (throw (ex-info "Recursive schemas not supported" {:id id :seen seen}))
-                                                                             (-> the-ref
-                                                                                 (resolve-ref opts)
-                                                                                 (resolve-refs (update opts ::seen conj id)))))
-                                                                         v))
-                                                                     parsed-defs))]
+                                                         (into {}
+                                                               (map (fn [[k {:keys [schema refs]}]]
+                                                                      (cond->> schema
+                                                                        (seq refs)
+                                                                        (w/postwalk (fn [v]
+                                                                                      (if (instance? FlandersRef v)
+                                                                                        (let [{the-ref :v :keys [id]} v]
+                                                                                          (if (seen id)
+                                                                                            (throw (ex-info "Recursive schemas not supported" {:id id :seen seen}))
+                                                                                            (resolve-refs {:schema (resolve-ref the-ref opts)} (update opts ::seen conj id))))
+                                                                                        v))))))
+                                                               parsed-defs))]
                                       (into (or outer-defs {})
                                             (resolve-refs parsed-defs (update opts ::seen #(or % #{}))))))))
                    base (or (when $ref
