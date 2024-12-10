@@ -62,8 +62,8 @@
   "Converts parsed JSON Schema to Flanders."
   [v opts]
   (cond
-    ;; TODO "default", "example", "description", "title"
-    (map? v) (let [{:strs [$ref $defs $dynamicAnchor $dynamicRef $id $vocabulary $schema]} (normalize-map v)
+    (map? v) (let [{:strs [description title example
+                           $ref $defs $dynamicAnchor $dynamicRef $id $vocabulary $schema]} (normalize-map v)
                    ;; TODO
                    _ (when $schema (assert (= "http://json-schema.org/draft-07/schema#" $schema) (pr-str $schema)))
                    _ (assert (nil? $dynamicAnchor)) ;; TODO
@@ -92,49 +92,57 @@
                                                        [this-id
                                                         (->flanders v (update opts ::seen (fnil conj #{}) this-id))])))
                                               $defs)))
-                                    $defs)))]
-               (or ;; https://datatracker.ietf.org/doc/html/draft-pbryan-zyp-json-ref-03#section-3
-                   (when-some [this-id (some-> $ref (resolve-id opts))]
-                     (when (contains? (::seen opts) this-id)
-                       (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
-                     (or (get-in opts [::defs this-id])
-                         (throw (ex-info "Could not resolve id" {:absolute-id this-id :relative-id $ref}))))
-                   (when-some [disjuncts (get v "anyOf")]
-                     (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" %1))) disjuncts)))
-                   (when-some [conjuncts (get v "allOf")]
-                     (when-not (= 1 (count conjuncts))
-                       (throw (ex-info "Only a single allOf schema supported" {})))
-                     (->flanders (first conjuncts) (conj-path opts "allOf" 0)))
-                   (case (-normalize (doto (get v "type") prn))
-                     "integer" (if-some [enum (seq (get v "enum"))]
-                                 (f/enum (mapv long enum))
-                                 (f/int))
-                     "number" (if-some [enum (seq (get v "enum"))]
-                                (f/enum (mapv num enum))
-                                (f/num))
-                     "string" (let [{fmt "format" :strs [enum]} v]
-                                (assert (nil? fmt) (pr-str fmt))
-                                (if (seq enum)
-                                  (f/enum (mapv -normalize enum))
-                                  (f/str)))
-                     "null" (throw (ex-info "Flanders cannot check for nil" {}))
-                     "array" (let [{:strs [items uniqueItems]} v]
-                               (assert (nil? uniqueItems))
-                               (f/seq-of (->flanders items (conj-path opts "items"))))
-                     "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
-                                    required (not-empty (into #{} (map keyword) (get v "required")))
-                                    additionalProperties (some-> (get v "additionalProperties") (->flanders opts))]
-                                (when (and additionalProperties (or properties required)) ;;TODO
-                                  (throw (ex-info "Cannot combine properties and additionalProperties" {})))
-                                (if properties
-                                  (f/map (mapv (fn [[k s]]
-                                                 (f/entry k (->flanders s (conj-path opts (-normalize k))) :required? (contains? required k))
-                                                 properties)))
-                                  (assert nil "TODO f/map-of")
-                                  #_(f/map-of)))
-                     nil)
-                   (when-some [enum (seq (get v "enum"))]
-                     (f/enum (cond-> enum
-                               (some (some-fn ident? string?) enum) (mapv -normalize))))
-                   (throw (ex-info "Unknown JSON Schema" {:v v}))))
+                                    $defs)))
+                   base (or ;; https://datatracker.ietf.org/doc/html/draft-pbryan-zyp-json-ref-03#section-3
+                            (when-some [this-id (some-> $ref (resolve-id opts))]
+                              (when (contains? (::seen opts) this-id)
+                                (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
+                              (or (get-in opts [::defs this-id])
+                                  (throw (ex-info "Could not resolve id" {:absolute-id this-id :relative-id $ref}))))
+                            (when-some [disjuncts (get v "anyOf")]
+                              (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" %1))) disjuncts)))
+                            (when-some [conjuncts (get v "allOf")]
+                              (when-not (= 1 (count conjuncts))
+                                (throw (ex-info "Only a single allOf schema supported" {})))
+                              (->flanders (first conjuncts) (conj-path opts "allOf" 0)))
+                            (case (-normalize (doto (get v "type") prn))
+                              "integer" (if-some [enum (seq (get v "enum"))]
+                                          (f/enum (mapv long enum))
+                                          (f/int))
+                              "number" (if-some [enum (seq (get v "enum"))]
+                                         (f/enum (mapv num enum))
+                                         (f/num))
+                              "string" (let [{fmt "format" :strs [enum]} v]
+                                         (assert (nil? fmt) (pr-str fmt))
+                                         (if (seq enum)
+                                           (f/enum (mapv -normalize enum))
+                                           (f/str)))
+                              "null" (throw (ex-info "Flanders cannot check for nil" {}))
+                              "array" (let [{:strs [items uniqueItems]} v]
+                                        (assert (nil? uniqueItems))
+                                        (f/seq-of (->flanders items (conj-path opts "items"))))
+                              "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
+                                             required (not-empty (into #{} (map keyword) (get v "required")))
+                                             additionalProperties (some-> (get v "additionalProperties") (->flanders opts))]
+                                         (when (and additionalProperties (or properties required)) ;;TODO
+                                           (throw (ex-info "Cannot combine properties and additionalProperties" {})))
+                                         (if properties
+                                           (f/map (mapv (fn [[k s]]
+                                                          (f/entry k (->flanders s (conj-path opts (-normalize k))) :required? (contains? required k))
+                                                          properties)))
+                                           (assert nil "TODO f/map-of")
+                                           #_(f/map-of)))
+                              nil)
+                            (when-some [enum (seq (get v "enum"))]
+                              (f/enum (cond-> enum
+                                        (some (some-fn ident? string?) enum) (mapv -normalize))))
+                            (throw (ex-info "Unknown JSON Schema" {:v v})))]
+               (cond-> base
+                 ;; TODO unit test
+                 description (assoc :description description)
+                 ;;TODO
+                 ;example (assoc :example example)
+                 ;default (assoc :default default)
+                 ;title (assoc :title title)
+                 ))
     :else (throw (ex-info "Unknown JSON Schema" {:v v}))))
