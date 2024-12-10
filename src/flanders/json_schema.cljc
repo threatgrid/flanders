@@ -35,7 +35,7 @@
       (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
     (or ;; TODO assoc other fields from v at this level
         (get-in opts [::defs this-id])
-        (throw (ex-info (str "Could not resolve id: " this-id)
+        (throw (ex-info (format "Could not resolve id %s at path %s" this-id (pr-str (::path v)))
                         {::error :unresolved-ref
                          :current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref})))))
 
@@ -158,7 +158,9 @@
                                            (if additionalProperties
                                              (f/map-of {})
                                              (assert nil (str "TODO closed map" (pr-str v))))))
-                              nil)
+                              ;; https://github.com/json-schema/json-schema/issues/172
+                              nil f/any
+                              (unknown-schema! v opts))
                             (when-some [enum (seq (get v "enum"))]
                               (f/enum (cond->> enum
                                         (some (some-fn ident? string?) enum) (into [] (map #(-normalize %2 (conj-path opts (str %))))))))
