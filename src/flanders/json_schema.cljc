@@ -58,6 +58,9 @@
                        (vswap! seen conj n)
                        n)))))
 
+(defn unknown-schema! [v {::keys [path] :as opts}]
+  (throw (ex-info (format "Unknown JSON Schema at path %s: %s" (pr-str path) (pr-str v)) {:v v :opts (select-keys opts [::path ::base-id])})))
+
 (defn ->flanders
   "Converts parsed JSON Schema to Flanders."
   [v opts]
@@ -68,31 +71,30 @@
                    _ (when $schema (assert (= "http://json-schema.org/draft-07/schema#" $schema) (pr-str $schema)))
                    _ (assert (nil? $dynamicAnchor)) ;; TODO
                    _ (assert (nil? $dynamicRef)) ;; TODO
-                   opts (as-> opts opts
-                          (update ::base-id (fn [parent-id]
-                                              ;; TODO subschemas start new id https://json-schema.org/draft/2020-12/json-schema-core#section-8.2.1
-                                              (when (and parent-id $id)
-                                                (throw (ex-info "$id only supported at top-level" {})))
-                                              (or $id parent-id
-                                                  ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
-                                                  (throw (ex-info "Must supply $id" {})))))
-                          (cond-> opts
-                            (seq $defs)
-                            (update opts ::defs
-                                    (fn [defs]
-                                      (let [defs (or defs {})
-                                            $defs (normalize-map $defs)]
-                                        (when-some [clashes (seq (set/intersection (-> defs keys set)
-                                                                                   (-> $defs keys set)))]
-                                          (throw (ex-info "Clashing $def's" {:clashes clashes})))
-                                        (into defs
-                                              (map (fn [[k v]]
-                                                     (let [opts (conj-path opts "$defs" k)
-                                                           this-id (absolute-id opts)]
-                                                       [this-id
-                                                        (->flanders v (update opts ::seen (fnil conj #{}) this-id))])))
-                                              $defs)))
-                                    $defs)))
+                   opts (update opts ::base-id (fn [parent-id]
+                                                 ;; TODO subschemas start new id https://json-schema.org/draft/2020-12/json-schema-core#section-8.2.1
+                                                 ;; need to reset ::path if we support this
+                                                 (when (and parent-id $id)
+                                                   (throw (ex-info "$id only supported at top-level" {})))
+                                                 (or $id parent-id
+                                                     ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
+                                                     (throw (ex-info "Must supply $id" {})))))
+                   opts (cond-> opts
+                          (seq $defs)
+                          (update ::defs
+                                  (fn [defs]
+                                    (let [defs (or defs {})
+                                          $defs (normalize-map $defs)]
+                                      (when-some [clashes (seq (set/intersection (-> defs keys set)
+                                                                                 (-> $defs keys set)))]
+                                        (throw (ex-info "Clashing $def's" {:clashes clashes})))
+                                      (into defs
+                                            (map (fn [[k v]]
+                                                   (let [opts (conj-path opts "$defs" k)
+                                                         this-id (absolute-id opts)]
+                                                     [this-id
+                                                      (->flanders v (update opts ::seen (fnil conj #{}) this-id))])))
+                                            $defs)))))
                    base (or ;; https://datatracker.ietf.org/doc/html/draft-pbryan-zyp-json-ref-03#section-3
                             (when-some [this-id (some-> $ref (resolve-id opts))]
                               (when (contains? (::seen opts) this-id)
@@ -102,11 +104,11 @@
                                   (get-in opts [::defs this-id])
                                   (throw (ex-info "Could not resolve id" {:absolute-id this-id :relative-id $ref}))))
                             (when-some [disjuncts (get v "anyOf")]
-                              (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" %1))) disjuncts)))
+                              (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))) disjuncts)))
                             (when-some [conjuncts (get v "allOf")]
                               (when-not (= 1 (count conjuncts))
                                 (throw (ex-info "Only a single allOf schema supported" {})))
-                              (->flanders (first conjuncts) (conj-path opts "allOf" 0)))
+                              (->flanders (first conjuncts) (conj-path opts "allOf" "0")))
                             (case (-normalize (doto (get v "type") prn))
                               "integer" (if-some [enum (seq (get v "enum"))]
                                           (f/enum (mapv long enum))
@@ -138,7 +140,7 @@
                             (when-some [enum (seq (get v "enum"))]
                               (f/enum (cond-> enum
                                         (some (some-fn ident? string?) enum) (mapv -normalize))))
-                            (throw (ex-info "Unknown JSON Schema" {:v v})))]
+                            (unknown-schema! v opts))]
                (cond-> base
                  ;; TODO unit test
                  description (assoc :description description)
@@ -147,4 +149,4 @@
                  ;default (assoc :default default)
                  ;title (assoc :title title)
                  ))
-    :else (throw (ex-info "Unknown JSON Schema" {:v v}))))
+    :else (unknown-schema! v opts)))

@@ -1,10 +1,12 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
             [flanders.core :as f]
+            [clojure.java.io :as io]
             [flanders.schema :as schema]
             [flanders.malli :as malli]
             [malli.core :as m]
-            [flanders.json-schema :as sut]))
+            [flanders.json-schema :as sut]
+            [cheshire.core :as json]))
 
 (def union-example
   {:title "union", ;;TODO
@@ -171,3 +173,10 @@
                           :type "object"
                           :properties {:foo {:$ref "#/$defs/example"}}}
                          nil))))
+
+(defn security-finding-json [] (json/decode (slurp (io/resource "security-finding.json"))))
+
+(deftest ocsf-test
+  (is (= nil
+         (sut/->flanders (security-finding-json) nil)))
+  )

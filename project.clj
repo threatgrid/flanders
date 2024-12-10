@@ -24,4 +24,5 @@
 
   :profiles {:dev
              {:dependencies [[org.clojure/test.check "1.1.1"]
-                             [metosin/malli "0.13.0"]]}})
+                             [metosin/malli "0.13.0"]]
+              :resource-paths ["test-resources"]}})
