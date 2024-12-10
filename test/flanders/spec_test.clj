@@ -11,9 +11,9 @@
 
 (use-fixtures :once
   (fn [t]
-    (stest/instrument 'fs/->spec)
-    (t)
-    (stest/unstrument 'fs/->spec)))
+    (try (stest/instrument 'fs/->spec)
+         (t)
+         (finally (stest/unstrument 'fs/->spec)))))
 
 (deftest test-valid-spec
   (is

@@ -2,7 +2,10 @@
   (:require [clojure.string :as str]
             [clojure.set :as set]
             [flanders.core :as f]
-            [clojure.walk :as w]))
+            [schema.core :as s]
+            [clojure.walk :as w]
+            #?(:clj  [flanders.macros :refer [defleaf]]
+               :cljs [flanders.macros :refer-macros [defleaf]])))
 
 (defn- -normalize
   "normalize to string"
@@ -68,7 +71,8 @@
 (defn unknown-schema! [v {::keys [path] :as opts}]
   (throw (ex-info (format "Unknown JSON Schema at path %s: %s" (pr-str path) (pr-str v)) {:v v :opts (select-keys opts [::path ::base-id])})))
 
-(defrecord FlandersRef [id v])
+(defleaf JSONSchemaRef [id :- s/Str
+                        v :- s/Any])
 
 (defn ->flanders
   "Converts parsed JSON Schema to Flanders."
@@ -100,7 +104,7 @@
                                                                          s (->flanders v (assoc opts ::resolve-ref (fn [v opts]
                                                                                                                      (or (get-in opts [::defs id])
                                                                                                                          (do (swap! refs conj id)
-                                                                                                                             (->FlandersRef id v))))))]
+                                                                                                                             (->JSONSchemaRef id v))))))]
                                                                      {:parsed-defs (assoc parsed-defs id {:schema s :refs @refs})
                                                                       :opts opts}))
                                                                  {:parsed-defs {} :opts opts}
@@ -110,11 +114,12 @@
                                                                (map (fn [[k {:keys [schema refs]}]]
                                                                       (cond->> schema
                                                                         (seq refs)
+                                                                        ; TODO use zipper
                                                                         (w/postwalk (fn [v]
-                                                                                      (if (instance? FlandersRef v)
+                                                                                      (if (instance? JSONSchemaRef v)
                                                                                         (let [{the-ref :v :keys [id]} v]
                                                                                           (if (seen id)
-                                                                                            (throw (ex-info "Recursive schemas not supported" {:id id :seen seen}))
+                                                                                            v ;; recursive
                                                                                             (resolve-refs {:schema (resolve-ref the-ref opts)} (update opts ::seen (fnil conj #{}) id))))
                                                                                         v))))))
                                                                parsed-defs))]
