@@ -159,7 +159,15 @@
             [:string #:json-schema{:example "string"}]]]
           [:y #:json-schema{:example 10} [:int #:json-schema{:example 10}]]])))
 
+#_
 (deftest malli-expectations-test
   (doseq [[expected-malli json-schema] malli-expectations]
     (testing (pr-str json-schema)
       (is (= expected-malli (m/form (->malli json-schema)))))))
+
+(deftest defs-test
+  (is (= nil
+         (sut/->flanders {:$defs {:example {:type "integer"}}
+                          :type "object"
+                          :properties {:foo {:$ref "#/$defs/example"}}}
+                         nil))))
