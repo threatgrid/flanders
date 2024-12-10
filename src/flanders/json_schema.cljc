@@ -2,8 +2,7 @@
   (:require [clojure.string :as str]
             [clojure.set :as set]
             [flanders.core :as f]
-            [clojure.walk :as w]
-            [clojure.math.combinatorics :as comb]))
+            [clojure.walk :as w]))
 
 (defn- -normalize
   "normalize to string"
@@ -35,11 +34,7 @@
     (when (contains? (::seen opts) this-id)
       (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
     (or ;; TODO assoc other fields from v at this level
-        ;; TODO ref object?
-        (when-some [s (get-in opts [::defs this-id])]
-          (if (fn? s)
-            (s) ;; block until defined
-            s))
+        (get-in opts [::defs this-id])
         (throw (ex-info (str "Could not resolve id: " this-id)
                         {::error :unresolved-ref
                          :current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref})))))
@@ -73,6 +68,8 @@
 (defn unknown-schema! [v {::keys [path] :as opts}]
   (throw (ex-info (format "Unknown JSON Schema at path %s: %s" (pr-str path) (pr-str v)) {:v v :opts (select-keys opts [::path ::base-id])})))
 
+(defrecord FlandersRef [id v])
+
 (defn ->flanders
   "Converts parsed JSON Schema to Flanders."
   [v opts]
@@ -96,26 +93,26 @@
                           ;; simpler if we supported refs in flanders
                           (update ::defs
                                   (fn [outer-defs]
-                                    (let [err (volatile! nil)
-                                          parse-defs (fn [$defs]
-                                                       (try
-                                                         (into {} (map (fn [[k v]]
-                                                                         (let [id (resolve-id k opts)]
-                                                                           {id (->flanders v (conj-path opts "$defs" k))})))
-                                                               $defs)
-                                                         (catch Exception e
-                                                           (vreset! err e)
-                                                           (when-not (= :unresolved-ref (::error (ex-data e)))
-                                                             (throw e)))))]
-                                      (or (parse-defs $defs) ;; fast path
-                                          ;; try all other permutations
-                                          (->> $defs
-                                               vec
-                                               comb/permutations
-                                               (pmap parse-defs)
-                                               (some identity))
-                                          (throw @err))))))
-                   base (or (when $ref (resolve-ref v opts))
+                                    (let [parsed-defs (into {} (map (fn [[k v]]
+                                                                      (let [opts (conj-path opts "$defs" k)
+                                                                            id (absolute-id opts)]
+                                                                        {id (->flanders v (assoc opts ::resolve-ref (fn [v opts] (->FlandersRef id v))))})))
+                                                            $defs)
+                                          resolve-refs (fn resolve-refs [parsed-defs {::keys [seen] :as opts}]
+                                                         (w/postwalk (fn [v]
+                                                                       (if (instance? FlandersRef v)
+                                                                         (let [{the-ref :v :keys [id]} v]
+                                                                           (if (seen id)
+                                                                             (throw (ex-info "Recursive schemas not supported" {:id id :seen seen}))
+                                                                             (-> the-ref
+                                                                                 (resolve-ref opts)
+                                                                                 (resolve-refs (update opts ::seen conj id)))))
+                                                                         v))
+                                                                     parsed-defs))]
+                                      (into (or outer-defs {})
+                                            (resolve-refs parsed-defs (update opts ::seen #(or % #{}))))))))
+                   base (or (when $ref
+                              ((::resolve-ref opts resolve-ref) v opts))
                             (when-some [disjuncts (get v "anyOf")]
                               (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))) disjuncts)))
                             (when-some [conjuncts (get v "allOf")]
