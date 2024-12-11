@@ -425,7 +425,8 @@
                 (list 'def (symbol "expected-transitive-defschema-vars")
                       (list 'quote
                             (unqualify-vars (collect-transitive-recursive-vars-from-schema s)))))
-              ))))
+              ))
+    (require nsym :reload)))
 
 (comment
   (generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
@@ -447,7 +448,7 @@
              (unqualify-recursive-vars-from-schema-explain @SchemaSecurityFinding))))
     (testing "transitive defschema's for top-level JSON Schema look correct"
       (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-defschema-vars
-             (into #{} (map unqualify-var) (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding))))))
+             (set (vals (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding))))))))
   (meta #'flanders.json-schema-test.security-finding/SecurityFinding)
   )
 (comment

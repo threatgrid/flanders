@@ -82,8 +82,8 @@
                     (binding [*ns* temp-ns]
                       (eval `(s/defschema ~(-> def-var name symbol)
                                ~(str "JSON Schema id: " def-id "\n")
-                               ~(fm/->schema f (assoc opts ::ref->var def-ids->def-vars)))))))
+                               ~(fs/->schema f (assoc opts ::ref->var def-ids->def-vars)))))))
                 def-ids->def-vars)
-        s (fm/->schema f (assoc opts ::ref->var def-ids->def-vars))]
+        s (fs/->schema f (assoc opts ::ref->var def-ids->def-vars))]
     (.register (Cleaner/create) s (fn [] (remove-ns temp-ns)))
     s))
