@@ -189,117 +189,6 @@
 (def SchemaSecurityFinding (delay (js->schema/->schema (security-finding-json) nil)))
 (def MalliSecurityFinding (delay (js->malli/->malli (security-finding-json) nil)))
 
-(def expected-schema-explain-SecurityFinding
-  '{(optional-key :activity_name) Str,
-    (optional-key :analytic) (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic),
-    (optional-key :api) (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_api),
-    (optional-key :attacks) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack)],
-    (optional-key :category_name) Str,
-    (optional-key :cis_csc) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cis_csc)],
-    (optional-key :class_name) Str,
-    (optional-key :compliance) (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_compliance),
-    (optional-key :confidence) Str,
-    (optional-key :confidence_id) (enum 0 1 99 3 2),
-    (optional-key :confidence_score) Int,
-    (optional-key :count) Int,
-    (optional-key :data_sources) [Str],
-    (optional-key :duration) Int,
-    (optional-key :end_time) Int,
-    (optional-key :end_time_dt) Str,
-    (optional-key :enrichments) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_enrichment)]
-    (optional-key :evidence) Any,
-    (optional-key :impact) Str,
-    (optional-key :impact_id) (enum 0 1 4 99 3 2),
-    (optional-key :impact_score) Int,
-    (optional-key :kill_chain) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase)],
-    (optional-key :malware) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_malware)],
-    (optional-key :message) Str,
-    (optional-key :nist) [Str],
-    (optional-key :observables) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable)],
-    (optional-key :process) (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process),
-    (optional-key :raw_data) Str,
-    (optional-key :resources) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_resource_details)],
-    (optional-key :risk_level) Str,
-    (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-    (optional-key :risk_score) Int,
-    (optional-key :severity) Str,
-    (optional-key :start_time) Int,
-    (optional-key :start_time_dt) Str,
-    (optional-key :state) Str,
-    (optional-key :status) Str,
-    (optional-key :status_code) Str,
-    (optional-key :status_detail) Str,
-    (optional-key :status_id) (enum 0 1 99 2),
-    (optional-key :time_dt) Str,
-    (optional-key :timezone_offset) Int,
-    (optional-key :type_name) Str,
-    (optional-key :unmapped) (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object),
-    (optional-key :vulnerabilities) [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability)],
-    :activity_id (enum 0 1 99 3 2),
-    :category_uid Int,
-    :class_uid Int,
-    :cloud (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cloud),
-    :finding (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_finding),
-    :metadata (recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_metadata),
-    :osint [(recursive #'https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_osint)],
-    :severity_id (enum 0 1 4 99 6 3 2 5),
-    :state_id (enum 0 1 4 99 3 2),
-    :time Int,
-    :type_uid Int})
-
-(def expected-schema-SecurityFinding-defschemas
-  '#{https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_code
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_package
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_agent
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_api
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cis_csc
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cloud
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_compliance
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cwe
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_dns_answer
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email_auth
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_enrichment
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_file
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_finding
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_location
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_logger
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_malware
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_metadata
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_osint
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_package
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_related_event
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_request
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_resource_details
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_response
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_service
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_session
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_sub_technique
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_technique
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability
-     https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois})
-
 (defn unqualify-vars [vs]
   (let [gs (group-by namespace (sort (map symbol vs)))
         pad (count (str (max 1 (dec (count gs)))))]
@@ -424,8 +313,7 @@
               (pprint-reproducibly
                 (list 'def (symbol "expected-transitive-defschema-vars")
                       (list 'quote
-                            (unqualify-vars (collect-transitive-recursive-vars-from-schema s)))))
-              ))
+                            (unqualify-vars (collect-transitive-recursive-vars-from-schema s)))))))
     (require nsym :reload)))
 
 (comment
@@ -448,22 +336,16 @@
              (unqualify-recursive-vars-from-schema-explain @SchemaSecurityFinding))))
     (testing "transitive defschema's for top-level JSON Schema look correct"
       (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-defschema-vars
-             (set (vals (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding))))))))
-  (meta #'flanders.json-schema-test.security-finding/SecurityFinding)
-  )
-(comment
-  (sort (keys (ns-publics (find-ns 'flanders.json-schema.schema.947b814e-26c7-42ce-9fce-a3cd691dfa70))))
+             (set (vals (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding)))))))))
 
-  (deref (do #'flanders.json-schema.schema.947b814e-26c7-42ce-9fce-a3cd691dfa70/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cwe))
-  )
+(defn generate-example-malli [file json]
+  (let [f (io/file file)]
+    (io/make-parents f)
+    (spit f (binding [*print-level* nil
+                      *print-length* nil
+                      *print-namespace-maps* false]
+              (with-out-str (pp/pprint (m/form (js->malli/->malli (security-finding-json) nil))))))))
 
 (comment
-  (binding [*print-level* nil
-            *print-length* nil
-            *print-namespace-maps* false]
-    (spit "security-finding.edn" (with-out-str ((requiring-resolve 'clojure.pprint/pprint) (m/form (js->malli/->malli (security-finding-json) nil))))))
-  (binding [*print-level* nil
-            *print-length* nil
-            *print-namespace-maps* false]
-    (spit "schema-security-finding.clj" (with-out-str ((requiring-resolve 'clojure.pprint/pprint) (m/form (js->malli/->malli (security-finding-json) nil))))))
+  (generate-example-malli "security-finding.edn" (security-finding-json))
   )
