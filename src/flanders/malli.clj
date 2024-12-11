@@ -12,13 +12,15 @@
             NumberType ParameterListType SequenceOfType
             SetOfType SignatureType StringType]))
 
-(defprotocol MalliNode
-  (->malli' [node opts]))
+(def ^:private eval-protocol? (not (resolve 'MalliNode)))
+(when eval-protocol?
+  (defprotocol MalliNode
+    (->malli' [node opts])))
 
 (defn- describe [?schema {:keys [description] :as dll} opts]
   (-> ?schema
       (m/schema opts)
-      (mu/update-properties
+      (m/-update-properties
         #(-> %
              (assoc :json-schema/example (example/->example-tree dll))
              (cond-> description (assoc :json-schema/description description))))))
@@ -81,8 +83,8 @@
     (let [f #(->malli' % opts)
           s (-> (into [:merge] (map (fn [e] [:map (f e)])) entries)
                 (m/schema opts)
-                m/deref ;; eliminate :merge
-                (mu/update-properties assoc :closed true)
+                m/-deref ;; eliminate :merge
+                (m/-update-properties assoc :closed true)
                 (describe dll opts))]
       (if key?
         {:op :default-key :schema s}
