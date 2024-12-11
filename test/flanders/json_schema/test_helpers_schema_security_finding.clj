@@ -95,8 +95,6 @@
 (def
  expected-transitive-defschema-vars
  '#{ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account
-    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_code
-    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_package
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_agent
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_api
@@ -107,7 +105,6 @@
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_compliance
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve
-    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cwe
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_dns_answer
@@ -128,7 +125,6 @@
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_osint
-    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_package
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_related_event
@@ -139,6 +135,861 @@
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_response
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_service
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_session
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_sub_technique
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_technique
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability
     ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois})
+(def
+ transitive-schema-atom
+ (clojure.core/atom (clojure.core/sorted-map)))
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account
+ '{(optional-key :labels) [Str],
+   (optional-key :name) Str,
+   (optional-key :type) Str,
+   (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_agent
+ '{(optional-key :name) Str,
+   (optional-key :policies)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_policy)],
+   (optional-key :type) Str,
+   (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 8),
+   (optional-key :uid) Str,
+   (optional-key :uid_alt) Str,
+   (optional-key :vendor_name) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic
+ '{:type_id (enum 0 7 1 4 99 6 3 2 11 9 5 10 8),
+   (optional-key :category) Str,
+   (optional-key :desc) Str,
+   (optional-key :name) Str,
+   (optional-key :related_analytics)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic)],
+   (optional-key :type) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_api
+ '{:operation Str,
+   (optional-key :group)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group),
+   (optional-key :request)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_request),
+   (optional-key :response)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_response),
+   (optional-key :service)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_service),
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack
+ '{(optional-key :sub_technique)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_sub_technique),
+   (optional-key :tactic)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic),
+   (optional-key :tactics)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic)],
+   (optional-key :technique)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_technique),
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system
+ '{(optional-key :name) Str, (optional-key :number) Int})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cis_csc
+ '{:control Str, (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cloud
+ '{:provider Str,
+   (optional-key :account)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account),
+   (optional-key :org)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization),
+   (optional-key :project_uid) Str,
+   (optional-key :region) Str,
+   (optional-key :zone) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_compliance
+ '{:standards [Str],
+   (optional-key :compliance_references)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :compliance_standards)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :control) Str,
+   (optional-key :requirements) [Str],
+   (optional-key :status) Str,
+   (optional-key :status_code) Str,
+   (optional-key :status_detail) Str,
+   (optional-key :status_id) (enum 0 1 99 3 2)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container
+ '{(optional-key :hash)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_fingerprint),
+   (optional-key :image)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_image),
+   (optional-key :name) Str,
+   (optional-key :network_driver) Str,
+   (optional-key :orchestrator) Str,
+   (optional-key :pod_uuid) Str,
+   (optional-key :runtime) Str,
+   (optional-key :size) Int,
+   (optional-key :tag) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve
+ '{:uid Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :cvss)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cvss)],
+   (optional-key :cwe)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cwe),
+   (optional-key :cwe_uid) Str,
+   (optional-key :cwe_url) Str,
+   (optional-key :desc) Str,
+   (optional-key :epss)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_epss),
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :references) [Str],
+   (optional-key :title) Str,
+   (optional-key :type) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification
+ '{(optional-key :category) Str,
+   (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
+   (optional-key :confidentiality) Str,
+   (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
+   (optional-key :policy)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_policy)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature
+ '{:algorithm_id (enum 0 1 4 99 3 2),
+   (optional-key :algorithm) Str,
+   (optional-key :certificate)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_certificate),
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :developer_uid) Str,
+   (optional-key :digest)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_fingerprint),
+   (optional-key :state) Str,
+   (optional-key :state_id) (enum 0 1 4 99 3 2 5)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_dns_answer
+ '{:rdata Str,
+   (optional-key :class) Str,
+   (optional-key :flag_ids) [(enum 0 1 4 99 6 3 2 5)],
+   (optional-key :flags) [Str],
+   (optional-key :packet_uid) Int,
+   (optional-key :ttl) Int,
+   (optional-key :type) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email
+ '{:from Str,
+   :to [Str],
+   (optional-key :cc) [Str],
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :delivered_to) Str,
+   (optional-key :message_uid) Str,
+   (optional-key :raw_header) Str,
+   (optional-key :reply_to) Str,
+   (optional-key :size) Int,
+   (optional-key :smtp_from) Str,
+   (optional-key :smtp_to) [Str],
+   (optional-key :subject) Str,
+   (optional-key :uid) Str,
+   (optional-key :x_originating_ip) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email_auth
+ '{(optional-key :dkim) Str,
+   (optional-key :dkim_domain) Str,
+   (optional-key :dkim_signature) Str,
+   (optional-key :dmarc) Str,
+   (optional-key :dmarc_override) Str,
+   (optional-key :dmarc_policy) Str,
+   (optional-key :spf) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_enrichment
+ '{:data Any,
+   :name Str,
+   :value Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :desc) Str,
+   (optional-key :provider) Str,
+   (optional-key :reputation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation),
+   (optional-key :short_desc) Str,
+   (optional-key :src_url) Str,
+   (optional-key :type) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension
+ '{:name Str, :uid Str, :version Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_file
+ '{:name Str,
+   :type_id (enum 0 7 1 4 99 6 3 2 5),
+   (optional-key :accessed_time) Int,
+   (optional-key :accessed_time_dt) Str,
+   (optional-key :accessor)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :attributes) Int,
+   (optional-key :company_name) Str,
+   (optional-key :confidentiality) Str,
+   (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :creator)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :desc) Str,
+   (optional-key :ext) Str,
+   (optional-key :hashes)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_fingerprint)],
+   (optional-key :is_system) Bool,
+   (optional-key :mime_type) Str,
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :modifier)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :owner)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :parent_folder) Str,
+   (optional-key :path) Str,
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :security_descriptor) Str,
+   (optional-key :signature)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature),
+   (optional-key :size) Int,
+   (optional-key :type) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str,
+   (optional-key :xattributes)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_finding
+ '{:title Str,
+   :uid Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :desc) Str,
+   (optional-key :first_seen_time) Int,
+   (optional-key :first_seen_time_dt) Str,
+   (optional-key :last_seen_time) Int,
+   (optional-key :last_seen_time_dt) Str,
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :product_uid) Str,
+   (optional-key :related_events)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_related_event)],
+   (optional-key :remediation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation),
+   (optional-key :src_url) Str,
+   (optional-key :supporting_data) Any,
+   (optional-key :types) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group
+ '{(optional-key :desc) Str,
+   (optional-key :domain) Str,
+   (optional-key :name) Str,
+   (optional-key :privileges) [Str],
+   (optional-key :type) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article
+ '{:uid Str,
+   (optional-key :avg_timespan)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_timespan),
+   (optional-key :bulletin) Str,
+   (optional-key :classification) Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :install_state) Str,
+   (optional-key :install_state_id) (enum 0 1 99 3 2),
+   (optional-key :is_superseded) Bool,
+   (optional-key :os)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_os),
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :severity) Str,
+   (optional-key :size) Int,
+   (optional-key :src_url) Str,
+   (optional-key :title) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase
+ '{:phase_id (enum 0 7 1 4 99 6 3 2 5), (optional-key :phase) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_location
+ '{(optional-key :city) Str,
+   (optional-key :continent) Str,
+   (optional-key :coordinates) [Num],
+   (optional-key :country) Str,
+   (optional-key :desc) Str,
+   (optional-key :geohash) Str,
+   (optional-key :is_on_premises) Bool,
+   (optional-key :isp) Str,
+   (optional-key :lat) Num,
+   (optional-key :long) Num,
+   (optional-key :postal_code) Str,
+   (optional-key :provider) Str,
+   (optional-key :region) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_logger
+ '{(optional-key :device)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_device),
+   (optional-key :log_level) Str,
+   (optional-key :log_name) Str,
+   (optional-key :log_provider) Str,
+   (optional-key :log_version) Str,
+   (optional-key :logged_time) Int,
+   (optional-key :logged_time_dt) Str,
+   (optional-key :name) Str,
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :transmit_time) Int,
+   (optional-key :transmit_time_dt) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_malware
+ '{:classification_ids
+   [(enum 0 7 20 1 4 15 99 21 13 22 6 17 3 2 19 11 9 5 14 16 10 18 8)],
+   (optional-key :classifications) [Str],
+   (optional-key :cves)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve)],
+   (optional-key :name) Str,
+   (optional-key :path) Str,
+   (optional-key :provider) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_metadata
+ '{:product
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   :version Str,
+   (optional-key :correlation_uid) Str,
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :event_code) Str,
+   (optional-key :extension)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension),
+   (optional-key :extensions)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension)],
+   (optional-key :labels) [Str],
+   (optional-key :log_level) Str,
+   (optional-key :log_name) Str,
+   (optional-key :log_provider) Str,
+   (optional-key :log_version) Str,
+   (optional-key :logged_time) Int,
+   (optional-key :logged_time_dt) Str,
+   (optional-key :loggers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_logger)],
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :original_time) Str,
+   (optional-key :processed_time) Int,
+   (optional-key :processed_time_dt) Str,
+   (optional-key :profiles) [Str],
+   (optional-key :sequence) Int,
+   (optional-key :tenant_uid) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
+ '{})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable
+ '{:name Str,
+   :type_id
+   (enum
+    0
+    7
+    20
+    27
+    1
+    24
+    4
+    15
+    99
+    21
+    13
+    22
+    29
+    6
+    28
+    25
+    17
+    3
+    12
+    2
+    23
+    19
+    11
+    9
+    5
+    14
+    26
+    16
+    30
+    10
+    18
+    8),
+   (optional-key :reputation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation),
+   (optional-key :type) Str,
+   (optional-key :value) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization
+ '{(optional-key :name) Str,
+   (optional-key :ou_name) Str,
+   (optional-key :ou_uid) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_osint
+ '{:type_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
+   :value Str,
+   (optional-key :answers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_dns_answer)],
+   (optional-key :attacks)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack)],
+   (optional-key :autonomous_system)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system),
+   (optional-key :comment) Str,
+   (optional-key :confidence) Str,
+   (optional-key :confidence_id) (enum 0 1 99 3 2),
+   (optional-key :email)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email),
+   (optional-key :email_auth)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email_auth),
+   (optional-key :kill_chain)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase)],
+   (optional-key :location)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_location),
+   (optional-key :name) Str,
+   (optional-key :signatures)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature)],
+   (optional-key :src_url) Str,
+   (optional-key :subdomains) [Str],
+   (optional-key :tlp)
+   (enum "AMBER STRICT" "CLEAR" "AMBER" "GREEN" "RED"),
+   (optional-key :type) Str,
+   (optional-key :uid) Str,
+   (optional-key :vendor_name) Str,
+   (optional-key :vulnerabilities)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability)],
+   (optional-key :whois)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process
+ '{(optional-key :auid) Int,
+   (optional-key :cmd_line) Str,
+   (optional-key :container)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container),
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :egid) Int,
+   (optional-key :euid) Int,
+   (optional-key :file)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_file),
+   (optional-key :group)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group),
+   (optional-key :integrity) Str,
+   (optional-key :integrity_id) (enum 0 1 4 99 6 3 2 5),
+   (optional-key :lineage) [Str],
+   (optional-key :loaded_modules) [Str],
+   (optional-key :name) Str,
+   (optional-key :namespace_pid) Int,
+   (optional-key :parent_process)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process),
+   (optional-key :pid) Int,
+   (optional-key :sandbox) Str,
+   (optional-key :session)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_session),
+   (optional-key :terminated_time) Int,
+   (optional-key :terminated_time_dt) Str,
+   (optional-key :tid) Int,
+   (optional-key :uid) Str,
+   (optional-key :user)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :xattributes)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product
+ '{:vendor_name Str,
+   (optional-key :cpe_name) Str,
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :feature)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_feature),
+   (optional-key :lang) Str,
+   (optional-key :name) Str,
+   (optional-key :path) Str,
+   (optional-key :uid) Str,
+   (optional-key :url_string) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_related_event
+ '{:uid Str,
+   (optional-key :attacks)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack)],
+   (optional-key :kill_chain)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase)],
+   (optional-key :observables)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable)],
+   (optional-key :product_uid) Str,
+   (optional-key :type) Str,
+   (optional-key :type_name) Str,
+   (optional-key :type_uid) Int})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation
+ '{:desc Str,
+   (optional-key :kb_article_list)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :kb_articles) [Str],
+   (optional-key :references) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation
+ '{:base_score Num,
+   :score_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
+   (optional-key :provider) Str,
+   (optional-key :score) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_request
+ '{:uid Str,
+   (optional-key :containers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container)],
+   (optional-key :data) Any,
+   (optional-key :flags) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_resource_details
+ '{(optional-key :agent_list)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_agent)],
+   (optional-key :cloud_partition) Str,
+   (optional-key :criticality) Str,
+   (optional-key :data) Any,
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :group)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group),
+   (optional-key :labels) [Str],
+   (optional-key :name) Str,
+   (optional-key :namespace) Str,
+   (optional-key :owner)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :region) Str,
+   (optional-key :type) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_response
+ '{(optional-key :code) Int,
+   (optional-key :containers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container)],
+   (optional-key :data) Any,
+   (optional-key :error) Str,
+   (optional-key :error_message) Str,
+   (optional-key :flags) [Str],
+   (optional-key :message) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_service
+ '{(optional-key :labels) [Str],
+   (optional-key :name) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_session
+ '{(optional-key :count) Int,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :credential_uid) Str,
+   (optional-key :expiration_reason) Str,
+   (optional-key :expiration_time) Int,
+   (optional-key :expiration_time_dt) Str,
+   (optional-key :is_mfa) Bool,
+   (optional-key :is_remote) Bool,
+   (optional-key :is_vpn) Bool,
+   (optional-key :issuer) Str,
+   (optional-key :terminal) Str,
+   (optional-key :uid) Str,
+   (optional-key :uid_alt) Str,
+   (optional-key :uuid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_sub_technique
+ '{(optional-key :name) Str,
+   (optional-key :src_url) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic
+ '{(optional-key :name) Str,
+   (optional-key :src_url) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_technique
+ '{(optional-key :name) Str,
+   (optional-key :src_url) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
+ '{(optional-key :account)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account),
+   (optional-key :credential_uid) Str,
+   (optional-key :domain) Str,
+   (optional-key :email_addr) Str,
+   (optional-key :full_name) Str,
+   (optional-key :groups)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group)],
+   (optional-key :ldap_person)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_ldap_person),
+   (optional-key :name) Str,
+   (optional-key :org)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization),
+   (optional-key :risk_level) Str,
+   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
+   (optional-key :risk_score) Int,
+   (optional-key :type) Str,
+   (optional-key :type_id) (enum 0 1 99 3 2),
+   (optional-key :uid) Str,
+   (optional-key :uid_alt) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability
+ '{(optional-key :affected_code)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_code)],
+   (optional-key :affected_packages)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_package)],
+   (optional-key :cve)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve),
+   (optional-key :cwe)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cwe),
+   (optional-key :desc) Str,
+   (optional-key :first_seen_time) Int,
+   (optional-key :first_seen_time_dt) Str,
+   (optional-key :fix_available) Bool,
+   (optional-key :is_exploit_available) Bool,
+   (optional-key :is_fix_available) Bool,
+   (optional-key :kb_article_list)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :kb_articles) [Str],
+   (optional-key :last_seen_time) Int,
+   (optional-key :last_seen_time_dt) Str,
+   (optional-key :packages)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_package)],
+   (optional-key :references) [Str],
+   (optional-key :related_vulnerabilities) [Str],
+   (optional-key :remediation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation),
+   (optional-key :severity) Str,
+   (optional-key :title) Str,
+   (optional-key :vendor_name) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois
+ '{(optional-key :autonomous_system)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system),
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :dnssec_status) Str,
+   (optional-key :dnssec_status_id) (enum 0 1 99 2),
+   (optional-key :domain) Str,
+   (optional-key :domain_contacts)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_domain_contact)],
+   (optional-key :email_addr) Str,
+   (optional-key :last_seen_time) Int,
+   (optional-key :last_seen_time_dt) Str,
+   (optional-key :name_servers) [Str],
+   (optional-key :phone_number) Str,
+   (optional-key :registrar) Str,
+   (optional-key :status) Str,
+   (optional-key :subdomains) [Str],
+   (optional-key :subnet) Str})
+(def expected-transitive-schema-explains @transitive-schema-atom)

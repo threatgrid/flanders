@@ -311,10 +311,22 @@
                 (list 'def (symbol "expected-schema-explain")
                       (list 'quote
                             (unqualify-recursive-vars-from-schema-explain s))))
-              (pprint-reproducibly
-                (list 'def (symbol "expected-transitive-defschema-vars")
-                      (list 'quote
-                            (set (vals (unqualify-vars (collect-transitive-recursive-vars-from-schema s)))))))))
+              (let [transitive-var->uniquified (unqualify-vars (collect-transitive-recursive-vars-from-schema s))]
+                (pprint-reproducibly
+                  (list 'def (symbol "expected-transitive-defschema-vars")
+                        (list 'quote
+                              (set (vals transitive-var->uniquified)))))
+                (pprint-reproducibly
+                  (list 'def 'transitive-schema-atom `(atom (sorted-map))))
+                (doseq [[v uniq] transitive-var->uniquified]
+                  (pprint-reproducibly
+                    `(swap! ~'transitive-schema-atom assoc '~uniq
+                            '~(unqualify-recursive-vars-from-schema-explain @(find-var v)))))
+                (pprint-reproducibly
+                  (list 'def 'expected-transitive-schema-explains
+                        (list `deref 'transitive-schema-atom)))
+                )
+              ))
     (require nsym :reload)))
 
 (comment
