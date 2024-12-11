@@ -13,7 +13,9 @@
             [flanders.json-schema :as sut]
             [flanders.json-schema.malli :as js->malli]
             [flanders.json-schema.schema :as js->schema]
-            [cheshire.core :as json]))
+            [cheshire.core :as json]
+            flanders.json-schema.test-helpers-schema-security-finding
+            ))
 
 (def union-example
   {:title "union", ;;TODO
@@ -298,26 +300,74 @@
      https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability
      https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois})
 
-(defn unqualify-recursive-vars-from-schema-explain [v]
-  (walk/postwalk (fn [v]
-                   (if (and (seq? v)
-                            (= 2 (count v))
-                            (= 'var (first v))
-                            (qualified-symbol? (second v)))
-                     ;;unqualify recursive vars
-                     (list 'var (-> v second name symbol))
-                     v))
-                 v))
+(defn unqualify-vars [vs]
+  (let [gs (group-by namespace (sort (map symbol vs)))
+        pad (count (str (max 1 (dec (count gs)))))]
+    (into (sorted-map)
+          (map-indexed (fn [i [_ v]]
+                         (into {} (map #(vector % (symbol (format (str "ns-%0" pad "d") i) (-> % symbol name))))
+                               v)))
+          (into (sorted-map) gs))))
+
+(defn vars-from-distinct-namespaces [n]
+  (let [vars-from-different-namespaces (set (take n (keep #(-> (ns-publics %) first second) (all-ns))))]
+    (assert (= n (count vars-from-different-namespaces)))
+    (assert (or (empty? vars-from-different-namespaces)
+                (apply distinct? (map #(-> % symbol namespace) vars-from-different-namespaces))))
+    (assert (every? var? vars-from-different-namespaces))
+    vars-from-different-namespaces))
+
+(defn syms-from-distinct-namespaces [n]
+  (mapv #(symbol (str "sym" % (str (random-uuid))) (str (random-uuid))) (range n)))
+
+(deftest unqualify-vars-test
+  (is (= {} (unqualify-vars #{})))
+  (is (= {`- 'ns-0/-} (unqualify-vars #{#'-})))
+  (is (= {`+ 'ns-0/+
+          `- 'ns-0/-
+          `unqualify-vars 'ns-1/unqualify-vars}
+         (unqualify-vars #{#'- #'+ #'unqualify-vars})))
+  (is (= (into #{} (map #(symbol "ns-0" (-> % symbol name))) (vals (ns-publics 'clojure.core)))
+         (set (vals (unqualify-vars (vals (ns-publics 'clojure.core)))))))
+  (testing "pads namespaces"
+    ;; we test with real vars for small numbers, since namespaces must be distinct
+    (doseq [[n expected] {1 "ns-0"
+                          9 "ns-0"
+                          10 "ns-0"
+                          11 "ns-00"
+                          23 "ns-00"}]
+      (testing n
+        (is (= expected (first (sort (map namespace (vals (unqualify-vars (vars-from-distinct-namespaces n))))))))))
+    (doseq [[n expected] {100 "ns-00"
+                          101 "ns-000"
+                          999 "ns-000"
+                          1000 "ns-000"
+                          1001 "ns-0000"}]
+      (testing n
+        (is (= expected (first (sort (map namespace (vals (unqualify-vars (syms-from-distinct-namespaces n))))))))))))
 
 ;; walks s/explain, schema walk might be more accurate
 (defn collect-recursive-vars-from-schema [s]
-  (let [vars (atom #{})]
+  (let [vars (atom #{})
+        ]
     (stw/postwalk (fn [s]
                     (when (instance? schema.core.Recursive s)
                       (swap! vars conj (:derefable s)))
                     s)
                   s)
     @vars))
+
+(defn unqualify-recursive-vars-from-schema-explain [v]
+  (let [vs (collect-recursive-vars-from-schema v)]
+    (walk/postwalk (fn [v]
+                     (if (and (seq? v)
+                              (= 2 (count v))
+                              (= 'var (first v))
+                              (qualified-symbol? (second v)))
+                       ;;unqualify recursive vars
+                       (list 'var (-> v second name symbol))
+                       v))
+                   v)))
 
 (declare BSchema)
 (s/defschema ASchema [(s/recursive #'BSchema)])
@@ -369,7 +419,12 @@
               (pprint-reproducibly (list 'ns nsym))
               (pprint-reproducibly
                 (list 'def (symbol "expected-schema-explain")
-                      (list 'quote (unqualify-recursive-vars-from-schema-explain (s/explain s)))))))))
+                      (list 'quote (unqualify-recursive-vars-from-schema-explain (s/explain s)))))
+              (pprint-reproducibly
+                (list 'def (symbol "expected-transitive-defschema-vars")
+                      (list 'quote
+                            (unqualify-vars (collect-transitive-recursive-vars-from-schema s)))))
+              ))))
 
 (comment
   (generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
@@ -387,11 +442,11 @@
 (deftest ocsf-test
   (testing "OCSF security_finding class"
     (testing "s/explain for top-level JSON Schema converted to Plumatic Schema looks correct"
-      (is (= expected-schema-explain-SecurityFinding
+      (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-schema-explain
              (unqualify-recursive-vars-from-schema-explain (s/explain @SchemaSecurityFinding)))))
     (testing "transitive defschema's for top-level JSON Schema look correct"
-      (is (= expected-schema-SecurityFinding-defschemas
-             (into #{} (map #(-> % symbol name symbol)) (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding))))))
+      (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-defschema-vars
+             (into #{} (map unqualify-var) (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding))))))
   (meta #'flanders.json-schema-test.security-finding/SecurityFinding)
   )
 (comment

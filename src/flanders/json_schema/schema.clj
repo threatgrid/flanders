@@ -28,10 +28,37 @@
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/keyboard_info"))
   )
 
+;; stable ns sorting for tests
+
+(def max-nano-digits 18)
+(def max-nano (long (Math/pow 10 max-nano-digits)))
+(def nano-padder (str "%0" max-nano-digits "d"))
+
+(defn unique-nano []
+  (let [v (System/nanoTime)]
+    (loop []
+      (let [v' (System/nanoTime)]
+        (if (= v (System/nanoTime))
+          (recur)
+          v')))))
+
+;; assumes schema conversion is single threaded
+(defn stable-sortable-ns-segment []
+  (let [n (unique-nano)]
+    (when (>= n max-nano)
+      (binding [*err* *out*]
+        ;; just affects unit tests. also won't happen for a long time
+        (println "WARNING: Please increment max-nano-digits for unit test stability")))
+    (format nano-padder n)))
+
 (defn ->schema [json-schema opts]
   (let [{::fjs/keys [defs base-id] :as f} (fjs/->flanders json-schema opts)
         base-id (str base-id "/$defs/")
-        temp-ns (create-ns (symbol (str "flanders.json-schema.schema." (str (random-uuid)))))
+        temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
+                                        ;; helps sort schemas during unit testing.
+                                        (stable-sortable-ns-segment)
+                                        "."
+                                        (str (random-uuid)))))
         _ (alter-meta! temp-ns assoc :doc (str "Helper namespace to generate the following JSON Schema:\n"
                                                (with-out-str (pp/pprint json-schema))))
         _ (run! #(ns-unmap temp-ns %) (keys (ns-map temp-ns)))
