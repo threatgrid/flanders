@@ -46,7 +46,7 @@
     ;;TODO `choices` allows dispatch like :multi, but they're in the wrong format
     (let [f #(->malli' % opts)
           choice-schemas (map f choices)
-          s (m/schema (into [:or] choice-schemas))]
+          s (m/schema (into [:or] choice-schemas) opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
@@ -92,12 +92,12 @@
   (->malli' [{:keys [parameters key?]} opts]
     (assert (not key?))
     (let [f #(->malli' % opts)]
-      (m/schema (into [:cat] (map f) parameters))))
+      (m/schema (into [:cat] (map f) parameters) opts)))
 
   SequenceOfType
   (->malli' [{:keys [type key?]} opts]
     (let [f #(->malli' % opts)
-          s (m/schema [:sequential (f type)])]
+          s (m/schema [:sequential (f type)] opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
@@ -105,7 +105,7 @@
   SetOfType
   (->malli' [{:keys [type key?]} opts]
     (let [f #(->malli' % opts)
-          s (m/schema [:set (f type)])]
+          s (m/schema [:set (f type)] opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
@@ -117,7 +117,7 @@
           parameters (if rest-parameter
                        [:cat parameters [:* (f rest-parameter)]]
                        parameters)
-          s (m/schema [:=> parameters (f return)])]
+          s (m/schema [:=> parameters (f return)] opts)]
       (if key?
         {:op :default-key :schema s}
         s)))

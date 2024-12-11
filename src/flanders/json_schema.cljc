@@ -13,6 +13,7 @@
   (->example [{:keys [id default]} f {::keys [defs] :as opts}]
     (if (some? default)
       default
+      #_ ;;TODO recur for example
       (fe/->example (or (get defs id)
                         (throw (ex-info (format "Ref not in scope: %s" id)
                                         {:defs defs})))
@@ -21,7 +22,6 @@
 (defn- -normalize
   "normalize to string"
   [k opts]
-  (prn "-normalize" k)
   (cond
     (keyword? k) (-> k symbol str)
     (symbol? k) (str k)
@@ -96,7 +96,6 @@
                        (throw (ex-info "$defs only supported at top-level" {})))
                    opts (update opts ::defs #(into (or % {}) local-defs))
                    base (or (when $ref
-                              (assert (not $defs) "TODO")
                               (let [this-id (resolve-id $ref opts)]
                                 (fjst/->JSONSchemaRef this-id v)))
                             (when-some [disjuncts (get v "anyOf")]
