@@ -43,6 +43,7 @@
 (defn absolute-id [{::keys [base-id path] :as opts}]
   (assert base-id)
   (assert (every? string? path))
+  ;;FIXME don't think # should be inserted
   (str base-id (when (seq path) (str \# (str/join "/" path)))))
 
 (defn conj-path [opts & path-elements]
@@ -74,9 +75,10 @@
   [v opts]
   (cond
     (map? v) (let [{:strs [description title example
-                           $ref $defs $dynamicAnchor $dynamicRef $id $vocabulary $schema]} (normalize-map v opts)
+                           $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary $schema]} (normalize-map v opts)
                    ;; TODO
                    _ (when $schema (assert (= "http://json-schema.org/draft-07/schema#" $schema) (pr-str $schema)))
+                   _ (assert (nil? $anchor)) ;; TODO
                    _ (assert (nil? $dynamicAnchor)) ;; TODO
                    _ (assert (nil? $dynamicRef)) ;; TODO
                    opts (update opts ::base-id (fn [parent-id]
