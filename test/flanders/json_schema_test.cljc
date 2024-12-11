@@ -180,3 +180,9 @@
 (deftest ocsf-test
   (is (= nil (sut/->flanders (security-finding-json) nil)))
   (is (= nil (js->malli/->malli (security-finding-json) nil))))
+
+(comment
+  (binding [*print-level* nil
+            *print-length* nil
+            *print-namespace-maps* false]
+    (spit "security-finding.edn" (with-out-str ((requiring-resolve 'clojure.pprint/pprint) (m/form (js->malli/->malli (security-finding-json) nil)))))))

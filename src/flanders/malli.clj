@@ -86,11 +86,8 @@
                   0 [:merge (m/schema :map opts)]
                   1 [:merge (m/schema [:map (f (first entries))] opts)]
                   (into [:merge] (map (fn [e] [:map (f e)])) entries))
-                (doto prn)
                 (m/schema opts)
-                (doto prn)
                 m/deref ;; eliminate :merge
-                (doto prn)
                 (m/-update-properties assoc :closed true)
                 (describe dll opts))]
       (if key?
