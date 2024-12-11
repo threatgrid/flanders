@@ -152,7 +152,7 @@
                               (f/enum (cond->> enum
                                         (some (some-fn ident? string?) enum) (into [] (map #(-normalize %2 (conj-path opts (str %))))))))
                             (unknown-schema! v opts))]
-               (cond-> base
+               (cond-> (assoc base ::base-id (::base-id opts))
                  ;; TODO unit test
                  description (assoc :description description)
                  local-defs (assoc ::defs local-defs)

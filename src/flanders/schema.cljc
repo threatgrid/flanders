@@ -32,10 +32,16 @@
             StringType])))
 
 (defprotocol SchemaNode
-  (->schema' [node f]))
+  (->schema' [node f opts]))
 
-(defn ->schema [node]
-  (->schema' node ->schema))
+(defn ->schema
+  ([node] (->schema' node ->schema nil))
+  ([node opts]
+   (->schema' node
+              (fn
+                ([node] (->schema node opts))
+                ([node opts] (->schema node opts)))
+              opts)))
 
 (def ^:deprecated ->schema-tree ->schema)
 
@@ -55,13 +61,13 @@
   ;; Branches
 
   EitherType
-  (->schema' [{:keys [choices tests] :as dll} f]
+  (->schema' [{:keys [choices tests] :as dll} f _]
     (-> (let [choice-schemas (map f choices)]
           (apply s/conditional (mapcat vector tests choice-schemas)))
         (describe dll)))
 
   MapEntry
-  (->schema' [{:keys [key type required?] :as entry} f]
+  (->schema' [{:keys [key type required?] :as entry} f _]
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
     (let [description (some :description [key entry type])
@@ -79,7 +85,7 @@
             (some? default) (assoc :default default)))]))
 
   MapType
-  (->schema' [{:keys [entries] :as dll} f]
+  (->schema' [{:keys [entries] :as dll} f _]
     (describe
      (with-meta
        (reduce (fn [m [k v]]
@@ -91,19 +97,19 @@
      dll))
 
   ParameterListType
-  (->schema' [{:keys [parameters]} f]
+  (->schema' [{:keys [parameters]} f _]
     (mapv f parameters))
 
   SequenceOfType
-  (->schema' [{:keys [type] :as dll} f]
+  (->schema' [{:keys [type] :as dll} f _]
     (describe [(f type)] dll))
 
   SetOfType
-  (->schema' [{:keys [type] :as dll} f]
+  (->schema' [{:keys [type] :as dll} f _]
     (describe #{(f type)} dll))
 
   SignatureType
-  (->schema' [{:keys [parameters rest-parameter return] :as dll} f]
+  (->schema' [{:keys [parameters rest-parameter return] :as dll} f _]
     (-> (let [parameters (f parameters)]
           (s/make-fn-schema (f return)
                             (if (some? rest-parameter)
@@ -114,11 +120,11 @@
   ;; Leaves
 
   AnythingType
-  (->schema' [dll _]
+  (->schema' [dll _ _]
     (describe s/Any dll))
 
   BooleanType
-  (->schema' [{:keys [open? default] :as dll} _]
+  (->schema' [{:keys [open? default] :as dll} _ _]
     (describe
      (match [open? default]
             [true  _] s/Bool
@@ -126,11 +132,11 @@
      dll))
 
   InstType
-  (->schema' [dll _]
+  (->schema' [dll _ _]
     (describe s/Inst dll))
 
   IntegerType
-  (->schema' [{:keys [open? values] :as dll} _]
+  (->schema' [{:keys [open? values] :as dll} _ _]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Int
@@ -139,7 +145,7 @@
      dll))
 
   KeywordType
-  (->schema' [{:keys [key? open? values] :as dll} _]
+  (->schema' [{:keys [key? open? values] :as dll} _ _]
     (let [kw-schema
           (match [key? open? (seq values)]
                  [_    true  _         ] s/Keyword
@@ -151,7 +157,7 @@
         (describe kw-schema dll))))
 
   NumberType
-  (->schema' [{:keys [open? values] :as dll} _]
+  (->schema' [{:keys [open? values] :as dll} _ _]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Num
@@ -160,7 +166,7 @@
      dll))
 
   StringType
-  (->schema' [{:keys [open? values] :as dll} _]
+  (->schema' [{:keys [open? values] :as dll} _ _]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Str

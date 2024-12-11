@@ -7,6 +7,7 @@
             [malli.core :as m]
             [flanders.json-schema :as sut]
             [flanders.json-schema.malli :as js->malli]
+            [flanders.json-schema.schema :as js->schema]
             [cheshire.core :as json]))
 
 (def union-example
@@ -179,10 +180,13 @@
 
 (deftest ocsf-test
   (is (= nil (sut/->flanders (security-finding-json) nil)))
-  (is (= nil (js->malli/->malli (security-finding-json) nil))))
+  (is (= nil (js->malli/->malli (security-finding-json) nil)))
+  (is (= nil (binding [*ns* (create-ns 'flanders.json-schema-test.security-finding)]
+               (js->schema/->schema (security-finding-json) nil)))))
 
 (comment
   (binding [*print-level* nil
             *print-length* nil
             *print-namespace-maps* false]
-    (spit "security-finding.edn" (with-out-str ((requiring-resolve 'clojure.pprint/pprint) (m/form (js->malli/->malli (security-finding-json) nil)))))))
+    (spit "security-finding.edn" (with-out-str ((requiring-resolve 'clojure.pprint/pprint) (m/form (js->malli/->malli (security-finding-json) nil))))))
+  )
