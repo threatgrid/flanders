@@ -348,8 +348,13 @@
       (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-schema-explain
              (unqualify-recursive-vars-from-schema-explain @SchemaSecurityFinding))))
     (testing "transitive defschema's for top-level JSON Schema look correct"
-      (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-defschema-vars
-             (set (vals (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding)))))))))
+      (is (= (set (keys flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-schema-explains))
+             (set (vals (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding))))))
+      (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-schema-explains
+             (into {} (map (fn [[v uniq]]
+                             {uniq (unqualify-recursive-vars-from-schema-explain @(find-var v))}))
+                   (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding)))))
+      )))
 
 (defn generate-example-malli [file json]
   (let [f (io/file file)]
