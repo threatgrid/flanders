@@ -40,10 +40,10 @@ jobs:
           set -x
           case "${GITHUB_EVENT_NAME}" in
             #scheduled)
-            #  echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
+            #  echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
             # ;;
             *)
-              echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
+              echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
               ;;
           esac
   lint:

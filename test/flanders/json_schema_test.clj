@@ -193,4 +193,8 @@
             *print-length* nil
             *print-namespace-maps* false]
     (spit "security-finding.edn" (with-out-str ((requiring-resolve 'clojure.pprint/pprint) (m/form (js->malli/->malli (security-finding-json) nil))))))
+  (binding [*print-level* nil
+            *print-length* nil
+            *print-namespace-maps* false]
+    (spit "schema-security-finding.clj" (with-out-str ((requiring-resolve 'clojure.pprint/pprint) (m/form (js->malli/->malli (security-finding-json) nil))))))
   )
