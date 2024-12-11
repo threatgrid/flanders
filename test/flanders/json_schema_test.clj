@@ -1,5 +1,6 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
+            [malli.generator :as mg]
             [clojure.pprint :as pp]
             [clojure.java.io :as io]
             [clojure.walk :as walk]
@@ -354,7 +355,74 @@
              (into {} (map (fn [[v uniq]]
                              {uniq (unqualify-recursive-vars-from-schema-explain @(find-var v))}))
                    (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding)))))
-      )))
+      ))
+  (testing "malli ops"
+    (is (some? (m/explain @MalliSecurityFinding {})))
+    ;;FIXME
+    #_
+    (is (m/validate @MalliSecurityFinding
+                    {:severity_id 0,
+                     :category_uid 10,
+                     :status_id 0,
+                     :data_sources ["string"],
+                     :api nil,
+                     :unmapped nil,
+                     :class_name "string",
+                     :osint [nil],
+                     :type_uid 10,
+                     :start_time_dt "string",
+                     :impact_score 10,
+                     :impact_id 0,
+                     :enrichments [nil],
+                     :nist ["string"],
+                     :cloud nil,
+                     :time 10,
+                     :evidence "anything",
+                     :process nil,
+                     :start_time 10,
+                     :risk_level "string",
+                     :observables [nil],
+                     :risk_score 10,
+                     :time_dt "string",
+                     :duration 10,
+                     :state "string",
+                     :class_uid 10,
+                     :kill_chain [nil],
+                     :end_time 10,
+                     :category_name "string",
+                     :analytic nil,
+                     :activity_name "string",
+                     :confidence_score 10,
+                     :timezone_offset 10,
+                     :status "string",
+                     :count 10,
+                     :severity "string",
+                     :cis_csc [nil],
+                     :status_detail "string",
+                     :end_time_dt "string",
+                     :status_code "string",
+                     :attacks [nil],
+                     :finding nil,
+                     :raw_data "string",
+                     :confidence "string",
+                     :activity_id 0,
+                     :resources [nil],
+                     :type_name "string",
+                     :confidence_id 0,
+                     :impact "string",
+                     :metadata nil,
+                     :compliance nil,
+                     :message "string",
+                     :vulnerabilities [nil],
+                     :malware [nil],
+                     :state_id 0,
+                     :risk_level_id 0}
+                    {:type_uid {}}))
+    ;;FIXME
+    #_
+    (is (mg/generate @MalliSecurityFinding {:seed 0}))
+    )
+  )
 
 (defn generate-example-malli [file json]
   (let [f (io/file file)]
