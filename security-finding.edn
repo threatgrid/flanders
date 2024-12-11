@@ -1,6 +1,219 @@
 [:schema
  {:registry
-  {"https://schema.ocsf.io/schema/classes/security_finding#$defs/observable"
+  {"https://schema.ocsf.io/schema/classes/security_finding/$defs/logger"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:logged_time 10,
+      :log_name "string",
+      :log_level "string",
+      :logged_time_dt "string",
+      :uid "string",
+      :name "string",
+      :log_provider "string",
+      :product nil,
+      :transmit_time_dt "string",
+      :device nil,
+      :log_version "string",
+      :version "string",
+      :transmit_time 10}}
+    [:device
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/device"]]
+    [:log_level
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:log_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:log_provider
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:log_version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:logged_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:logged_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:product
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
+    [:transmit_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:transmit_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/keyboard_info"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:function_keys 10,
+      :ime "string",
+      :keyboard_layout "string",
+      :keyboard_subtype 10,
+      :keyboard_type "string"}}
+    [:function_keys
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:ime
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:keyboard_layout
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:keyboard_subtype
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:keyboard_type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:desc "string",
+      :group nil,
+      :is_applied true,
+      :name "string",
+      :uid "string",
+      :version "string"}}
+    [:desc
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:group
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
+    [:is_applied
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/image"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:labels ["string"],
+      :name "string",
+      :path "string",
+      :tag "string",
+      :uid "string"}}
+    [:labels
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:path
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:tag
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/response"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:code 10,
+      :containers [nil],
+      :data "anything",
+      :error "string",
+      :error_message "string",
+      :flags ["string"],
+      :message "string"}}
+    [:code
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:containers
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]]
+    [:data
+     {:json-schema/example "anything", :optional true}
+     [:any {:json-schema/example "anything"}]]
+    [:error
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:error_message
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:flags
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:message
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/reputation"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:base_score 10.0,
+      :provider "string",
+      :score "string",
+      :score_id 0}}
+    [:base_score
+     {:json-schema/example 10.0}
+     [number? {:json-schema/example 10.0}]]
+    [:provider
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:score
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:score_id
+     {:json-schema/example 0}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 99]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/account"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:labels ["string"],
+      :name "string",
+      :type "string",
+      :type_id 0,
+      :uid "string"}}
+    [:labels
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 99]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"
    [:map
     {:closed true,
      :json-schema/example
@@ -58,418 +271,136 @@
     [:value
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/location"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/cve"
    [:map
     {:closed true,
      :json-schema/example
-     {:postal_code "string",
-      :continent "string",
-      :long 10.0,
-      :coordinates [10.0],
+     {:cvss [nil],
       :desc "string",
-      :geohash "string",
-      :city "string",
-      :is_on_premises true,
-      :isp "string",
-      :region "string",
-      :lat 10.0,
-      :provider "string",
-      :country "string"}}
-    [:city
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:continent
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:coordinates
-     {:json-schema/example [10.0], :optional true}
-     [:sequential [number? {:json-schema/example 10.0}]]]
-    [:country
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:desc
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:geohash
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:is_on_premises
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:isp
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:lat
-     {:json-schema/example 10.0, :optional true}
-     [number? {:json-schema/example 10.0}]]
-    [:long
-     {:json-schema/example 10.0, :optional true}
-     [number? {:json-schema/example 10.0}]]
-    [:postal_code
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:provider
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:region
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/domain_contact"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:email_addr "string",
-      :location nil,
-      :name "string",
-      :phone_number "string",
+      :cwe nil,
+      :uid "string",
+      :epss nil,
+      :created_time 10,
       :type "string",
-      :type_id 0,
-      :uid "string"}}
-    [:email_addr
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:location
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:phone_number
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_id
-     {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 99]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/request"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:containers [nil],
-      :data "anything",
-      :flags ["string"],
-      :uid "string"}}
-    [:containers
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]]
-    [:data
-     {:json-schema/example "anything", :optional true}
-     [:any {:json-schema/example "anything"}]]
-    [:flags
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:uid
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/affected_code"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:end_line 10,
-      :file nil,
-      :owner nil,
-      :remediation nil,
-      :start_line 10}}
-    [:end_line
+      :cwe_url "string",
+      :references ["string"],
+      :title "string",
+      :product nil,
+      :modified_time 10,
+      :created_time_dt "string",
+      :cwe_uid "string",
+      :modified_time_dt "string"}}
+    [:created_time
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:file
-     {:json-schema/example nil}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"]]
-    [:owner
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
-    [:remediation
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
-    [:start_line
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/resource_details"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:labels ["string"],
-      :criticality "string",
-      :group nil,
-      :cloud_partition "string",
-      :uid "string",
-      :name "string",
-      :type "string",
-      :region "string",
-      :version "string",
-      :agent_list [nil],
-      :namespace "string",
-      :data_classification nil,
-      :owner nil,
-      :data "anything"}}
-    [:agent_list
+    [:created_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:cvss
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/agent"]]]
-    [:cloud_partition
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:criticality
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:data
-     {:json-schema/example "anything", :optional true}
-     [:any {:json-schema/example "anything"}]]
-    [:data_classification
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
-    [:group
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
-    [:labels
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:namespace
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:owner
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
-    [:region
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/cloud"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:account nil,
-      :org nil,
-      :project_uid "string",
-      :provider "string",
-      :region "string",
-      :zone "string"}}
-    [:account
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/account"]]
-    [:org
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
-    [:project_uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:provider
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:region
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:zone
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/feature"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:name "string", :uid "string", :version "string"}}
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/group"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:desc "string",
-      :domain "string",
-      :name "string",
-      :privileges ["string"],
-      :type "string",
-      :uid "string"}}
-    [:desc
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:domain
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:privileges
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/object"
-   [:map {:closed true, :json-schema/example {}}],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/vulnerability"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:kb_articles ["string"],
-      :remediation nil,
-      :desc "string",
-      :first_seen_time_dt "string",
-      :cve nil,
-      :cwe nil,
-      :last_seen_time_dt "string",
-      :references ["string"],
-      :kb_article_list [nil],
-      :is_fix_available true,
-      :title "string",
-      :fix_available true,
-      :first_seen_time 10,
-      :is_exploit_available true,
-      :last_seen_time 10,
-      :severity "string",
-      :affected_packages [nil],
-      :packages [nil],
-      :vendor_name "string",
-      :related_vulnerabilities ["string"],
-      :affected_code [nil]}}
-    [:affected_code
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_code"]]]
-    [:affected_packages
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_package"]]]
-    [:cve
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/cve"]]
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cvss"]]]
     [:cwe
      {:json-schema/example nil, :optional true}
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cwe"]]
+    [:cwe_uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:cwe_url
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
     [:desc
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:first_seen_time
+    [:epss
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/epss"]]
+    [:modified_time
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:first_seen_time_dt
+    [:modified_time_dt
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:fix_available
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:is_exploit_available
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:is_fix_available
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:kb_article_list
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
-    [:kb_articles
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:last_seen_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:last_seen_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:packages
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/package"]]]
+    [:product
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
     [:references
      {:json-schema/example ["string"], :optional true}
      [:sequential [:string {:json-schema/example "string"}]]]
-    [:related_vulnerabilities
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:remediation
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
-    [:severity
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
     [:title
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:vendor_name
+    [:type
      {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/attack"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/cis_csc"
    [:map
     {:closed true,
-     :json-schema/example
-     {:sub_technique nil,
-      :tactic nil,
-      :tactics [nil],
-      :technique nil,
-      :version "string"}}
-    [:sub_technique
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/sub_technique"]]
-    [:tactic
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/tactic"]]
-    [:tactics
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/tactic"]]]
-    [:technique
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/technique"]]
+     :json-schema/example {:control "string", :version "string"}}
+    [:control
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
     [:version
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/affected_package"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:path "string",
+      :cpe_name "string",
+      :uid "string",
+      :name "string",
+      :url_string "string",
+      :lang "string",
+      :vendor_name "string",
+      :version "string",
+      :feature nil,
+      :data_classification nil}}
+    [:cpe_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:data_classification
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
+    [:feature
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/feature"]]
+    [:lang
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:path
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:url_string
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:vendor_name
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/package"
    [:map
     {:closed true,
      :json-schema/example
      {:type_id 0,
-      :path "string",
-      :remediation nil,
       :epoch 10,
       :hash nil,
       :architecture "string",
@@ -479,8 +410,6 @@
       :release "string",
       :type "string",
       :purl "string",
-      :package_manager "string",
-      :fixed_in_version "string",
       :vendor_name "string",
       :version "string"}}
     [:architecture
@@ -492,9 +421,6 @@
     [:epoch
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:fixed_in_version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
     [:hash
      {:json-schema/example nil, :optional true}
      [:ref
@@ -505,22 +431,12 @@
     [:name
      {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]
-    [:package_manager
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:path
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
     [:purl
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
     [:release
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:remediation
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
     [:type
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
@@ -533,100 +449,525 @@
     [:version
      {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/email"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/process"
    [:map
     {:closed true,
      :json-schema/example
-     {:smtp_to ["string"],
+     {:tid 10,
+      :group nil,
+      :lineage ["string"],
       :uid "string",
-      :message_uid "string",
-      :cc ["string"],
-      :delivered_to "string",
-      :size 10,
-      :smtp_from "string",
-      :raw_header "string",
-      :reply_to "string",
-      :from "string",
-      :x_originating_ip ["string"],
-      :subject "string",
-      :data_classification nil,
-      :to ["string"]}}
-    [:cc
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:data_classification
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
-    [:delivered_to
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:from
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:message_uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:raw_header
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:reply_to
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:size
+      :name "string",
+      :terminated_time 10,
+      :file nil,
+      :created_time 10,
+      :parent_process nil,
+      :euid 10,
+      :sandbox "string",
+      :pid 10,
+      :terminated_time_dt "string",
+      :cmd_line "string",
+      :container nil,
+      :xattributes nil,
+      :integrity_id 0,
+      :created_time_dt "string",
+      :egid 10,
+      :auid 10,
+      :namespace_pid 10,
+      :integrity "string",
+      :user nil,
+      :loaded_modules ["string"],
+      :session nil}}
+    [:auid
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:smtp_from
+    [:cmd_line
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:smtp_to
+    [:container
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]
+    [:created_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:created_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:egid
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:euid
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:file
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"]]
+    [:group
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
+    [:integrity
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:integrity_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
+    [:lineage
      {:json-schema/example ["string"], :optional true}
      [:sequential [:string {:json-schema/example "string"}]]]
-    [:subject
+    [:loaded_modules
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:name
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:to
-     {:json-schema/example ["string"]}
-     [:sequential [:string {:json-schema/example "string"}]]]
+    [:namespace_pid
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:parent_process
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/process"]]
+    [:pid
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:sandbox
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:session
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/session"]]
+    [:terminated_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:terminated_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:tid
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
     [:uid
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:x_originating_ip
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/dns_answer"
+    [:user
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
+    [:xattributes
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"
+   [:map
+    {:closed true, :json-schema/example {:phase "string", :phase_id 0}}
+    [:phase
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:phase_id
+     {:json-schema/example 0}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 99]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/osint"
    [:map
     {:closed true,
      :json-schema/example
-     {:class "string",
-      :flag_ids [0],
-      :flags ["string"],
-      :packet_uid 10,
-      :rdata "string",
-      :ttl 10,
-      :type "string"}}
-    [:class
+     {:type_id 0,
+      :email nil,
+      :subdomains ["string"],
+      :autonomous_system nil,
+      :uid "string",
+      :name "string",
+      :value "string",
+      :type "string",
+      :kill_chain [nil],
+      :comment "string",
+      :signatures [nil],
+      :tlp "AMBER",
+      :answers [nil],
+      :attacks [nil],
+      :vendor_name "string",
+      :whois nil,
+      :confidence "string",
+      :location nil,
+      :confidence_id 0,
+      :src_url "string",
+      :email_auth nil,
+      :vulnerabilities [nil]}}
+    [:answers
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/dns_answer"]]]
+    [:attacks
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
+    [:autonomous_system
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/autonomous_system"]]
+    [:comment
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:flag_ids
-     {:json-schema/example [0], :optional true}
-     [:sequential [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]]
-    [:flags
+    [:confidence
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:confidence_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 99]]
+    [:email
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/email"]]
+    [:email_auth
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/email_auth"]]
+    [:kill_chain
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
+    [:location
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:signatures
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/digital_signature"]]]
+    [:src_url
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:subdomains
      {:json-schema/example ["string"], :optional true}
      [:sequential [:string {:json-schema/example "string"}]]]
-    [:packet_uid
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:rdata
+    [:tlp
+     {:json-schema/example "AMBER", :optional true}
+     [:enum
+      {:json-schema/example "AMBER"}
+      "AMBER"
+      "AMBER STRICT"
+      "CLEAR"
+      "GREEN"
+      "RED"]]
+    [:type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type_id
+     {:json-schema/example 0}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 99]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:value
      {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]
-    [:ttl
+    [:vendor_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:vulnerabilities
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"]]]
+    [:whois
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/whois"]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:desc "string",
+      :kb_article_list [nil],
+      :kb_articles ["string"],
+      :references ["string"]}}
+    [:desc
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:kb_article_list
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
+    [:kb_articles
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:references
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/agent"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:name "string",
+      :policies [nil],
+      :type "string",
+      :type_id 0,
+      :uid "string",
+      :uid_alt "string",
+      :vendor_name "string",
+      :version "string"}}
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:policies
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"]]]
+    [:type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 99]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid_alt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:vendor_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/cvss"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:base_score 10.0,
+      :depth "Base",
+      :metrics [nil],
+      :overall_score 10.0,
+      :severity "string",
+      :vector_string "string",
+      :version "string"}}
+    [:base_score
+     {:json-schema/example 10.0}
+     [number? {:json-schema/example 10.0}]]
+    [:depth
+     {:json-schema/example "Base", :optional true}
+     [:enum
+      {:json-schema/example "Base"}
+      "Base"
+      "Environmental"
+      "Temporal"]]
+    [:metrics
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/metric"]]]
+    [:overall_score
+     {:json-schema/example 10.0, :optional true}
+     [number? {:json-schema/example 10.0}]]
+    [:severity
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:vector_string
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/malware"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:classification_ids [0],
+      :classifications ["string"],
+      :cves [nil],
+      :name "string",
+      :path "string",
+      :provider "string",
+      :uid "string"}}
+    [:classification_ids
+     {:json-schema/example [0]}
+     [:sequential
+      [:enum
+       {:json-schema/example 0}
+       0
+       1
+       2
+       3
+       4
+       5
+       6
+       7
+       8
+       9
+       10
+       11
+       13
+       14
+       15
+       16
+       17
+       18
+       19
+       20
+       21
+       22
+       99]]]
+    [:classifications
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:cves
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cve"]]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:path
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:provider
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/certificate"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:is_self_signed true,
+      :uid "string",
+      :created_time 10,
+      :expiration_time 10,
+      :fingerprints [nil],
+      :issuer "string",
+      :created_time_dt "string",
+      :expiration_time_dt "string",
+      :version "string",
+      :serial_number "string",
+      :subject "string"}}
+    [:created_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:created_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:expiration_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:expiration_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:fingerprints
+     {:json-schema/example [nil]}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]]
+    [:is_self_signed
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:issuer
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:serial_number
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:subject
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/tactic"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:name "string", :src_url "string", :uid "string"}}
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:src_url
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/metric"
+   [:map
+    {:closed true,
+     :json-schema/example {:name "string", :value "string"}}
+    [:name
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:value
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/extension"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:name "string", :uid "string", :version "string"}}
+    [:name
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/network_interface"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:type_id 0,
+      :ip "string",
+      :uid "string",
+      :name "string",
+      :type "string",
+      :hostname "string",
+      :subnet_prefix 10,
+      :namespace "string",
+      :mac "string"}}
+    [:hostname
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:ip
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:mac
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:namespace
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:subnet_prefix
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
     [:type
      {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type_id
+     {:json-schema/example 0}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
+    [:uid
+     {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/ldap_person"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/ldap_person"
    [:map
     {:closed true,
      :json-schema/example
@@ -728,48 +1069,91 @@
     [:surname
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/certificate"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"
    [:map
     {:closed true,
      :json-schema/example
-     {:is_self_signed true,
+     {:desc "string",
+      :domain "string",
+      :name "string",
+      :privileges ["string"],
+      :type "string",
+      :uid "string"}}
+    [:desc
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:domain
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:privileges
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/resource_details"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:labels ["string"],
+      :criticality "string",
+      :group nil,
+      :cloud_partition "string",
       :uid "string",
-      :created_time 10,
-      :expiration_time 10,
-      :fingerprints [nil],
-      :issuer "string",
-      :created_time_dt "string",
-      :expiration_time_dt "string",
+      :name "string",
+      :type "string",
+      :region "string",
       :version "string",
-      :serial_number "string",
-      :subject "string"}}
-    [:created_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:expiration_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:expiration_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:fingerprints
-     {:json-schema/example [nil]}
+      :agent_list [nil],
+      :namespace "string",
+      :data_classification nil,
+      :owner nil,
+      :data "anything"}}
+    [:agent_list
+     {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]]
-    [:is_self_signed
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:issuer
-     {:json-schema/example "string"}
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/agent"]]]
+    [:cloud_partition
+     {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:serial_number
-     {:json-schema/example "string"}
+    [:criticality
+     {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:subject
+    [:data
+     {:json-schema/example "anything", :optional true}
+     [:any {:json-schema/example "anything"}]]
+    [:data_classification
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
+    [:group
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
+    [:labels
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:namespace
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:owner
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
+    [:region
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
     [:uid
@@ -778,163 +1162,310 @@
     [:version
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/cvss"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/feature"
    [:map
     {:closed true,
      :json-schema/example
-     {:base_score 10.0,
-      :depth "Base",
-      :metrics [nil],
-      :overall_score 10.0,
-      :severity "string",
-      :vector_string "string",
-      :version "string"}}
-    [:base_score
-     {:json-schema/example 10.0}
-     [number? {:json-schema/example 10.0}]]
-    [:depth
-     {:json-schema/example "Base", :optional true}
-     [:enum
-      {:json-schema/example "Base"}
-      "Base"
-      "Environmental"
-      "Temporal"]]
-    [:metrics
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/metric"]]]
-    [:overall_score
-     {:json-schema/example 10.0, :optional true}
-     [number? {:json-schema/example 10.0}]]
-    [:severity
+     {:name "string", :uid "string", :version "string"}}
+    [:name
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:vector_string
+    [:uid
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
     [:version
-     {:json-schema/example "string"}
+     {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/package"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"
    [:map
     {:closed true,
      :json-schema/example
      {:type_id 0,
-      :epoch 10,
-      :hash nil,
-      :architecture "string",
-      :license "string",
-      :cpe_name "string",
+      :email_addr "string",
+      :uid_alt "string",
+      :uid "string",
       :name "string",
-      :release "string",
+      :risk_level "string",
+      :risk_score 10,
       :type "string",
-      :purl "string",
-      :vendor_name "string",
-      :version "string"}}
-    [:architecture
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:cpe_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:epoch
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:hash
+      :credential_uid "string",
+      :account nil,
+      :org nil,
+      :domain "string",
+      :full_name "string",
+      :ldap_person nil,
+      :groups [nil],
+      :risk_level_id 0}}
+    [:account
      {:json-schema/example nil, :optional true}
      [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
-    [:license
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/account"]]
+    [:credential_uid
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
+    [:domain
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:email_addr
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:full_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:groups
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]]
+    [:ldap_person
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/ldap_person"]]
     [:name
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:purl
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:release
+    [:org
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
+    [:risk_level
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
+    [:risk_level_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
+    [:risk_score
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
     [:type
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
     [:type_id
      {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 99]]
-    [:vendor_name
+     [:enum {:json-schema/example 0} 0 1 2 3 99]]
+    [:uid
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string"}
+    [:uid_alt
+     {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/os"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/domain_contact"
    [:map
     {:closed true,
      :json-schema/example
-     {:type_id 0,
-      :cpe_name "string",
-      :cpu_bits 10,
+     {:email_addr "string",
+      :location nil,
       :name "string",
-      :sp_ver 10,
+      :phone_number "string",
       :type "string",
-      :lang "string",
-      :sp_name "string",
-      :build "string",
-      :edition "string",
-      :version "string",
-      :country "string"}}
-    [:build
+      :type_id 0,
+      :uid "string"}}
+    [:email_addr
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:country
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:cpe_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:cpu_bits
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:edition
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:lang
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
+    [:location
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
     [:name
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:sp_name
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:sp_ver
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
+    [:phone_number
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
     [:type
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
     [:type_id
      {:json-schema/example 0}
-     [:enum
-      {:json-schema/example 0}
-      0
-      99
-      100
-      101
-      200
-      201
-      300
-      301
-      302
-      400
-      401
-      402]]
-    [:version
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 99]]
+    [:uid
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/enrichment"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/email"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:smtp_to ["string"],
+      :uid "string",
+      :message_uid "string",
+      :cc ["string"],
+      :delivered_to "string",
+      :size 10,
+      :smtp_from "string",
+      :raw_header "string",
+      :reply_to "string",
+      :from "string",
+      :x_originating_ip ["string"],
+      :subject "string",
+      :data_classification nil,
+      :to ["string"]}}
+    [:cc
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:data_classification
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
+    [:delivered_to
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:from
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:message_uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:raw_header
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:reply_to
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:size
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:smtp_from
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:smtp_to
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:subject
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:to
+     {:json-schema/example ["string"]}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:x_originating_ip
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/cloud"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:account nil,
+      :org nil,
+      :project_uid "string",
+      :provider "string",
+      :region "string",
+      :zone "string"}}
+    [:account
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/account"]]
+    [:org
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
+    [:project_uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:provider
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:region
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:zone
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:name "string",
+      :ou_name "string",
+      :ou_uid "string",
+      :uid "string"}}
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:ou_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:ou_uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/device_hw_info"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:keyboard_info nil,
+      :cpu_count 10,
+      :cpu_bits 10,
+      :cpu_type "string",
+      :bios_date "string",
+      :bios_ver "string",
+      :cpu_cores 10,
+      :desktop_display nil,
+      :chassis "string",
+      :ram_size 10,
+      :bios_manufacturer "string",
+      :serial_number "string",
+      :cpu_speed 10}}
+    [:bios_date
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:bios_manufacturer
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:bios_ver
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:chassis
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:cpu_bits
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:cpu_cores
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:cpu_count
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:cpu_speed
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:cpu_type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:desktop_display
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/display"]]
+    [:keyboard_info
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/keyboard_info"]]
+    [:ram_size
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:serial_number
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:algorithm "string", :algorithm_id 0, :value "string"}}
+    [:algorithm
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:algorithm_id
+     {:json-schema/example 0}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 99]]
+    [:value
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/enrichment"
    [:map
     {:closed true,
      :json-schema/example
@@ -983,7 +1514,332 @@
     [:value
      {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/finding"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/technique"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:name "string", :src_url "string", :uid "string"}}
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:src_url
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/compliance"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:status_id 0,
+      :requirements ["string"],
+      :standards ["string"],
+      :compliance_standards [nil],
+      :status "string",
+      :control "string",
+      :status_detail "string",
+      :status_code "string",
+      :compliance_references [nil]}}
+    [:compliance_references
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
+    [:compliance_standards
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
+    [:control
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:requirements
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:standards
+     {:json-schema/example ["string"]}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:status
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:status_code
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:status_detail
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:status_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 99]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/session"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:terminal "string",
+      :uid_alt "string",
+      :uid "string",
+      :is_remote true,
+      :created_time 10,
+      :credential_uid "string",
+      :expiration_time 10,
+      :is_mfa true,
+      :expiration_reason "string",
+      :is_vpn true,
+      :count 10,
+      :issuer "string",
+      :created_time_dt "string",
+      :uuid "string",
+      :expiration_time_dt "string"}}
+    [:count
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:created_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:created_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:credential_uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:expiration_reason
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:expiration_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:expiration_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:is_mfa
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:is_remote
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:is_vpn
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:issuer
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:terminal
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid_alt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uuid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/service"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:labels ["string"],
+      :name "string",
+      :uid "string",
+      :version "string"}}
+    [:labels
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_package"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:type_id 0,
+      :path "string",
+      :remediation nil,
+      :epoch 10,
+      :hash nil,
+      :architecture "string",
+      :license "string",
+      :cpe_name "string",
+      :name "string",
+      :release "string",
+      :type "string",
+      :purl "string",
+      :package_manager "string",
+      :fixed_in_version "string",
+      :vendor_name "string",
+      :version "string"}}
+    [:architecture
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:cpe_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:epoch
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:fixed_in_version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:hash
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
+    [:license
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:name
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:package_manager
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:path
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:purl
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:release
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:remediation
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
+    [:type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 99]]
+    [:vendor_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/digital_signature"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:algorithm "string",
+      :created_time 10,
+      :state "string",
+      :developer_uid "string",
+      :digest nil,
+      :certificate nil,
+      :algorithm_id 0,
+      :created_time_dt "string",
+      :state_id 0}}
+    [:algorithm
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:algorithm_id
+     {:json-schema/example 0}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
+    [:certificate
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/certificate"]]
+    [:created_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:created_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:developer_uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:digest
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
+    [:state
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:state_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 99]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/whois"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:email_addr "string",
+      :phone_number "string",
+      :subdomains ["string"],
+      :registrar "string",
+      :autonomous_system nil,
+      :last_seen_time_dt "string",
+      :dnssec_status "string",
+      :created_time 10,
+      :dnssec_status_id 0,
+      :domain_contacts [nil],
+      :status "string",
+      :last_seen_time 10,
+      :name_servers ["string"],
+      :created_time_dt "string",
+      :domain "string",
+      :subnet "string"}}
+    [:autonomous_system
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/autonomous_system"]]
+    [:created_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:created_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:dnssec_status
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:dnssec_status_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 99]]
+    [:domain
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:domain_contacts
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/domain_contact"]]]
+    [:email_addr
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:last_seen_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:last_seen_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:name_servers
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:phone_number
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:registrar
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:status
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:subdomains
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:subnet
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/finding"
    [:map
     {:closed true,
      :json-schema/example
@@ -1058,7 +1914,73 @@
     [:uid
      {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/file"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/request"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:containers [nil],
+      :data "anything",
+      :flags ["string"],
+      :uid "string"}}
+    [:containers
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]]
+    [:data
+     {:json-schema/example "anything", :optional true}
+     [:any {:json-schema/example "anything"}]]
+    [:flags
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:uid
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/timespan"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:type_id 0,
+      :duration_weeks 10,
+      :duration_months 10,
+      :duration_secs 10,
+      :type "string",
+      :duration 10,
+      :duration_hours 10,
+      :duration_days 10,
+      :duration_years 10,
+      :duration_mins 10}}
+    [:duration
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:duration_days
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:duration_hours
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:duration_mins
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:duration_months
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:duration_secs
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:duration_weeks
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:duration_years
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 99]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"
    [:map
     {:closed true,
      :json-schema/example
@@ -1200,938 +2122,7 @@
      {:json-schema/example nil, :optional true}
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/image"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:labels ["string"],
-      :name "string",
-      :path "string",
-      :tag "string",
-      :uid "string"}}
-    [:labels
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:path
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:tag
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/analytic"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:category "string",
-      :desc "string",
-      :name "string",
-      :related_analytics [nil],
-      :type "string",
-      :type_id 0,
-      :uid "string",
-      :version "string"}}
-    [:category
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:desc
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:related_analytics
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"]]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_id
-     {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 11 99]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/agent"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:name "string",
-      :policies [nil],
-      :type "string",
-      :type_id 0,
-      :uid "string",
-      :uid_alt "string",
-      :vendor_name "string",
-      :version "string"}}
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:policies
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"]]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 99]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid_alt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:vendor_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/user"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:type_id 0,
-      :email_addr "string",
-      :uid_alt "string",
-      :uid "string",
-      :name "string",
-      :risk_level "string",
-      :risk_score 10,
-      :type "string",
-      :credential_uid "string",
-      :account nil,
-      :org nil,
-      :domain "string",
-      :full_name "string",
-      :ldap_person nil,
-      :groups [nil],
-      :risk_level_id 0}}
-    [:account
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/account"]]
-    [:credential_uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:domain
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:email_addr
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:full_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:groups
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]]
-    [:ldap_person
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/ldap_person"]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:org
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
-    [:risk_level
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:risk_level_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
-    [:risk_score
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 99]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid_alt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/metric"
-   [:map
-    {:closed true,
-     :json-schema/example {:name "string", :value "string"}}
-    [:name
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:value
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/osint"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:type_id 0,
-      :email nil,
-      :subdomains ["string"],
-      :autonomous_system nil,
-      :uid "string",
-      :name "string",
-      :value "string",
-      :type "string",
-      :kill_chain [nil],
-      :comment "string",
-      :signatures [nil],
-      :tlp "AMBER",
-      :answers [nil],
-      :attacks [nil],
-      :vendor_name "string",
-      :whois nil,
-      :confidence "string",
-      :location nil,
-      :confidence_id 0,
-      :src_url "string",
-      :email_auth nil,
-      :vulnerabilities [nil]}}
-    [:answers
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/dns_answer"]]]
-    [:attacks
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
-    [:autonomous_system
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/autonomous_system"]]
-    [:comment
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:confidence
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:confidence_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 99]]
-    [:email
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/email"]]
-    [:email_auth
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/email_auth"]]
-    [:kill_chain
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
-    [:location
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:signatures
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/digital_signature"]]]
-    [:src_url
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:subdomains
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:tlp
-     {:json-schema/example "AMBER", :optional true}
-     [:enum
-      {:json-schema/example "AMBER"}
-      "AMBER"
-      "AMBER STRICT"
-      "CLEAR"
-      "GREEN"
-      "RED"]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_id
-     {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 99]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:value
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:vendor_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:vulnerabilities
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"]]]
-    [:whois
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/whois"]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/kill_chain_phase"
-   [:map
-    {:closed true, :json-schema/example {:phase "string", :phase_id 0}}
-    [:phase
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:phase_id
-     {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 99]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/product"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:path "string",
-      :cpe_name "string",
-      :uid "string",
-      :name "string",
-      :url_string "string",
-      :lang "string",
-      :vendor_name "string",
-      :version "string",
-      :feature nil,
-      :data_classification nil}}
-    [:cpe_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:data_classification
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
-    [:feature
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/feature"]]
-    [:lang
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:path
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:url_string
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:vendor_name
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/response"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:code 10,
-      :containers [nil],
-      :data "anything",
-      :error "string",
-      :error_message "string",
-      :flags ["string"],
-      :message "string"}}
-    [:code
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:containers
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]]
-    [:data
-     {:json-schema/example "anything", :optional true}
-     [:any {:json-schema/example "anything"}]]
-    [:error
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:error_message
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:flags
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:message
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/device_hw_info"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:keyboard_info nil,
-      :cpu_count 10,
-      :cpu_bits 10,
-      :cpu_type "string",
-      :bios_date "string",
-      :bios_ver "string",
-      :cpu_cores 10,
-      :desktop_display nil,
-      :chassis "string",
-      :ram_size 10,
-      :bios_manufacturer "string",
-      :serial_number "string",
-      :cpu_speed 10}}
-    [:bios_date
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:bios_manufacturer
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:bios_ver
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:chassis
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:cpu_bits
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:cpu_cores
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:cpu_count
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:cpu_speed
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:cpu_type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:desktop_display
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/display"]]
-    [:keyboard_info
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/keyboard_info"]]
-    [:ram_size
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:serial_number
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/autonomous_system"
-   [:map
-    {:closed true, :json-schema/example {:name "string", :number 10}}
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:number
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/digital_signature"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:algorithm "string",
-      :created_time 10,
-      :state "string",
-      :developer_uid "string",
-      :digest nil,
-      :certificate nil,
-      :algorithm_id 0,
-      :created_time_dt "string",
-      :state_id 0}}
-    [:algorithm
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:algorithm_id
-     {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
-    [:certificate
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/certificate"]]
-    [:created_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:developer_uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:digest
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
-    [:state
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:state_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 99]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/remediation"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:desc "string",
-      :kb_article_list [nil],
-      :kb_articles ["string"],
-      :references ["string"]}}
-    [:desc
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:kb_article_list
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
-    [:kb_articles
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:references
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/fingerprint"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:algorithm "string", :algorithm_id 0, :value "string"}}
-    [:algorithm
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:algorithm_id
-     {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 99]]
-    [:value
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/data_classification"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:category "string",
-      :category_id 0,
-      :confidentiality "string",
-      :confidentiality_id 0,
-      :policy nil}}
-    [:category
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:category_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
-    [:confidentiality
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:confidentiality_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
-    [:policy
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/whois"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:email_addr "string",
-      :phone_number "string",
-      :subdomains ["string"],
-      :registrar "string",
-      :autonomous_system nil,
-      :last_seen_time_dt "string",
-      :dnssec_status "string",
-      :created_time 10,
-      :dnssec_status_id 0,
-      :domain_contacts [nil],
-      :status "string",
-      :last_seen_time 10,
-      :name_servers ["string"],
-      :created_time_dt "string",
-      :domain "string",
-      :subnet "string"}}
-    [:autonomous_system
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/autonomous_system"]]
-    [:created_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:dnssec_status
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:dnssec_status_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 99]]
-    [:domain
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:domain_contacts
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/domain_contact"]]]
-    [:email_addr
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:last_seen_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:last_seen_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:name_servers
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:phone_number
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:registrar
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:status
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:subdomains
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:subnet
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/epss"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:created_time 10,
-      :created_time_dt "string",
-      :percentile 10.0,
-      :score "string",
-      :version "string"}}
-    [:created_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:percentile
-     {:json-schema/example 10.0, :optional true}
-     [number? {:json-schema/example 10.0}]]
-    [:score
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/tactic"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:name "string", :src_url "string", :uid "string"}}
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:src_url
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/cve"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:cvss [nil],
-      :desc "string",
-      :cwe nil,
-      :uid "string",
-      :epss nil,
-      :created_time 10,
-      :type "string",
-      :cwe_url "string",
-      :references ["string"],
-      :title "string",
-      :product nil,
-      :modified_time 10,
-      :created_time_dt "string",
-      :cwe_uid "string",
-      :modified_time_dt "string"}}
-    [:created_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:cvss
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cvss"]]]
-    [:cwe
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/cwe"]]
-    [:cwe_uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:cwe_url
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:desc
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:epss
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/epss"]]
-    [:modified_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:modified_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:product
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
-    [:references
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:title
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/network_interface"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:type_id 0,
-      :ip "string",
-      :uid "string",
-      :name "string",
-      :type "string",
-      :hostname "string",
-      :subnet_prefix 10,
-      :namespace "string",
-      :mac "string"}}
-    [:hostname
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:ip
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:mac
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:namespace
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:subnet_prefix
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_id
-     {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/cis_csc"
-   [:map
-    {:closed true,
-     :json-schema/example {:control "string", :version "string"}}
-    [:control
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/compliance"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:status_id 0,
-      :requirements ["string"],
-      :standards ["string"],
-      :compliance_standards [nil],
-      :status "string",
-      :control "string",
-      :status_detail "string",
-      :status_code "string",
-      :compliance_references [nil]}}
-    [:compliance_references
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
-    [:compliance_standards
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
-    [:control
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:requirements
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:standards
-     {:json-schema/example ["string"]}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:status
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:status_code
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:status_detail
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:status_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 99]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/cwe"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:caption "string", :src_url "string", :uid "string"}}
-    [:caption
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:src_url
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/email_auth"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:dkim "string",
-      :dkim_domain "string",
-      :dkim_signature "string",
-      :dmarc "string",
-      :dmarc_override "string",
-      :dmarc_policy "string",
-      :spf "string"}}
-    [:dkim
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:dkim_domain
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:dkim_signature
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:dmarc
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:dmarc_override
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:dmarc_policy
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:spf
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/logger"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:logged_time 10,
-      :log_name "string",
-      :log_level "string",
-      :logged_time_dt "string",
-      :uid "string",
-      :name "string",
-      :log_provider "string",
-      :product nil,
-      :transmit_time_dt "string",
-      :device nil,
-      :log_version "string",
-      :version "string",
-      :transmit_time 10}}
-    [:device
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/device"]]
-    [:log_level
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:log_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:log_provider
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:log_version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:logged_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:logged_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:product
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
-    [:transmit_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:transmit_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/container"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"
    [:map
     {:closed true,
      :json-schema/example
@@ -2177,49 +2168,172 @@
     [:uid
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/related_event"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/dns_answer"
    [:map
     {:closed true,
      :json-schema/example
-     {:attacks [nil],
-      :kill_chain [nil],
-      :observables [nil],
-      :product_uid "string",
-      :type "string",
-      :type_name "string",
-      :type_uid 10,
-      :uid "string"}}
-    [:attacks
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
-    [:kill_chain
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
-    [:observables
-     {:json-schema/example [nil], :optional true}
-     [:sequential
-      [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"]]]
-    [:product_uid
+     {:class "string",
+      :flag_ids [0],
+      :flags ["string"],
+      :packet_uid 10,
+      :rdata "string",
+      :ttl 10,
+      :type "string"}}
+    [:class
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_uid
+    [:flag_ids
+     {:json-schema/example [0], :optional true}
+     [:sequential [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]]
+    [:flags
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:packet_uid
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:uid
+    [:rdata
      {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:ttl
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:type
+     {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/device"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/autonomous_system"
+   [:map
+    {:closed true, :json-schema/example {:name "string", :number 10}}
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:number
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:category "string",
+      :category_id 0,
+      :confidentiality "string",
+      :confidentiality_id 0,
+      :policy nil}}
+    [:category
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:category_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
+    [:confidentiality
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:confidentiality_id
+     {:json-schema/example 0, :optional true}
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
+    [:policy
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:kb_articles ["string"],
+      :remediation nil,
+      :desc "string",
+      :first_seen_time_dt "string",
+      :cve nil,
+      :cwe nil,
+      :last_seen_time_dt "string",
+      :references ["string"],
+      :kb_article_list [nil],
+      :is_fix_available true,
+      :title "string",
+      :fix_available true,
+      :first_seen_time 10,
+      :is_exploit_available true,
+      :last_seen_time 10,
+      :severity "string",
+      :affected_packages [nil],
+      :packages [nil],
+      :vendor_name "string",
+      :related_vulnerabilities ["string"],
+      :affected_code [nil]}}
+    [:affected_code
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_code"]]]
+    [:affected_packages
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_package"]]]
+    [:cve
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/cve"]]
+    [:cwe
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/cwe"]]
+    [:desc
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:first_seen_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:first_seen_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:fix_available
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:is_exploit_available
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:is_fix_available
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:kb_article_list
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
+    [:kb_articles
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:last_seen_time
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:last_seen_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:packages
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/package"]]]
+    [:references
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:related_vulnerabilities
+     {:json-schema/example ["string"], :optional true}
+     [:sequential [:string {:json-schema/example "string"}]]]
+    [:remediation
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
+    [:severity
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:title
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:vendor_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/device"
    [:map
     {:closed true,
      :json-schema/example
@@ -2454,31 +2568,209 @@
     [:zone
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/display"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/epss"
    [:map
     {:closed true,
      :json-schema/example
-     {:color_depth 10,
-      :physical_height 10,
-      :physical_orientation 10,
-      :physical_width 10,
-      :scale_factor 10}}
-    [:color_depth
+     {:created_time 10,
+      :created_time_dt "string",
+      :percentile 10.0,
+      :score "string",
+      :version "string"}}
+    [:created_time
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:physical_height
+    [:created_time_dt
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:percentile
+     {:json-schema/example 10.0, :optional true}
+     [number? {:json-schema/example 10.0}]]
+    [:score
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/cwe"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:caption "string", :src_url "string", :uid "string"}}
+    [:caption
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:src_url
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/os"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:type_id 0,
+      :cpe_name "string",
+      :cpu_bits 10,
+      :name "string",
+      :sp_ver 10,
+      :type "string",
+      :lang "string",
+      :sp_name "string",
+      :build "string",
+      :edition "string",
+      :version "string",
+      :country "string"}}
+    [:build
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:country
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:cpe_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:cpu_bits
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:physical_orientation
+    [:edition
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:lang
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:name
+     {:json-schema/example "string"}
+     [:string {:json-schema/example "string"}]]
+    [:sp_name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:sp_ver
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:physical_width
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:scale_factor
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/metadata"
+    [:type
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:type_id
+     {:json-schema/example 0}
+     [:enum
+      {:json-schema/example 0}
+      0
+      99
+      100
+      101
+      200
+      201
+      300
+      301
+      302
+      400
+      401
+      402]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:sub_technique nil,
+      :tactic nil,
+      :tactics [nil],
+      :technique nil,
+      :version "string"}}
+    [:sub_technique
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/sub_technique"]]
+    [:tactic
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/tactic"]]
+    [:tactics
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/tactic"]]]
+    [:technique
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/technique"]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:postal_code "string",
+      :continent "string",
+      :long 10.0,
+      :coordinates [10.0],
+      :desc "string",
+      :geohash "string",
+      :city "string",
+      :is_on_premises true,
+      :isp "string",
+      :region "string",
+      :lat 10.0,
+      :provider "string",
+      :country "string"}}
+    [:city
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:continent
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:coordinates
+     {:json-schema/example [10.0], :optional true}
+     [:sequential [number? {:json-schema/example 10.0}]]]
+    [:country
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:desc
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:geohash
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:is_on_premises
+     {:json-schema/example true, :optional true}
+     [:boolean {:json-schema/example true}]]
+    [:isp
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:lat
+     {:json-schema/example 10.0, :optional true}
+     [number? {:json-schema/example 10.0}]]
+    [:long
+     {:json-schema/example 10.0, :optional true}
+     [number? {:json-schema/example 10.0}]]
+    [:postal_code
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:provider
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:region
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/sub_technique"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:name "string", :src_url "string", :uid "string"}}
+    [:name
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:src_url
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/metadata"
    [:map
     {:closed true,
      :json-schema/example
@@ -2585,41 +2877,51 @@
     [:version
      {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/extension"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"
+   [:map {:closed true, :json-schema/example {}}],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/related_event"
    [:map
     {:closed true,
      :json-schema/example
-     {:name "string", :uid "string", :version "string"}}
-    [:name
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string"}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/organization"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:name "string",
-      :ou_name "string",
-      :ou_uid "string",
+     {:attacks [nil],
+      :kill_chain [nil],
+      :observables [nil],
+      :product_uid "string",
+      :type "string",
+      :type_name "string",
+      :type_uid 10,
       :uid "string"}}
-    [:name
+    [:attacks
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
+    [:kill_chain
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
+    [:observables
+     {:json-schema/example [nil], :optional true}
+     [:sequential
+      [:ref
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"]]]
+    [:product_uid
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:ou_name
+    [:type
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:ou_uid
+    [:type_name
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
+    [:type_uid
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
     [:uid
-     {:json-schema/example "string", :optional true}
+     {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/api"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/api"
    [:map
     {:closed true,
      :json-schema/example
@@ -2651,343 +2953,101 @@
     [:version
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/account"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/email_auth"
    [:map
     {:closed true,
      :json-schema/example
-     {:labels ["string"],
+     {:dkim "string",
+      :dkim_domain "string",
+      :dkim_signature "string",
+      :dmarc "string",
+      :dmarc_override "string",
+      :dmarc_policy "string",
+      :spf "string"}}
+    [:dkim
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:dkim_domain
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:dkim_signature
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:dmarc
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:dmarc_override
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:dmarc_policy
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:spf
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/display"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:color_depth 10,
+      :physical_height 10,
+      :physical_orientation 10,
+      :physical_width 10,
+      :scale_factor 10}}
+    [:color_depth
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:physical_height
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:physical_orientation
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:physical_width
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]
+    [:scale_factor
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"
+   [:map
+    {:closed true,
+     :json-schema/example
+     {:category "string",
+      :desc "string",
       :name "string",
+      :related_analytics [nil],
       :type "string",
       :type_id 0,
-      :uid "string"}}
-    [:labels
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:type_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 99]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/session"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:terminal "string",
-      :uid_alt "string",
       :uid "string",
-      :is_remote true,
-      :created_time 10,
-      :credential_uid "string",
-      :expiration_time 10,
-      :is_mfa true,
-      :expiration_reason "string",
-      :is_vpn true,
-      :count 10,
-      :issuer "string",
-      :created_time_dt "string",
-      :uuid "string",
-      :expiration_time_dt "string"}}
-    [:count
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time_dt
+      :version "string"}}
+    [:category
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:credential_uid
+    [:desc
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:expiration_reason
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:expiration_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:expiration_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:is_mfa
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:is_remote
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:is_vpn
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:issuer
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:terminal
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid_alt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uuid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/process"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:tid 10,
-      :group nil,
-      :lineage ["string"],
-      :uid "string",
-      :name "string",
-      :terminated_time 10,
-      :file nil,
-      :created_time 10,
-      :parent_process nil,
-      :euid 10,
-      :sandbox "string",
-      :pid 10,
-      :terminated_time_dt "string",
-      :cmd_line "string",
-      :container nil,
-      :xattributes nil,
-      :integrity_id 0,
-      :created_time_dt "string",
-      :egid 10,
-      :auid 10,
-      :namespace_pid 10,
-      :integrity "string",
-      :user nil,
-      :loaded_modules ["string"],
-      :session nil}}
-    [:auid
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:cmd_line
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:container
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]
-    [:created_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:created_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:egid
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:euid
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:file
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"]]
-    [:group
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
-    [:integrity
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:integrity_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
-    [:lineage
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:loaded_modules
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
     [:name
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
-    [:namespace_pid
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:parent_process
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/process"]]
-    [:pid
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:sandbox
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:session
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/session"]]
-    [:terminated_time
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:terminated_time_dt
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:tid
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:user
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
-    [:xattributes
-     {:json-schema/example nil, :optional true}
-     [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/sub_technique"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:name "string", :src_url "string", :uid "string"}}
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:src_url
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/malware"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:classification_ids [0],
-      :classifications ["string"],
-      :cves [nil],
-      :name "string",
-      :path "string",
-      :provider "string",
-      :uid "string"}}
-    [:classification_ids
-     {:json-schema/example [0]}
-     [:sequential
-      [:enum
-       {:json-schema/example 0}
-       0
-       1
-       2
-       3
-       4
-       5
-       6
-       7
-       8
-       9
-       10
-       11
-       13
-       14
-       15
-       16
-       17
-       18
-       19
-       20
-       21
-       22
-       99]]]
-    [:classifications
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:cves
+    [:related_analytics
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
-       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cve"]]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:path
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:provider
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/timespan"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:type_id 0,
-      :duration_weeks 10,
-      :duration_months 10,
-      :duration_secs 10,
-      :type "string",
-      :duration 10,
-      :duration_hours 10,
-      :duration_days 10,
-      :duration_years 10,
-      :duration_mins 10}}
-    [:duration
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:duration_days
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:duration_hours
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:duration_mins
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:duration_months
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:duration_secs
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:duration_weeks
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:duration_years
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"]]]
     [:type
      {:json-schema/example "string", :optional true}
      [:string {:json-schema/example "string"}]]
     [:type_id
-     {:json-schema/example 0, :optional true}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 99]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/reputation"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:base_score 10.0,
-      :provider "string",
-      :score "string",
-      :score_id 0}}
-    [:base_score
-     {:json-schema/example 10.0}
-     [number? {:json-schema/example 10.0}]]
-    [:provider
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:score
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:score_id
      {:json-schema/example 0}
-     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 99]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/kb_article"
+     [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 7 8 9 10 11 99]]
+    [:uid
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]
+    [:version
+     {:json-schema/example "string", :optional true}
+     [:string {:json-schema/example "string"}]]],
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"
    [:map
     {:closed true,
      :json-schema/example
@@ -3054,93 +3114,33 @@
     [:uid
      {:json-schema/example "string"}
      [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/technique"
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_code"
    [:map
     {:closed true,
      :json-schema/example
-     {:name "string", :src_url "string", :uid "string"}}
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:src_url
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/service"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:labels ["string"],
-      :name "string",
-      :uid "string",
-      :version "string"}}
-    [:labels
-     {:json-schema/example ["string"], :optional true}
-     [:sequential [:string {:json-schema/example "string"}]]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/keyboard_info"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:function_keys 10,
-      :ime "string",
-      :keyboard_layout "string",
-      :keyboard_subtype 10,
-      :keyboard_type "string"}}
-    [:function_keys
+     {:end_line 10,
+      :file nil,
+      :owner nil,
+      :remediation nil,
+      :start_line 10}}
+    [:end_line
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]
-    [:ime
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:keyboard_layout
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:keyboard_subtype
-     {:json-schema/example 10, :optional true}
-     [:int {:json-schema/example 10}]]
-    [:keyboard_type
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]],
-   "https://schema.ocsf.io/schema/classes/security_finding#$defs/policy"
-   [:map
-    {:closed true,
-     :json-schema/example
-     {:desc "string",
-      :group nil,
-      :is_applied true,
-      :name "string",
-      :uid "string",
-      :version "string"}}
-    [:desc
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:group
+    [:file
+     {:json-schema/example nil}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"]]
+    [:owner
      {:json-schema/example nil, :optional true}
      [:ref
-      "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
-    [:is_applied
-     {:json-schema/example true, :optional true}
-     [:boolean {:json-schema/example true}]]
-    [:name
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:uid
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]
-    [:version
-     {:json-schema/example "string", :optional true}
-     [:string {:json-schema/example "string"}]]]}}
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
+    [:remediation
+     {:json-schema/example nil, :optional true}
+     [:ref
+      "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
+    [:start_line
+     {:json-schema/example 10, :optional true}
+     [:int {:json-schema/example 10}]]]}}
  [:map
   {:closed true,
    :json-schema/example

@@ -44,7 +44,7 @@
   (assert base-id)
   (assert (every? string? path))
   ;;FIXME don't think # should be inserted
-  (str base-id (when (seq path) (str \# (str/join "/" path)))))
+  (str base-id (when (seq path) (str \/ (str/join "/" path)))))
 
 (defn conj-path [opts & path-elements]
   (update opts ::path (fnil into [])
@@ -156,7 +156,7 @@
                  ;; TODO unit test
                  description (assoc :description description)
                  local-defs (assoc ::defs local-defs)
-                 ;;TODO
+                 ;;TODO recursive examples involving refs (currently :ref example is nil)
                  ;example (assoc :example example)
                  ;default (assoc :default default)
                  ;title (assoc :title title)
