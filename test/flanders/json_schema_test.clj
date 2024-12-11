@@ -309,11 +309,12 @@
               (pprint-reproducibly (list 'ns nsym))
               (pprint-reproducibly
                 (list 'def (symbol "expected-schema-explain")
-                      (list 'quote (unqualify-recursive-vars-from-schema-explain s))))
+                      (list 'quote
+                            (unqualify-recursive-vars-from-schema-explain s))))
               (pprint-reproducibly
                 (list 'def (symbol "expected-transitive-defschema-vars")
                       (list 'quote
-                            (unqualify-vars (collect-transitive-recursive-vars-from-schema s)))))))
+                            (set (vals (unqualify-vars (collect-transitive-recursive-vars-from-schema s)))))))))
     (require nsym :reload)))
 
 (comment
