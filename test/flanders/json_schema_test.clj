@@ -394,7 +394,7 @@
    :confidence_id 0,
    :impact "string",
    :metadata {:product {:vendor_name "asdf"} :version "foo"} ,
-   :compliance {:standards []} ,
+   :compliance {:standards []},
    :message "string",
    :vulnerabilities [],
    :malware [],
