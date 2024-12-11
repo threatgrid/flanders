@@ -3,9 +3,20 @@
             [clojure.set :as set]
             [flanders.core :as f]
             [schema.core :as s]
+            [flanders.example :as fe]
             [clojure.walk :as w]
-            #?(:clj  [flanders.macros :refer [defleaf]]
-               :cljs [flanders.macros :refer-macros [defleaf]])))
+            [flanders.json-schema.types :as fjst])
+  (:import [flanders.json_schema.types JSONSchemaRef]))
+
+(extend-type JSONSchemaRef
+  fe/JsonExampleNode
+  (->example [{:keys [id default]} f {::keys [defs] :as opts}]
+    (if (some? default)
+      default
+      (fe/->example (or (get defs id)
+                        (throw (ex-info (format "Ref not in scope: %s" id)
+                                        {:defs defs})))
+                    f opts))))
 
 (defn- -normalize
   "normalize to string"
@@ -22,25 +33,12 @@
   (cond
     (str/starts-with? id "#") (str/replace-first id "#" base-id)
     ;; TODO absolute ids
-    :else (throw (ex-info (str "Unresolvable id: " id) {:id id})))
-  )
+    :else (throw (ex-info (str "Unresolvable id: " id) {:id id}))))
 
 (comment
   (resolve-id "#/$defs/fingerprint" {::base-id "https://schema.ocsf.io/schema/classes/security_finding"})
   (resolve-id "#" {::base-id "https://schema.ocsf.io/schema/classes/security_finding"})
   )
-
-;https://datatracker.ietf.org/doc/html/rfc6901
-;https://datatracker.ietf.org/doc/html/draft-pbryan-zyp-json-ref-03#section-3
-(defn resolve-ref [{:strs [$ref] :as v} opts]
-  (let [this-id (resolve-id $ref opts)]
-    (when (contains? (::seen opts) this-id)
-      (throw (ex-info "Recursive schemas not allowed" {:id this-id})))
-    (or ;; TODO assoc other fields from v at this level
-        (get-in opts [::defs this-id])
-        (throw (ex-info (format "Could not resolve id %s at path %s" this-id (pr-str (::path v)))
-                        {::error :unresolved-ref
-                         :current-path (::path opts) :scope (-> opts ::defs keys set) :absolute-id this-id :relative-id $ref})))))
 
 (defn absolute-id [{::keys [base-id path] :as opts}]
   (assert base-id)
@@ -71,9 +69,6 @@
 (defn unknown-schema! [v {::keys [path] :as opts}]
   (throw (ex-info (format "Unknown JSON Schema at path %s: %s" (pr-str path) (pr-str v)) {:v v :opts (select-keys opts [::path ::base-id])})))
 
-(defleaf JSONSchemaRef [id :- s/Str
-                        v :- s/Any])
-
 (defn ->flanders
   "Converts parsed JSON Schema to Flanders."
   [v opts]
@@ -92,41 +87,18 @@
                                                  (or $id parent-id
                                                      ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
                                                      (throw (ex-info "Must supply $id" {})))))
-                   opts (cond-> opts
-                          (seq $defs)
-                          ;; simpler if we supported refs in flanders
-                          (update ::defs
-                                  (fn [outer-defs]
-                                    (let [parsed-defs (reduce-kv (fn [{:keys [parsed-defs opts]} k v]
-                                                                   (let [opts (conj-path opts "$defs" k)
-                                                                         id (absolute-id opts)
-                                                                         refs (atom #{})
-                                                                         s (->flanders v (assoc opts ::resolve-ref (fn [v opts]
-                                                                                                                     (or (get-in opts [::defs id])
-                                                                                                                         (do (swap! refs conj id)
-                                                                                                                             (->JSONSchemaRef id v))))))]
-                                                                     {:parsed-defs (assoc parsed-defs id {:schema s :refs @refs})
-                                                                      :opts opts}))
-                                                                 {:parsed-defs {} :opts opts}
-                                                                 $defs)
-                                          resolve-refs (fn resolve-refs [parsed-defs {::keys [seen] :as opts}]
-                                                         (into {}
-                                                               (map (fn [[k {:keys [schema refs]}]]
-                                                                      (cond->> schema
-                                                                        (seq refs)
-                                                                        ; TODO use zipper
-                                                                        (w/postwalk (fn [v]
-                                                                                      (if (instance? JSONSchemaRef v)
-                                                                                        (let [{the-ref :v :keys [id]} v]
-                                                                                          (if (seen id)
-                                                                                            v ;; recursive
-                                                                                            (resolve-refs {:schema (resolve-ref the-ref opts)} (update opts ::seen (fnil conj #{}) id))))
-                                                                                        v))))))
-                                                               parsed-defs))]
-                                      (into (or outer-defs {})
-                                            (resolve-refs parsed-defs (update opts ::seen #(or % #{}))))))))
+                   local-defs (not-empty
+                                (into {} (map (fn [[k v]]
+                                                (let [opts (conj-path opts "$defs" k)]
+                                                  [(absolute-id opts) (->flanders v opts)])))
+                                      $defs))
+                   _ (when (and local-defs (seq (::path opts)))
+                       (throw (ex-info "$defs only supported at top-level" {})))
+                   opts (update opts ::defs #(into (or % {}) local-defs))
                    base (or (when $ref
-                              ((::resolve-ref opts resolve-ref) v opts))
+                              (assert (not $defs) "TODO")
+                              (let [this-id (resolve-id $ref opts)]
+                                (fjst/->JSONSchemaRef this-id v)))
                             (when-some [disjuncts (get v "anyOf")]
                               (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))) disjuncts)))
                             (when-some [conjuncts (get v "allOf")]
@@ -182,6 +154,7 @@
                (cond-> base
                  ;; TODO unit test
                  description (assoc :description description)
+                 local-defs (assoc ::defs local-defs)
                  ;;TODO
                  ;example (assoc :example example)
                  ;default (assoc :default default)

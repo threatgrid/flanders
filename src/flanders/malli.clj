@@ -153,12 +153,12 @@
   NumberType  (->malli' [node opts] (maybe-key node opts number?))
   StringType  (->malli' [node opts] (maybe-key node opts :string)))
 
-(def ^:private registry (merge (m/default-schemas) (mu/schemas)))
+(def default-opts {:registry (merge (m/default-schemas) (mu/schemas))})
 
 (defn ->malli
   "Convert a ctim schema to malli. Malli opts must contain a registry
   with support for :merge (usually via malli.util/schemas)."
-  ([ctim-schema] (->malli ctim-schema {:registry registry}))
+  ([ctim-schema] (->malli ctim-schema default-opts))
   ([ctim-schema opts]
    (-> ctim-schema
        (->malli' opts)

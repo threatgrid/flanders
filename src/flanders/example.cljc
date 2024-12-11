@@ -24,26 +24,26 @@
            [java.util Date])))
 
 (defprotocol JsonExampleNode
-  (->example [node f]))
+  (->example [node f opts]))
 
 (extend-protocol JsonExampleNode
 
   ;; Branches
 
   EitherType
-  (->example [{:keys [choices default]} f]
+  (->example [{:keys [choices default]} f _]
     (if (some? default)
       default
       (f (first choices))))
 
   MapEntry
-  (->example [{:keys [key type default]} f]
+  (->example [{:keys [key type default]} f _]
     [(f (assoc key :key? true))
      (f (cond-> type
           (some? default) (assoc :default default)))])
 
   MapType
-  (->example [{:keys [entries default]} f]
+  (->example [{:keys [entries default]} f _]
     (if (some? default)
       default
       (reduce (fn [m [k v]]
@@ -52,13 +52,13 @@
               (map f entries))))
 
   SequenceOfType
-  (->example [{:keys [type default]} f]
+  (->example [{:keys [type default]} f _]
     (if (some? default)
       default
       [(f type)]))
 
   SetOfType
-  (->example [{:keys [type default]} f]
+  (->example [{:keys [type default]} f _]
     (if (some? default)
       default
       #{(f type)}))
@@ -66,50 +66,50 @@
   ;; Leaves
 
   AnythingType
-  (->example [{:keys [default]} _]
+  (->example [{:keys [default]} _ _]
     (if (some? default)
       default
       "anything"))
 
   BooleanType
-  (->example [{:keys [default]} _]
+  (->example [{:keys [default]} _ _]
     (if (some? default)
       default
       true))
 
   InstType
-  (->example [{:keys [default]} _]
+  (->example [{:keys [default]} _ _]
     (if (some? default)
       default
       #?(:clj  (Date. 1451610061000)
          :cljs (js/date. 1451610061000))))
 
   IntegerType
-  (->example [{:keys [default]} _]
+  (->example [{:keys [default]} _ _]
     (if (some? default)
       default
       10))
 
   KeywordType
-  (->example [{:keys [default]} _]
+  (->example [{:keys [default]} _ _]
     (if (some? default)
       default
       :keyword))
 
   NumberType
-  (->example [{:keys [default]} _]
+  (->example [{:keys [default]} _ _]
     (if (some? default)
       default
       10.0))
 
   StringType
-  (->example [{:keys [default]} _]
+  (->example [{:keys [default]} _ _]
     (if (some? default)
       default
       "string"))
 
   SignatureType
-  (->example [{:keys [parameters rest-parameter return]} f]
+  (->example [{:keys [parameters rest-parameter return]} f _]
     (let [arguments (mapv
                      (fn [i parameter]
                        [(str "arg" i) (f parameter)])
@@ -127,5 +127,10 @@
 ;; - Examples should be semantically valuable (should make sense in our domain)
 (defn ->example-tree
   "Get a JSON example for a DDL node"
-  [ddl]
-  (->example ddl ->example-tree))
+  ([ddl] (->example-tree ddl nil))
+  ([ddl opts]
+   (->example ddl
+              (fn
+                ([s] (->example-tree s opts))
+                ([s opts] (->example-tree s opts)))
+              opts)))

@@ -6,6 +6,7 @@
             [flanders.malli :as malli]
             [malli.core :as m]
             [flanders.json-schema :as sut]
+            [flanders.json-schema.malli :as js->malli]
             [cheshire.core :as json]))
 
 (def union-example
@@ -177,5 +178,5 @@
 (defn security-finding-json [] (json/decode (slurp (io/resource "security-finding.json"))))
 
 (deftest ocsf-test
-  (is (= nil
-         (sut/->flanders (security-finding-json) nil))))
+  (is (= nil (sut/->flanders (security-finding-json) nil)))
+  (is (= nil (js->malli/->malli (security-finding-json) nil))))
