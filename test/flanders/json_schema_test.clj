@@ -348,8 +348,7 @@
 
 ;; walks s/explain, schema walk might be more accurate
 (defn collect-recursive-vars-from-schema [s]
-  (let [vars (atom #{})
-        ]
+  (let [vars (atom #{})]
     (stw/postwalk (fn [s]
                     (when (instance? schema.core.Recursive s)
                       (swap! vars conj (:derefable s)))
@@ -357,17 +356,19 @@
                   s)
     @vars))
 
-(defn unqualify-recursive-vars-from-schema-explain [v]
-  (let [vs (collect-recursive-vars-from-schema v)]
+(defn unqualify-recursive-vars-from-schema-explain [s]
+  (let [vs (collect-recursive-vars-from-schema s)
+        rename (unqualify-vars vs)]
     (walk/postwalk (fn [v]
                      (if (and (seq? v)
                               (= 2 (count v))
                               (= 'var (first v))
                               (qualified-symbol? (second v)))
                        ;;unqualify recursive vars
-                       (list 'var (-> v second name symbol))
+                       (let [vsym (second v)]
+                         (list 'var (or (rename vsym) (throw (ex-info (str "Unknown var " vsym) {:rename rename})))))
                        v))
-                   v)))
+                   (s/explain s))))
 
 (declare BSchema)
 (s/defschema ASchema [(s/recursive #'BSchema)])
@@ -419,7 +420,7 @@
               (pprint-reproducibly (list 'ns nsym))
               (pprint-reproducibly
                 (list 'def (symbol "expected-schema-explain")
-                      (list 'quote (unqualify-recursive-vars-from-schema-explain (s/explain s)))))
+                      (list 'quote (unqualify-recursive-vars-from-schema-explain s))))
               (pprint-reproducibly
                 (list 'def (symbol "expected-transitive-defschema-vars")
                       (list 'quote
@@ -443,7 +444,7 @@
   (testing "OCSF security_finding class"
     (testing "s/explain for top-level JSON Schema converted to Plumatic Schema looks correct"
       (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-schema-explain
-             (unqualify-recursive-vars-from-schema-explain (s/explain @SchemaSecurityFinding)))))
+             (unqualify-recursive-vars-from-schema-explain @SchemaSecurityFinding))))
     (testing "transitive defschema's for top-level JSON Schema look correct"
       (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-defschema-vars
              (into #{} (map unqualify-var) (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding))))))
