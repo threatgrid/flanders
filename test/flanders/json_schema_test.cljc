@@ -1,6 +1,7 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
             [flanders.core :as f]
+            [schema.core :as s]
             [clojure.java.io :as io]
             [flanders.schema :as schema]
             [flanders.malli :as malli]
@@ -182,7 +183,10 @@
   (is (= nil (sut/->flanders (security-finding-json) nil)))
   (is (= nil (js->malli/->malli (security-finding-json) nil)))
   (is (= nil (binding [*ns* (create-ns 'flanders.json-schema-test.security-finding)]
-               (js->schema/->schema (security-finding-json) nil)))))
+               (eval `(s/defschema ~'SecurityFinding
+                        ~(js->schema/->schema (security-finding-json) nil))))))
+  (meta #'flanders.json-schema-test.security-finding/SecurityFinding)
+  )
 
 (comment
   (binding [*print-level* nil
