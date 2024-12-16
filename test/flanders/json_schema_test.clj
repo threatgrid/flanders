@@ -427,25 +427,29 @@
   )
 
 (def refs-json-schema-example
-  {"$defs" {"aref" {"properties"
-                    {"arr" {"type" "array"
-                            "items" {"$ref" "#/$defs/aref"}}}
-                    "type" "object"}}
+  {"$defs" {"aref" {"type" "array"
+                    "items" {"$ref" "#/$defs/aref"}}}
    "$id" "https://schema.ocsf.io/schema/classes/security_finding"
    "$ref" "#/$defs/aref"})
 
-(deftest malli-refs-test
+(deftest refs-test
+  (is (= ["https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
+         (keys (::sut/defs (sut/->flanders refs-json-schema-example nil)))))
+  (is (= ["https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
+         (keys (::sut/defs-scope (sut/->flanders refs-json-schema-example nil)))))
+  (is (= ["https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
+         (-> (sut/->flanders refs-json-schema-example nil)
+             ::sut/defs-scope
+             (get "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref")
+             pr-str
+             )))
   (is (= '[:ref
            {:registry
             {"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"
-             [:map
-              {:closed true, :json-schema/example {:arr [nil]}}
-              [:arr
-               {:json-schema/example [nil], :optional true}
-               [:sequential
-                [:ref
-                 #:json-schema{:example nil}
-                 "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]]]]}
+             [:sequential
+              [:ref
+               #:json-schema{:example nil}
+               "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]]}
             :json-schema/example nil}
            "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
          (m/form (->malli refs-json-schema-example)))))

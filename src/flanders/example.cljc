@@ -4,7 +4,7 @@
       :cljs [flanders.types
              :as ft
              :refer [AnythingType BooleanType EitherType InstType IntegerType
-                     KeywordType MapEntry MapType NumberType SequenceOfType
+                     KeywordType MapEntry MapType NumberType RefType SequenceOfType
                      SetOfType SignatureType StringType]]))
   #?(:clj (:import
            [flanders.types
@@ -17,6 +17,7 @@
             MapEntry
             MapType
             NumberType
+            RefType
             SequenceOfType
             SetOfType
             SignatureType
@@ -26,42 +27,61 @@
 (defprotocol JsonExampleNode
   (->example [node f opts]))
 
+(defonce unreachable (Object.))
+(defn unreachable? [v] (identical? unreachable v))
+
 (extend-protocol JsonExampleNode
 
   ;; Branches
 
   EitherType
-  (->example [{:keys [choices default]} f _]
+  (->example [{:keys [choices default] :as node} f _]
     (if (some? default)
       default
-      (f (first choices))))
+      (if-some [[example] (->> choices
+                               (map f)
+                               (remove unreachable?)
+                               seq)]
+        example
+        (throw (ex-info (str "Cannot create example: " (pr-str node)))))))
 
   MapEntry
-  (->example [{:keys [key type default]} f _]
-    [(f (assoc key :key? true))
-     (f (cond-> type
-          (some? default) (assoc :default default)))])
+  (->example [{:keys [key type default required?]} f _]
+    (let [e [(f (assoc key :key? true))
+             (f (cond-> type
+                  (some? default) (assoc :default default)))]]
+      (if (some unreachable? e)
+        (when required?
+          unreachable)
+        e)))
 
   MapType
   (->example [{:keys [entries default]} f _]
     (if (some? default)
       default
-      (reduce (fn [m [k v]]
-                (assoc m k v))
-              {}
-              (map f entries))))
+      (reduce (fn [m e]
+                (if (unreachable? e)
+                  (reduced unreachable)
+                  (conj m e)))
+              {} (keep f entries))))
 
   SequenceOfType
   (->example [{:keys [type default]} f _]
     (if (some? default)
       default
-      [(f type)]))
+      (let [inner (f type)]
+        (if (unreachable? inner)
+          []
+          [inner]))))
 
   SetOfType
   (->example [{:keys [type default]} f _]
     (if (some? default)
       default
-      #{(f type)}))
+      (let [inner (f type)]
+        (if (unreachable? inner)
+          #{}
+          #{inner}))))
 
   ;; Leaves
 
@@ -119,18 +139,42 @@
                       (conj arguments ["argN" (f rest-parameter)])
                       arguments)]
       {:arguments (into {} arguments)
-       :returns (f return)})))
+       :returns (f return)}))
+
+  RefType
+  (->example [{::keys [defs-scope seen] :keys [id default] :as node} f opts]
+    (assert defs-scope)
+    (assert (string? id))
+    (assert (every? string? (keys defs-scope)))
+    (if (some? default)
+      default
+      (if (contains? seen node)
+        unreachable ;; attempt to make examples finite but also informative
+        (f (or (get defs-scope id)
+               (throw (ex-info (format "Ref not in scope: %s (%s)" (pr-str id)
+                                       (vec (keys defs-scope)))
+                               {:defs-scope defs-scope})))
+           (update opts ::seen (fnil conj #{}) node))))))
 
 ;; This is a fast implementation of making an example, but it could be better
 ;; - It could take advantage of generators (to be non-deterministic)
 ;; - It could use zippers, so that generators could be location aware
 ;; - Examples should be semantically valuable (should make sense in our domain)
+(defn ->example-tree'
+  "Get a JSON example for a DDL node"
+  ([ddl] (->example-tree' ddl nil))
+  ([ddl opts]
+   (->example ddl
+              (fn
+                ([s] (->example-tree' s opts))
+                ([s opts] (->example-tree' s opts)))
+              opts)))
+
 (defn ->example-tree
   "Get a JSON example for a DDL node"
   ([ddl] (->example-tree ddl nil))
   ([ddl opts]
-   (->example ddl
-              (fn
-                ([s] (->example-tree s opts))
-                ([s opts] (->example-tree s opts)))
-              opts)))
+   (let [e (->example-tree' ddl opts)]
+     (if (unreachable? e)
+       (throw (ex-info (str "Cannot create example, please add default: " (pr-str ddl))))
+       e))))

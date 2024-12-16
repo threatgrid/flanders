@@ -143,3 +143,5 @@
                     new-rest-parameter
                     new-return
                     name)))
+
+(defleaf RefType [id :- s/Str])

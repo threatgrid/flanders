@@ -4,24 +4,7 @@
             [flanders.core :as f]
             [schema.core :as s]
             [flanders.example :as fe]
-            [clojure.walk :as w]
-            [flanders.json-schema.types :as fjst])
-  (:import [flanders.json_schema.types JSONSchemaRef]))
-
-(extend-type JSONSchemaRef
-  fe/JsonExampleNode
-  (->example [{::keys [defs-scope] :keys [id default]} f opts]
-    (assert defs-scope)
-    (assert (string? id))
-    (assert (every? string? (keys defs-scope)))
-    (if (some? default)
-      default
-      #_
-      (f (or (get defs-scope id)
-             (assert (not (contains? defs-scope id)))
-             (throw (ex-info (format "Ref not in scope: %s (%s)" (pr-str id)
-                                     (vec (keys defs-scope)))
-                             {:defs-scope defs-scope})))))))
+            [clojure.walk :as w]))
 
 (defn- -normalize
   "normalize to string"
@@ -101,7 +84,9 @@
                    opts (update opts ::defs #(into (or % {}) local-defs))
                    base (or (when $ref
                               (let [this-id (resolve-id $ref opts)]
-                                (fjst/->JSONSchemaRef this-id v)))
+                                (assoc (f/ref this-id)
+                                       ;;TODO rename or remove, for debugging purposes (e.g., defalias strings)
+                                       :v v)))
                             (when-some [disjuncts (get v "anyOf")]
                               (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))) disjuncts)))
                             (when-some [conjuncts (get v "allOf")]
@@ -154,8 +139,7 @@
                               (f/enum (cond->> enum
                                         (some (some-fn ident? string?) enum) (into [] (map #(-normalize %2 (conj-path opts (str %))))))))
                             (unknown-schema! v opts))]
-               (cond-> (assoc base ::base-id (::base-id opts)
-                              ::defs-scope (::defs opts))
+               (cond-> (assoc base ::base-id (::base-id opts))
                  ;; TODO unit test
                  description (assoc :description description)
                  local-defs (assoc ::defs local-defs)

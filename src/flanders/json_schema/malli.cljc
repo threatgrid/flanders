@@ -3,11 +3,10 @@
             [flanders.example :as fe]
             [flanders.malli :as fm]
             [flanders.malli.utils :as fmu]
-            [flanders.json-schema.types :as fjst]
             [flanders.json-schema :as fjs])
-  (:import [flanders.json_schema.types JSONSchemaRef]))
+  (:import [flanders.types RefType]))
 
-(extend-type JSONSchemaRef
+(extend-type RefType
   fm/MalliNode
   (->malli' [{:keys [id] :as ddl} opts]
     (-> [:ref id]

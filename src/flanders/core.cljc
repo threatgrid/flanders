@@ -1,5 +1,5 @@
 (ns flanders.core
-  (:refer-clojure :exclude [int key keyword map name num str type])
+  (:refer-clojure :exclude [int key keyword map name num str type ref])
   (:require
    #?(:clj  [clojure.core :as core]
       :cljs [cljs.core :as core])
@@ -264,3 +264,6 @@
   `(def ~name
      (eq ~value :name ~(core/str name) ~@opts)))
 
+(defn ref [id & {:as opts}]
+  (ft/map->RefType
+    (assoc opts :id id)))
