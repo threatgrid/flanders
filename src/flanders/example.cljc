@@ -165,6 +165,10 @@
   "Get a JSON example for a DDL node"
   ([ddl] (->example-tree' ddl nil))
   ([ddl opts]
+   (prn "->example-tree'" (class ddl) (pr-str ddl))
+   (prn "^^ pr-str" (pr-str ddl))
+   (prn "^^ registry" (::f/registry ddl))
+   (prn "^^ opts registry" (::f/registry opts))
    (let [opts (update opts ::f/registry (fnil into {}) (::f/registry ddl))]
      (->example ddl
                 (fn

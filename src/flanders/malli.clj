@@ -11,7 +11,7 @@
   (:import [flanders.types
             AnythingType BooleanType EitherType InstType
             IntegerType KeywordType MapEntry MapType
-            NumberType ParameterListType SequenceOfType
+            NumberType ParameterListType RefType SequenceOfType
             SetOfType SignatureType StringType]))
 
 (def ^:private eval-protocol? (not (resolve 'MalliNode)))
@@ -144,7 +144,8 @@
   IntegerType (->malli' [node opts] (maybe-key node opts :int))
   KeywordType (->malli' [node opts] (maybe-key node opts :keyword))
   NumberType  (->malli' [node opts] (maybe-key node opts number?))
-  StringType  (->malli' [node opts] (maybe-key node opts :string)))
+  StringType  (->malli' [node opts] (maybe-key node opts :string))
+  RefType (->malli' [{:keys [id] :as node} opts] (-> [:ref id] (describe node opts))))
 
 (def default-opts {:registry (merge (m/default-schemas) (mu/schemas))})
 
@@ -155,15 +156,20 @@
   ([node opts]
    (let [->malli (fn ->malli
                    ([node] (->malli node opts))
-                   ([node opts]
+                   ([{::f/keys [registry] :as node} opts]
                     (let [vopts (volatile! nil)
                           opts (-> opts
-                                   (update ::f/registry (fnil into {}) (::f/registry node))
+                                   (update ::f/registry (fnil into {}) registry)
                                    (assoc ::->malli (fn
                                                       ([node] (->malli node @vopts))
-                                                      ([node opts] (->malli node opts)))))]
-                      (vreset! vopts opts)
-                      (->malli' node opts))))]
+                                                      ([node opts] (->malli node opts)))))
+                          _ (vreset! vopts opts)
+                          c (->malli' node opts)]
+                      (cond-> c
+                        (seq registry) (m/-update-properties update :registry
+                                                             (fn [prev]
+                                                               (assert (not prev) ":registry already exists")
+                                                               (into (sorted-map) (update-vals registry #(->malli % opts)))))))))]
      (-> node
-         (->malli opts)
+         (->malli (assoc opts ::m/allow-invalid-refs true))
          (m/schema opts)))))

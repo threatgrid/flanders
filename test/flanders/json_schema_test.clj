@@ -1,21 +1,21 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
-            [flanders.example :as fe]
-            [malli.generator :as mg]
-            [clojure.pprint :as pp]
+            [cheshire.core :as json]
             [clojure.java.io :as io]
+            [clojure.java.io :as io]
+            [clojure.pprint :as pp]
             [clojure.walk :as walk]
             [flanders.core :as f]
-            [schema-tools.walk :as stw]
-            [schema.core :as s]
-            [clojure.java.io :as io]
-            [flanders.schema :as schema]
-            [flanders.malli :as malli]
-            [malli.core :as m]
+            [flanders.example :as fe]
             [flanders.json-schema :as sut]
             [flanders.json-schema.malli :as js->malli]
             [flanders.json-schema.schema :as js->schema]
-            [cheshire.core :as json]
+            [flanders.malli :as malli]
+            [flanders.schema :as schema]
+            [malli.core :as m]
+            [malli.generator :as mg]
+            [schema-tools.walk :as stw]
+            [schema.core :as s]
             flanders.json-schema.test-helpers-schema-security-finding))
 
 (def union-example
@@ -26,8 +26,8 @@
                  :y {:type "integer"}),
    :required [:x :y]})
 
-(defn ->malli [v] (js->malli/->malli v nil))
-(defn ->schema [v] (js->schema/->schema v nil))
+(defn ->malli [v] (malli/->malli (sut/->flanders v nil) nil))
+(defn ->schema [v] (schema/->schema (sut/->flanders v nil) nil))
 
 ;; https://github.com/metosin/malli/blob/6a2d9bd45d4973b4541cfdacdc4185240aa9a518/test/malli/json_schema_test.cljc#L9C1-L133C1
 (def malli-expectations

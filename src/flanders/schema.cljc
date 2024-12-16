@@ -7,7 +7,7 @@
       :cljs [flanders.types
              :refer [AnythingType BooleanType EitherType InstType IntegerType
                      KeywordType MapEntry MapType NumberType ParameterListType
-                     SequenceOfType SetOfType SignatureType StringType]])
+                     RefType SequenceOfType SetOfType SignatureType StringType]])
    #?(:clj [ring.swagger.json-schema :as rs])
    [flanders.core :as f]
    [flanders.predicates :as fp]
@@ -28,6 +28,7 @@
             MapType
             NumberType
             ParameterListType
+            RefType
             SequenceOfType
             SetOfType
             SignatureType
@@ -171,7 +172,12 @@
             [true  _  ] s/Str
             [_     nil] s/Str
             :else       (apply s/enum values))
-     dll)))
+     dll))
+
+  RefType
+  (->schema' [{:keys [id] :as dll} _ {::keys [ref->var] :as opts}]
+    (-> (s/recursive (find-var (get ref->var id)))
+        (describe dll))))
 
 (defn ->schema-at-loc
   "Get the schema for a node, with location awareness"

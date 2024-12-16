@@ -1,3 +1,4 @@
+;;TODO move to flanders.schema
 (ns flanders.json-schema.schema
   (:require [schema.core :as s]
             [flanders.core :as f]
@@ -7,12 +8,6 @@
             [flanders.json-schema :as fjs]
             [clojure.pprint :as pp])
   (:import [flanders.types RefType]))
-
-(extend-type RefType
-  fs/SchemaNode
-  (->schema' [{:keys [id] :as dll} _ {::keys [ref->var] :as opts}]
-    (-> (s/recursive (find-var (get ref->var id)))
-        (fsu/describe dll))))
 
 (defn def-id->var-sym [base-id defstr]
   (symbol (namespace-munge (munge (str/replace defstr "." "_DOT_")))))
