@@ -2,6 +2,7 @@
   (:require [schema.core :as s]
             [clojure.string :as str]
             [flanders.schema :as fs]
+            [flanders.schema.util :as fsu]
             [flanders.json-schema.types :as fjst]
             [flanders.json-schema :as fjs]
             [clojure.pprint :as pp])
@@ -10,8 +11,9 @@
 
 (extend-type JSONSchemaRef
   fs/SchemaNode
-  (->schema' [{:keys [id]} _ {::keys [ref->var] :as opts}]
-    (s/recursive (find-var (get ref->var id)))))
+  (->schema' [{:keys [id] :as dll} _ {::keys [ref->var] :as opts}]
+    (-> (s/recursive (find-var (get ref->var id)))
+        (fsu/describe dll))))
 
 (defn def-id->var-sym [base-id defstr]
   (symbol (namespace-munge (munge (str/replace defstr "." "_DOT_")))))
@@ -43,6 +45,7 @@
           v')))))
 
 ;; assumes schema conversion is single threaded
+;; another idea is hash the $defs and use that in the ns name
 (defn stable-sortable-ns-segment []
   (let [n (unique-nano)]
     (when (>= n max-nano)
@@ -85,5 +88,5 @@
                                ~(fs/->schema f (assoc opts ::ref->var def-ids->def-vars)))))))
                 def-ids->def-vars)
         s (fs/->schema f (assoc opts ::ref->var def-ids->def-vars))]
-    (.register (Cleaner/create) s (fn [] (remove-ns temp-ns)))
+    (.register (Cleaner/create) s #(remove-ns temp-ns))
     s))

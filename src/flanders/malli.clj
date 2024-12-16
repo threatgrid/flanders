@@ -4,6 +4,7 @@
   (:require
     [flanders.types]
     [flanders.example :as example]
+    [flanders.malli.utils :refer [describe]]
     [malli.core :as m]
     [malli.util :as mu])
   (:import [flanders.types
@@ -16,14 +17,6 @@
 (when eval-protocol?
   (defprotocol MalliNode
     (->malli' [node opts])))
-
-(defn- describe [?schema {:keys [description] :as dll} opts]
-  (-> ?schema
-      (m/schema opts)
-      (m/-update-properties
-        #(-> %
-             (assoc :json-schema/example (example/->example-tree dll))
-             (cond-> description (assoc :json-schema/description description))))))
 
 (defn maybe-key [{:keys [key? open? values] :as dll} opts base]
   (if key?

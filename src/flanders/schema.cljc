@@ -10,6 +10,7 @@
                      SequenceOfType SetOfType SignatureType StringType]])
    #?(:clj [ring.swagger.json-schema :as rs])
    [flanders.predicates :as fp]
+   [flanders.schema.utils :refer [describe]]
    [flanders.example :as example]
    [flanders.protocols :as prots]
    [schema-tools.core :as st]
@@ -47,14 +48,6 @@
 
 (def get-schema
   (memoize ->schema))
-
-(defn- describe [schema dll]
-  #?(:cljs schema
-     :clj (rs/field
-            schema
-            (let [{:keys [description]} dll]
-              (cond-> {:example (example/->example-tree dll)}
-                description (assoc :description description))))))
 
 (extend-protocol SchemaNode
 

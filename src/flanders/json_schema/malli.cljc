@@ -1,15 +1,16 @@
 (ns flanders.json-schema.malli
   (:require [malli.core :as m]
             [flanders.malli :as fm]
-             [flanders.json-schema.types :as fjst]
-             [flanders.json-schema :as fjs])
+            [flanders.malli.utils :as fmu]
+            [flanders.json-schema.types :as fjst]
+            [flanders.json-schema :as fjs])
   (:import [flanders.json_schema.types JSONSchemaRef]))
 
 (extend-type JSONSchemaRef
   fm/MalliNode
-  (->malli' [{:keys [id]} opts]
-    ;;TODO assoc properties
-    [:ref id]))
+  (->malli' [{:keys [id] :as ddl} opts]
+    (-> [:ref id]
+        (fmu/describe ddl opts))))
 
 (defn ->malli [json-schema opts]
   (let [opts (into fm/default-opts opts)
