@@ -421,7 +421,7 @@
     (is (some? (m/explain @MalliSecurityFinding {})))
     ;;FIXME
     #_
-    (is (m/validate @MalliSecurityFinding (s/validate @SchemaSecurityFinding example-security-finding)))
+    (is (m/validate @MalliSecurityFinding example-security-finding))
     ;;FIXME
     #_
     (is (mg/generate @MalliSecurityFinding {:seed 0}))

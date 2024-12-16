@@ -20,6 +20,7 @@
     [:device
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/device"]]
     [:log_level
      {:json-schema/example "string", :optional true}
@@ -45,6 +46,7 @@
     [:product
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
     [:transmit_time
      {:json-schema/example 10, :optional true}
@@ -98,6 +100,7 @@
     [:group
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
     [:is_applied
      {:json-schema/example true, :optional true}
@@ -153,6 +156,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]]
     [:data
      {:json-schema/example "anything", :optional true}
@@ -228,6 +232,7 @@
     [:reputation
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/reputation"]]
     [:type
      {:json-schema/example "string", :optional true}
@@ -300,10 +305,12 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/cvss"]]]
     [:cwe
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cwe"]]
     [:cwe_uid
      {:json-schema/example "string", :optional true}
@@ -317,6 +324,7 @@
     [:epss
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/epss"]]
     [:modified_time
      {:json-schema/example 10, :optional true}
@@ -327,6 +335,7 @@
     [:product
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
     [:references
      {:json-schema/example ["string"], :optional true}
@@ -370,10 +379,12 @@
     [:data_classification
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
     [:feature
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/feature"]]
     [:lang
      {:json-schema/example "string", :optional true}
@@ -424,6 +435,7 @@
     [:hash
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
     [:license
      {:json-schema/example "string", :optional true}
@@ -487,6 +499,7 @@
     [:container
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]
     [:created_time
      {:json-schema/example 10, :optional true}
@@ -503,10 +516,12 @@
     [:file
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"]]
     [:group
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
     [:integrity
      {:json-schema/example "string", :optional true}
@@ -529,6 +544,7 @@
     [:parent_process
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/process"]]
     [:pid
      {:json-schema/example 10, :optional true}
@@ -539,6 +555,7 @@
     [:session
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/session"]]
     [:terminated_time
      {:json-schema/example 10, :optional true}
@@ -555,10 +572,12 @@
     [:user
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:xattributes
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"
    [:map
@@ -599,15 +618,18 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/dns_answer"]]]
     [:attacks
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
     [:autonomous_system
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/autonomous_system"]]
     [:comment
      {:json-schema/example "string", :optional true}
@@ -621,19 +643,23 @@
     [:email
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/email"]]
     [:email_auth
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/email_auth"]]
     [:kill_chain
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
     [:location
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
     [:name
      {:json-schema/example "string", :optional true}
@@ -642,6 +668,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/digital_signature"]]]
     [:src_url
      {:json-schema/example "string", :optional true}
@@ -677,10 +704,12 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"]]]
     [:whois
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/whois"]]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"
    [:map
@@ -697,6 +726,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
     [:kb_articles
      {:json-schema/example ["string"], :optional true}
@@ -723,6 +753,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"]]]
     [:type
      {:json-schema/example "string", :optional true}
@@ -767,6 +798,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/metric"]]]
     [:overall_score
      {:json-schema/example 10.0, :optional true}
@@ -826,6 +858,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/cve"]]]
     [:name
      {:json-schema/example "string", :optional true}
@@ -870,6 +903,7 @@
      {:json-schema/example [nil]}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]]
     [:is_self_signed
      {:json-schema/example true, :optional true}
@@ -1052,10 +1086,12 @@
     [:location
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
     [:manager
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:modified_time
      {:json-schema/example 10, :optional true}
@@ -1119,6 +1155,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/agent"]]]
     [:cloud_partition
      {:json-schema/example "string", :optional true}
@@ -1132,10 +1169,12 @@
     [:data_classification
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
     [:group
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
     [:labels
      {:json-schema/example ["string"], :optional true}
@@ -1149,6 +1188,7 @@
     [:owner
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:region
      {:json-schema/example "string", :optional true}
@@ -1199,6 +1239,7 @@
     [:account
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/account"]]
     [:credential_uid
      {:json-schema/example "string", :optional true}
@@ -1216,10 +1257,12 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]]
     [:ldap_person
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/ldap_person"]]
     [:name
      {:json-schema/example "string", :optional true}
@@ -1227,6 +1270,7 @@
     [:org
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
     [:risk_level
      {:json-schema/example "string", :optional true}
@@ -1266,6 +1310,7 @@
     [:location
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
     [:name
      {:json-schema/example "string", :optional true}
@@ -1306,6 +1351,7 @@
     [:data_classification
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
     [:delivered_to
      {:json-schema/example "string", :optional true}
@@ -1356,10 +1402,12 @@
     [:account
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/account"]]
     [:org
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
     [:project_uid
      {:json-schema/example "string", :optional true}
@@ -1440,10 +1488,12 @@
     [:desktop_display
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/display"]]
     [:keyboard_info
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/keyboard_info"]]
     [:ram_size
      {:json-schema/example 10, :optional true}
@@ -1501,6 +1551,7 @@
     [:reputation
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/reputation"]]
     [:short_desc
      {:json-schema/example "string", :optional true}
@@ -1545,11 +1596,13 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
     [:compliance_standards
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
     [:control
      {:json-schema/example "string", :optional true}
@@ -1691,6 +1744,7 @@
     [:hash
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
     [:license
      {:json-schema/example "string", :optional true}
@@ -1713,6 +1767,7 @@
     [:remediation
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
     [:type
      {:json-schema/example "string", :optional true}
@@ -1748,6 +1803,7 @@
     [:certificate
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/certificate"]]
     [:created_time
      {:json-schema/example 10, :optional true}
@@ -1761,6 +1817,7 @@
     [:digest
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
     [:state
      {:json-schema/example "string", :optional true}
@@ -1791,6 +1848,7 @@
     [:autonomous_system
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/autonomous_system"]]
     [:created_time
      {:json-schema/example 10, :optional true}
@@ -1811,6 +1869,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/domain_contact"]]]
     [:email_addr
      {:json-schema/example "string", :optional true}
@@ -1894,10 +1953,12 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/related_event"]]]
     [:remediation
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
     [:src_url
      {:json-schema/example "string", :optional true}
@@ -1926,6 +1987,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]]
     [:data
      {:json-schema/example "anything", :optional true}
@@ -2025,6 +2087,7 @@
     [:accessor
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:attributes
      {:json-schema/example 10, :optional true}
@@ -2047,10 +2110,12 @@
     [:creator
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:data_classification
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
     [:desc
      {:json-schema/example "string", :optional true}
@@ -2062,6 +2127,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]]
     [:is_system
      {:json-schema/example true, :optional true}
@@ -2078,6 +2144,7 @@
     [:modifier
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:name
      {:json-schema/example "string"}
@@ -2085,6 +2152,7 @@
     [:owner
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:parent_folder
      {:json-schema/example "string", :optional true}
@@ -2095,6 +2163,7 @@
     [:product
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
     [:security_descriptor
      {:json-schema/example "string", :optional true}
@@ -2102,6 +2171,7 @@
     [:signature
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/digital_signature"]]
     [:size
      {:json-schema/example 10, :optional true}
@@ -2121,6 +2191,7 @@
     [:xattributes
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"
    [:map
@@ -2139,10 +2210,12 @@
     [:hash
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
     [:image
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/image"]]
     [:name
      {:json-schema/example "string", :optional true}
@@ -2233,6 +2306,7 @@
     [:policy
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"]]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"
    [:map
@@ -2263,19 +2337,23 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_code"]]]
     [:affected_packages
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/affected_package"]]]
     [:cve
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cve"]]
     [:cwe
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/cwe"]]
     [:desc
      {:json-schema/example "string", :optional true}
@@ -2299,6 +2377,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
     [:kb_articles
      {:json-schema/example ["string"], :optional true}
@@ -2313,6 +2392,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/package"]]]
     [:references
      {:json-schema/example ["string"], :optional true}
@@ -2323,6 +2403,7 @@
     [:remediation
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
     [:severity
      {:json-schema/example "string", :optional true}
@@ -2391,6 +2472,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/agent"]]]
     [:autoscale_uid
      {:json-schema/example "string", :optional true}
@@ -2404,6 +2486,7 @@
     [:container
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]
     [:created_time
      {:json-schema/example 10, :optional true}
@@ -2427,6 +2510,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]]
     [:hostname
      {:json-schema/example "string", :optional true}
@@ -2434,6 +2518,7 @@
     [:hw_info
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/device_hw_info"]]
     [:hypervisor
      {:json-schema/example "string", :optional true}
@@ -2441,6 +2526,7 @@
     [:image
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/image"]]
     [:imei
      {:json-schema/example "string", :optional true}
@@ -2478,6 +2564,7 @@
     [:location
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/location"]]
     [:mac
      {:json-schema/example "string", :optional true}
@@ -2498,18 +2585,22 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/network_interface"]]]
     [:org
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
     [:os
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/os"]]
     [:owner
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:region
      {:json-schema/example "string", :optional true}
@@ -2683,19 +2774,23 @@
     [:sub_technique
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/sub_technique"]]
     [:tactic
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/tactic"]]
     [:tactics
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/tactic"]]]
     [:technique
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/technique"]]
     [:version
      {:json-schema/example "string", :optional true}
@@ -2804,6 +2899,7 @@
     [:data_classification
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
     [:event_code
      {:json-schema/example "string", :optional true}
@@ -2811,11 +2907,13 @@
     [:extension
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/extension"]]
     [:extensions
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/extension"]]]
     [:labels
      {:json-schema/example ["string"], :optional true}
@@ -2842,6 +2940,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/logger"]]]
     [:modified_time
      {:json-schema/example 10, :optional true}
@@ -2861,6 +2960,7 @@
     [:product
      {:json-schema/example nil}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
     [:profiles
      {:json-schema/example ["string"], :optional true}
@@ -2895,16 +2995,19 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
     [:kill_chain
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
     [:observables
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"]]]
     [:product_uid
      {:json-schema/example "string", :optional true}
@@ -2934,6 +3037,7 @@
     [:group
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
     [:operation
      {:json-schema/example "string"}
@@ -2941,14 +3045,17 @@
     [:request
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/request"]]
     [:response
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/response"]]
     [:service
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/service"]]
     [:version
      {:json-schema/example "string", :optional true}
@@ -3034,6 +3141,7 @@
      {:json-schema/example [nil], :optional true}
      [:sequential
       [:ref
+       {:json-schema/example nil}
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"]]]
     [:type
      {:json-schema/example "string", :optional true}
@@ -3069,6 +3177,7 @@
     [:avg_timespan
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/timespan"]]
     [:bulletin
      {:json-schema/example "string", :optional true}
@@ -3094,10 +3203,12 @@
     [:os
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/os"]]
     [:product
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
     [:severity
      {:json-schema/example "string", :optional true}
@@ -3129,14 +3240,17 @@
     [:file
      {:json-schema/example nil}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"]]
     [:owner
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
     [:remediation
      {:json-schema/example nil, :optional true}
      [:ref
+      {:json-schema/example nil}
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
     [:start_line
      {:json-schema/example 10, :optional true}
@@ -3209,15 +3323,18 @@
   [:analytic
    {:json-schema/example nil, :optional true}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"]]
   [:api
    {:json-schema/example nil, :optional true}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/api"]]
   [:attacks
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
   [:category_name
    {:json-schema/example "string", :optional true}
@@ -3229,6 +3346,7 @@
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/cis_csc"]]]
   [:class_name
    {:json-schema/example "string", :optional true}
@@ -3239,10 +3357,12 @@
   [:cloud
    {:json-schema/example nil}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/cloud"]]
   [:compliance
    {:json-schema/example nil, :optional true}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/compliance"]]
   [:confidence
    {:json-schema/example "string", :optional true}
@@ -3272,6 +3392,7 @@
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/enrichment"]]]
   [:evidence
    {:json-schema/example "anything", :optional true}
@@ -3279,6 +3400,7 @@
   [:finding
    {:json-schema/example nil}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/finding"]]
   [:impact
    {:json-schema/example "string", :optional true}
@@ -3293,11 +3415,13 @@
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
   [:malware
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/malware"]]]
   [:message
    {:json-schema/example "string", :optional true}
@@ -3305,6 +3429,7 @@
   [:metadata
    {:json-schema/example nil}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/metadata"]]
   [:nist
    {:json-schema/example ["string"], :optional true}
@@ -3313,15 +3438,18 @@
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"]]]
   [:osint
    {:json-schema/example [nil]}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/osint"]]]
   [:process
    {:json-schema/example nil, :optional true}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/process"]]
   [:raw_data
    {:json-schema/example "string", :optional true}
@@ -3330,6 +3458,7 @@
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/resource_details"]]]
   [:risk_level
    {:json-schema/example "string", :optional true}
@@ -3386,9 +3515,11 @@
   [:unmapped
    {:json-schema/example nil, :optional true}
    [:ref
+    {:json-schema/example nil}
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]
   [:vulnerabilities
    {:json-schema/example [nil], :optional true}
    [:sequential
     [:ref
+     {:json-schema/example nil}
      "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"]]]]]
