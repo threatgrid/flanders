@@ -1,5 +1,6 @@
 (ns flanders.example
   (:require
+   [flanders.core :as f]
    #?(:clj  [flanders.types :as ft]
       :cljs [flanders.types
              :as ft
@@ -142,18 +143,15 @@
        :returns (f return)}))
 
   RefType
-  (->example [{::keys [defs-scope seen] :keys [id default] :as node} f opts]
-    (assert defs-scope)
-    (assert (string? id))
-    (assert (every? string? (keys defs-scope)))
+  (->example [{:keys [id default] :as node} f {::f/keys [registry] ::keys [seen] :as opts}]
     (if (some? default)
       default
       (if (contains? seen node)
         unreachable ;; attempt to make examples finite but also informative
-        (f (or (get defs-scope id)
+        (f (or (get registry id)
                (throw (ex-info (format "Ref not in scope: %s (%s)" (pr-str id)
-                                       (vec (keys defs-scope)))
-                               {:defs-scope defs-scope})))
+                                       (vec (keys registry)))
+                               {:registry registry})))
            (update opts ::seen (fnil conj #{}) node))))))
 
 ;; This is a fast implementation of making an example, but it could be better
@@ -164,11 +162,12 @@
   "Get a JSON example for a DDL node"
   ([ddl] (->example-tree' ddl nil))
   ([ddl opts]
-   (->example ddl
-              (fn
-                ([s] (->example-tree' s opts))
-                ([s opts] (->example-tree' s opts)))
-              opts)))
+   (let [opts (update opts ::f/registry (fnil into {}) (::f/registry ddl))]
+     (->example ddl
+                (fn
+                  ([s] (->example-tree' s opts))
+                  ([s opts] (->example-tree' s opts)))
+                opts))))
 
 (defn ->example-tree
   "Get a JSON example for a DDL node"

@@ -81,7 +81,6 @@
                                                 (let [opts (conj-path opts "$defs" k)]
                                                   [(absolute-id opts) (->flanders v opts)])))
                                       $defs))
-                   opts (update opts ::defs #(into (or % {}) local-defs))
                    base (or (when $ref
                               (let [this-id (resolve-id $ref opts)]
                                 (assoc (f/ref this-id)
@@ -142,7 +141,7 @@
                (cond-> (assoc base ::base-id (::base-id opts))
                  ;; TODO unit test
                  description (assoc :description description)
-                 local-defs (assoc ::defs local-defs)
+                 local-defs (assoc ::f/registry local-defs)
                  ;;TODO recursive examples involving refs (currently :ref example is nil)
                  ;example (assoc :example example)
                  ;default (assoc :default default)

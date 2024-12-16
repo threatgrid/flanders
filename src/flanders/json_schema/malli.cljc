@@ -1,5 +1,6 @@
 (ns flanders.json-schema.malli
   (:require [malli.core :as m]
+            [flanders.core :as f]
             [flanders.example :as fe]
             [flanders.malli :as fm]
             [flanders.malli.utils :as fmu]
@@ -14,9 +15,9 @@
 
 (defn ->malli [json-schema opts]
   (let [opts (into fm/default-opts opts)
-        {::fjs/keys [defs] :as f} (fjs/->flanders json-schema opts)
+        {::f/keys [registry] :as f} (fjs/->flanders json-schema opts)
         c (fm/->malli f (assoc opts ::m/allow-invalid-refs true))]
     (m/-update-properties c update :registry
                           (fn [prev]
                             (assert (not prev) ":registry already exists")
-                            (into (sorted-map) (update-vals defs #(fm/->malli % (assoc opts ::m/allow-invalid-refs true))))))))
+                            (into (sorted-map) (update-vals registry #(fm/->malli % (assoc opts ::m/allow-invalid-refs true))))))))

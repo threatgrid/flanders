@@ -433,16 +433,10 @@
    "$ref" "#/$defs/aref"})
 
 (deftest refs-test
-  (is (= ["https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
-         (keys (::sut/defs (sut/->flanders refs-json-schema-example nil)))))
-  (is (= ["https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
-         (keys (::sut/defs-scope (sut/->flanders refs-json-schema-example nil)))))
-  (is (= ["https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
-         (-> (sut/->flanders refs-json-schema-example nil)
-             ::sut/defs-scope
-             (get "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref")
-             pr-str
-             )))
+  (is (= #{"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"}
+         (set (keys (::f/registry (sut/->flanders refs-json-schema-example nil))))))
+  (is (= #{"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"}
+         (set (keys (::f/registry (sut/->flanders refs-json-schema-example nil))))))
   (is (= '[:ref
            {:registry
             {"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"
@@ -450,12 +444,12 @@
               [:ref
                #:json-schema{:example nil}
                "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]]}
-            :json-schema/example nil}
+            :json-schema/example [[]]}
            "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
          (m/form (->malli refs-json-schema-example)))))
 
 (comment
-  (pr-str (sut/->flanders refs-json-schema-example nil))
+  (sut/->flanders refs-json-schema-example nil)
   (->malli refs-json-schema-example)
   )
 

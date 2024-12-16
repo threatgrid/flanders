@@ -1,13 +1,14 @@
 (ns flanders.json-schema.schema
   (:require [schema.core :as s]
+            [flanders.core :as f]
             [clojure.string :as str]
             [flanders.schema :as fs]
             [flanders.schema.utils :as fsu]
             [flanders.json-schema :as fjs]
             [clojure.pprint :as pp])
-  (:import [flanders.json_schema.types JSONSchemaRef]))
+  (:import [flanders.types RefType]))
 
-(extend-type JSONSchemaRef
+(extend-type RefType
   fs/SchemaNode
   (->schema' [{:keys [id] :as dll} _ {::keys [ref->var] :as opts}]
     (-> (s/recursive (find-var (get ref->var id)))
@@ -52,8 +53,8 @@
         (println "WARNING: Please increment max-nano-digits for unit test stability")))
     (format nano-padder n)))
 
-(defn- create-defs [{::fjs/keys [defs base-id] :as f} json-schema opts]
-  (when (seq defs)
+(defn- create-defs [{::f/keys [registry] ::fjs/keys [base-id] :as f} json-schema opts]
+  (when (seq registry)
     (let [base-id (str base-id "/$defs/")
           temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
                                           ;; helps sort schemas during unit testing.
@@ -70,7 +71,7 @@
           _ (assert (empty? (ns-refers temp-ns)))
           _ (assert (empty? (ns-aliases temp-ns)))
           nstr (name (ns-name temp-ns))
-          def-ids (sort (keys defs))
+          def-ids (sort (keys registry))
           _ (assert (seq base-id))
           _ (assert (every? #(str/starts-with? % base-id) def-ids) "Ambiguous refs")
           def-vars (mapv #(symbol nstr (name (def-id->var-sym base-id %))) def-ids)
@@ -79,7 +80,7 @@
           def-ids->def-vars (zipmap def-ids def-vars)
           _ (run! #(intern (-> % namespace symbol) (-> % name symbol)) def-vars)
           _ (run! (fn [[def-id def-var]]
-                    (let [f (get defs def-id)
+                    (let [f (get registry def-id)
                           _ (assert f def-id)
                           frm `(s/defschema ~(-> def-var name symbol)
                                  ~(str "JSON Schema id: " def-id "\n")
