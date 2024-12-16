@@ -54,39 +54,41 @@
         (println "WARNING: Please increment max-nano-digits for unit test stability")))
     (format nano-padder n)))
 
+(defn- create-defs [{::fjs/keys [defs base-id] :as f} json-schema opts]
+  (when (seq defs)
+    (let [base-id (str base-id "/$defs/")
+          temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
+                                          ;; helps sort schemas during unit testing.
+                                          (stable-sortable-ns-segment)
+                                          "."
+                                          (str (random-uuid)))))
+          _ (alter-meta! temp-ns assoc :doc (str "Helper namespace to generate the following JSON Schema:\n"
+                                                 (with-out-str (pp/pprint json-schema))))
+          _ (run! #(ns-unmap temp-ns %) (keys (ns-map temp-ns)))
+          _ (assert (empty? (ns-map temp-ns)))
+          _ (assert (empty? (ns-interns temp-ns)))
+          _ (assert (empty? (ns-imports temp-ns)))
+          _ (assert (empty? (ns-refers temp-ns)))
+          _ (assert (empty? (ns-aliases temp-ns)))
+          nstr (name (ns-name temp-ns))
+          def-ids (sort (keys defs))
+          _ (assert (seq base-id))
+          _ (assert (every? #(str/starts-with? % base-id) def-ids) "Ambiguous refs")
+          def-vars (mapv #(symbol nstr (name (def-id->var-sym base-id %))) def-ids)
+          _ (assert (or (empty? def-vars)
+                        (apply distinct? def-vars)))
+          def-ids->def-vars (zipmap def-ids def-vars)
+          _ (run! #(intern (-> % namespace symbol) (-> % name symbol)) def-vars)
+          _ (run! (fn [[def-id def-var]]
+                    (let [f (get defs def-id)
+                          _ (assert f def-id)]
+                      (binding [*ns* temp-ns]
+                        (eval `(s/defschema ~(-> def-var name symbol)
+                                 ~(str "JSON Schema id: " def-id "\n")
+                                 ~(fs/->schema f (assoc opts ::ref->var def-ids->def-vars)))))))
+                  def-ids->def-vars)]
+      def-ids->def-vars)))
+
 (defn ->schema [json-schema opts]
-  (let [{::fjs/keys [defs base-id] :as f} (fjs/->flanders json-schema opts)
-        base-id (str base-id "/$defs/")
-        temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
-                                        ;; helps sort schemas during unit testing.
-                                        (stable-sortable-ns-segment)
-                                        "."
-                                        (str (random-uuid)))))
-        _ (alter-meta! temp-ns assoc :doc (str "Helper namespace to generate the following JSON Schema:\n"
-                                               (with-out-str (pp/pprint json-schema))))
-        _ (run! #(ns-unmap temp-ns %) (keys (ns-map temp-ns)))
-        _ (assert (empty? (ns-map temp-ns)))
-        _ (assert (empty? (ns-interns temp-ns)))
-        _ (assert (empty? (ns-imports temp-ns)))
-        _ (assert (empty? (ns-refers temp-ns)))
-        _ (assert (empty? (ns-aliases temp-ns)))
-        nstr (name (ns-name temp-ns))
-        def-ids (sort (keys defs))
-        _ (assert (seq base-id))
-        _ (assert (every? #(str/starts-with? % base-id) def-ids) "Ambiguous refs")
-        def-vars (mapv #(symbol nstr (name (def-id->var-sym base-id %))) def-ids)
-        _ (assert (or (empty? def-vars)
-                      (apply distinct? def-vars)))
-        def-ids->def-vars (zipmap def-ids def-vars)
-        _ (run! #(intern (-> % namespace symbol) (-> % name symbol)) def-vars)
-        _ (run! (fn [[def-id def-var]]
-                  (let [f (get defs def-id)
-                        _ (assert f def-id)]
-                    (binding [*ns* temp-ns]
-                      (eval `(s/defschema ~(-> def-var name symbol)
-                               ~(str "JSON Schema id: " def-id "\n")
-                               ~(fs/->schema f (assoc opts ::ref->var def-ids->def-vars)))))))
-                def-ids->def-vars)
-        s (fs/->schema f (assoc opts ::ref->var def-ids->def-vars))]
-    (.register (Cleaner/create) s #(remove-ns temp-ns))
-    s))
+  (let [f (fjs/->flanders json-schema opts)]
+    (fs/->schema f (assoc opts ::ref->var (create-defs f json-schema opts)))))

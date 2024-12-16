@@ -85,7 +85,7 @@
                                                  ;; TODO subschemas start new id https://json-schema.org/draft/2020-12/json-schema-core#section-8.2.1
                                                  ;; need to reset ::path if we support this
                                                  (when (and parent-id $id)
-                                                   (throw (ex-info "$id only supported at top-level" {})))
+                                                   (throw (ex-info "Nested $id not yet supported" {})))
                                                  (or $id parent-id
                                                      ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
                                                      (throw (ex-info "Must supply $id" {})))))
@@ -94,8 +94,6 @@
                                                 (let [opts (conj-path opts "$defs" k)]
                                                   [(absolute-id opts) (->flanders v opts)])))
                                       $defs))
-                   _ (when (and local-defs (seq (::path opts)))
-                       (throw (ex-info "$defs only supported at top-level" {})))
                    opts (update opts ::defs #(into (or % {}) local-defs))
                    base (or (when $ref
                               (let [this-id (resolve-id $ref opts)]
