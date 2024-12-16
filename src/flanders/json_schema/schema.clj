@@ -2,7 +2,7 @@
   (:require [schema.core :as s]
             [clojure.string :as str]
             [flanders.schema :as fs]
-            [flanders.schema.util :as fsu]
+            [flanders.schema.utils :as fsu]
             [flanders.json-schema.types :as fjst]
             [flanders.json-schema :as fjs]
             [clojure.pprint :as pp])
@@ -94,11 +94,11 @@
   (let [f (fjs/->flanders json-schema opts)]
     (fs/->schema f (assoc opts ::ref->var (create-defs f json-schema opts)))))
 
-#?(:clj (defn ->schema+clean
-          "Like ->schema except makes allocated memory collectable if result is garbage collected."
-          [json-schema opts]
-          (let [gc (atom [])
-                _ (assert (not (::gc opts)))
-                s (->schema json-schema {::gc gc})]
-            (.register (java.lang.ref.Cleaner/create) d (fn [] (run! #(%) @gc)))
-            s)))
+(defn ->schema+clean
+  "Like ->schema except makes allocated memory collectable if result is garbage collected."
+  [json-schema opts]
+  (let [gc (atom [])
+        _ (assert (not (::gc opts)))
+        s (->schema json-schema {::gc gc})]
+    (.register (java.lang.ref.Cleaner/create) s (fn [] (run! #(%) @gc)))
+    s))

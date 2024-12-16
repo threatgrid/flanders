@@ -25,8 +25,8 @@
                  :y {:type "integer"}),
    :required [:x :y]})
 
-(defn ->malli [v] (malli/->malli (sut/->flanders v nil)))
-(defn ->schema [v] (schema/->schema (sut/->flanders v nil)))
+(defn ->malli [v] (js->malli/->malli v nil))
+(defn ->schema [v] (js->schema/->schema v nil))
 
 ;; https://github.com/metosin/malli/blob/6a2d9bd45d4973b4541cfdacdc4185240aa9a518/test/malli/json_schema_test.cljc#L9C1-L133C1
 (def malli-expectations
@@ -183,11 +183,10 @@
                           :properties {:foo {:$ref "#/$defs/example"}}}
                          nil))))
 
-(defn security-finding-json [] (json/decode (slurp (io/resource "security-finding.json"))))
-
-(def FlandersSecurityFinding (delay (sut/->flanders (security-finding-json) nil)))
-(def SchemaSecurityFinding (delay (js->schema/->schema+clean (security-finding-json) nil)))
-(def MalliSecurityFinding (delay (js->malli/->malli (security-finding-json) nil)))
+(def security-finding-json (delay (json/decode (slurp (io/resource "security-finding.json")))))
+(def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json nil)))
+(def SchemaSecurityFinding (delay (js->schema/->schema+clean @security-finding-json nil)))
+(def MalliSecurityFinding (delay (js->malli/->malli @security-finding-json nil)))
 
 (defn unqualify-vars [vs]
   (let [gs (group-by namespace (sort (map symbol vs)))
@@ -411,8 +410,7 @@
       (is (= flanders.json-schema.test-helpers-schema-security-finding/expected-transitive-schema-explains
              (into {} (map (fn [[v uniq]]
                              {uniq (unqualify-recursive-vars-from-schema-explain @(find-var v))}))
-                   (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding)))))
-      ))
+                   (unqualify-vars (collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding)))))))
   (testing "schema ops"
     (is (some? (s/check @SchemaSecurityFinding {})))
     (is (s/validate @SchemaSecurityFinding example-security-finding))
@@ -428,14 +426,44 @@
     )
   )
 
+(def refs-json-schema-example
+  {"$defs" {"aref" {"properties"
+                    {"arr" {"type" "array"
+                            "items" {"$ref" "#/$defs/aref"}}}
+                    "type" "object"}}
+   "$id" "https://schema.ocsf.io/schema/classes/security_finding"
+   "$ref" "#/$defs/aref"})
+
+(deftest malli-refs-test
+  (is (= '[:ref
+           {:registry
+            {"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"
+             [:map
+              {:closed true, :json-schema/example {:arr [nil]}}
+              [:arr
+               {:json-schema/example [nil], :optional true}
+               [:sequential
+                [:ref
+                 #:json-schema{:example nil}
+                 "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]]]]}
+            :json-schema/example nil}
+           "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
+         (m/form (->malli refs-json-schema-example)))))
+
+(comment
+  (pr-str (sut/->flanders refs-json-schema-example nil))
+  (->malli refs-json-schema-example)
+  )
+
 (defn generate-example-malli [file json]
   (let [f (io/file file)]
     (io/make-parents f)
     (spit f (binding [*print-level* nil
                       *print-length* nil
                       *print-namespace-maps* false]
-              (with-out-str (pp/pprint (m/form (js->malli/->malli (security-finding-json) nil))))))))
+              (with-out-str (pp/pprint (m/form (js->malli/->malli json nil))))))))
 
 (comment
-  (generate-example-malli "security-finding.edn" (security-finding-json))
+  (generate-example-malli "security-finding.edn" @security-finding-json)
+  (keys (:flanders.json-schema/defs-scope @FlandersSecurityFinding))
   )

@@ -10,14 +10,18 @@
 
 (extend-type JSONSchemaRef
   fe/JsonExampleNode
-  (->example [{:keys [id default]} f {::keys [defs] :as opts}]
+  (->example [{::keys [defs-scope] :keys [id default]} f opts]
+    (assert defs-scope)
+    (assert (string? id))
+    (assert (every? string? (keys defs-scope)))
     (if (some? default)
       default
-      #_ ;;TODO recur for example
-      (fe/->example (or (get defs id)
-                        (throw (ex-info (format "Ref not in scope: %s" id)
-                                        {:defs defs})))
-                    f opts))))
+      #_
+      (f (or (get defs-scope id)
+             (assert (not (contains? defs-scope id)))
+             (throw (ex-info (format "Ref not in scope: %s (%s)" (pr-str id)
+                                     (vec (keys defs-scope)))
+                             {:defs-scope defs-scope})))))))
 
 (defn- -normalize
   "normalize to string"
@@ -150,7 +154,8 @@
                               (f/enum (cond->> enum
                                         (some (some-fn ident? string?) enum) (into [] (map #(-normalize %2 (conj-path opts (str %))))))))
                             (unknown-schema! v opts))]
-               (cond-> (assoc base ::base-id (::base-id opts))
+               (cond-> (assoc base ::base-id (::base-id opts)
+                              ::defs-scope (::defs opts))
                  ;; TODO unit test
                  description (assoc :description description)
                  local-defs (assoc ::defs local-defs)

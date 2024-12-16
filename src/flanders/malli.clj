@@ -37,48 +37,45 @@
   ;; Branches
 
   EitherType
-  (->malli' [{:keys [choices key?]} opts]
+  (->malli' [{:keys [choices key?]} {::keys [->malli] :as opts}]
     ;;TODO `choices` allows dispatch like :multi, but they're in the wrong format
-    (let [f #(->malli' % opts)
-          choice-schemas (map f choices)
+    (let [choice-schemas (map ->malli choices)
           s (m/schema (into [:or] choice-schemas) opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
 
   MapEntry
-  (->malli' [{:keys [key type required? key?] :as entry} opts]
+  (->malli' [{:keys [key type required? key?] :as entry} {::keys [->malli] :as opts}]
     (assert (not key?))
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
-    (let [f #(->malli' % opts)
-          optional? (and (not required?)
+    (let [optional? (and (not required?)
                          (not (:open? key))
                          (seq (:values key)))
           description (some :description [key entry])
           props (cond-> {:json-schema/example (example/->example-tree type)}
                   optional? (assoc :optional true)
                   description (assoc :json-schema/description description))
-          default-or-specific-key (f (assoc key :key? true))]
+          default-or-specific-key (->malli (assoc key :key? true))]
       (case (:op default-or-specific-key)
         :specific-key (-> [(:schema default-or-specific-key)]
                           (cond-> props (conj props))
-                          (conj (f type)))
+                          (conj (->malli type)))
         :default-key (-> [::m/default]
                          (cond-> props (conj props))
                          (conj
                            [:map-of
                             (:schema default-or-specific-key)
-                            (f type)])))))
+                            (->malli type)])))))
 
   MapType
-  (->malli' [{:keys [entries key?] :as dll} opts]
-    (let [f #(->malli' % opts)
-          s (-> (case (count entries)
+  (->malli' [{:keys [entries key?] :as dll} {::keys [->malli] :as opts}]
+    (let [s (-> (case (count entries)
                   ;; :merge has problems with 1 and 0 children https://github.com/metosin/malli/pull/1147
                   0 [:merge (m/schema :map opts)]
-                  1 [:merge (m/schema [:map (f (first entries))] opts)]
-                  (into [:merge] (map (fn [e] [:map (f e)])) entries))
+                  1 [:merge (m/schema [:map (->malli (first entries))] opts)]
+                  (into [:merge] (map (fn [e] [:map (->malli e)])) entries))
                 (m/schema opts)
                 m/deref ;; eliminate :merge
                 (m/-update-properties assoc :closed true)
@@ -88,35 +85,31 @@
         s)))
 
   ParameterListType
-  (->malli' [{:keys [parameters key?]} opts]
+  (->malli' [{:keys [parameters key?]} {::keys [->malli] :as opts}]
     (assert (not key?))
-    (let [f #(->malli' % opts)]
-      (m/schema (into [:cat] (map f) parameters) opts)))
+    (m/schema (into [:cat] (map ->malli) parameters) opts))
 
   SequenceOfType
-  (->malli' [{:keys [type key?]} opts]
-    (let [f #(->malli' % opts)
-          s (m/schema [:sequential (f type)] opts)]
+  (->malli' [{:keys [type key?]} {::keys [->malli] :as opts}]
+    (let [s (m/schema [:sequential (->malli type)] opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
 
   SetOfType
-  (->malli' [{:keys [type key?]} opts]
-    (let [f #(->malli' % opts)
-          s (m/schema [:set (f type)] opts)]
+  (->malli' [{:keys [type key?]} {::keys [->malli] :as opts}]
+    (let [s (m/schema [:set (->malli type)] opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
 
   SignatureType
-  (->malli' [{:keys [parameters rest-parameter return key?]} opts]
-    (let [f #(->malli' % opts)
-          parameters (f parameters)
+  (->malli' [{:keys [parameters rest-parameter return key?]} {::keys [->malli] :as opts}]
+    (let [parameters (->malli parameters)
           parameters (if rest-parameter
-                       [:cat parameters [:* (f rest-parameter)]]
+                       [:cat parameters [:* (->malli rest-parameter)]]
                        parameters)
-          s (m/schema [:=> parameters (f return)] opts)]
+          s (m/schema [:=> parameters (->malli return)] opts)]
       (if key?
         {:op :default-key :schema s}
         s)))
@@ -157,8 +150,13 @@
 (defn ->malli
   "Convert a ctim schema to malli. Malli opts must contain a registry
   with support for :merge (usually via malli.util/schemas)."
-  ([ctim-schema] (->malli ctim-schema default-opts))
-  ([ctim-schema opts]
-   (-> ctim-schema
-       (->malli' opts)
-       (m/schema opts))))
+  ([node] (->malli node nil))
+  ([node opts]
+   (let [vopts (volatile! nil)
+         ->malli (fn ->malli
+                   ([s] (->malli s @vopts))
+                   ([s opts] (->malli' s opts)))
+         opts (vreset! vopts (assoc (or opts default-opts) ::->malli ->malli))]
+     (-> node
+         (->malli opts)
+         (m/schema opts)))))
