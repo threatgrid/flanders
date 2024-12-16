@@ -144,15 +144,18 @@
 
   RefType
   (->example [{:keys [id default] :as node} f {::f/keys [registry] ::keys [seen] :as opts}]
+    (prn "RefType" id (keys registry) seen)
     (if (some? default)
       default
-      (if (contains? seen node)
-        unreachable ;; attempt to make examples finite but also informative
+      (if (contains? seen id)
+        ;; heuristic to make examples finite but also informative.
+        ;; detecting true cycles with dynamic scope is more involved (see notes in malli.generators)
+        unreachable
         (f (or (get registry id)
                (throw (ex-info (format "Ref not in scope: %s (%s)" (pr-str id)
                                        (vec (keys registry)))
                                {:registry registry})))
-           (update opts ::seen (fnil conj #{}) node))))))
+           (update opts ::seen (fnil conj #{}) id))))))
 
 ;; This is a fast implementation of making an example, but it could be better
 ;; - It could take advantage of generators (to be non-deterministic)
@@ -165,8 +168,8 @@
    (let [opts (update opts ::f/registry (fnil into {}) (::f/registry ddl))]
      (->example ddl
                 (fn
-                  ([s] (->example-tree' s opts))
-                  ([s opts] (->example-tree' s opts)))
+                  ([ddl] (->example-tree' ddl opts))
+                  ([ddl opts] (->example-tree' ddl opts)))
                 opts))))
 
 (defn ->example-tree

@@ -1,5 +1,6 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
+            [flanders.example :as fe]
             [malli.generator :as mg]
             [clojure.pprint :as pp]
             [clojure.java.io :as io]
@@ -437,6 +438,9 @@
          (set (keys (::f/registry (sut/->flanders refs-json-schema-example nil))))))
   (is (= #{"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"}
          (set (keys (::f/registry (sut/->flanders refs-json-schema-example nil))))))
+  (is (= #{"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"}
+         (-> (sut/->flanders refs-json-schema-example nil)
+             )))
   (is (= '[:ref
            {:registry
             {"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"
@@ -446,7 +450,8 @@
                "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]]}
             :json-schema/example [[]]}
            "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
-         (m/form (->malli refs-json-schema-example)))))
+         (m/form (->malli refs-json-schema-example))))
+  (is (= [] (fe/->example-tree (sut/->flanders refs-json-schema-example nil)))))
 
 (comment
   (sut/->flanders refs-json-schema-example nil)

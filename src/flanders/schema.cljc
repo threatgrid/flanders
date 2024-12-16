@@ -9,6 +9,7 @@
                      KeywordType MapEntry MapType NumberType ParameterListType
                      SequenceOfType SetOfType SignatureType StringType]])
    #?(:clj [ring.swagger.json-schema :as rs])
+   [flanders.core :as f]
    [flanders.predicates :as fp]
    [flanders.schema.utils :refer [describe]]
    [flanders.example :as example]
@@ -38,11 +39,16 @@
 (defn ->schema
   ([node] (->schema' node ->schema nil))
   ([node opts]
-   (->schema' node
-              (fn
-                ([node] (->schema node opts))
-                ([node opts] (->schema node opts)))
-              opts)))
+   (let [f (fn ->schema
+             ([node] (->schema node opts))
+             ([node opts]
+              (let [opts (update opts ::f/registry (fnil into {}) (::f/registry node))]
+                (->schema' node
+                           (fn
+                             ([node] (->schema node opts))
+                             ([node opts] (->schema node opts)))
+                           opts))))]
+     (f node opts))))
 
 (def ^:deprecated ->schema-tree ->schema)
 

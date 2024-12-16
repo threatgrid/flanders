@@ -2,6 +2,7 @@
   "Requires malli as a dependency."
   (:refer-clojure :exclude [type])
   (:require
+    [flanders.core :as f]
     [flanders.types]
     [flanders.example :as example]
     [flanders.malli.utils :refer [describe]]
@@ -152,11 +153,17 @@
   with support for :merge (usually via malli.util/schemas)."
   ([node] (->malli node nil))
   ([node opts]
-   (let [vopts (volatile! nil)
-         ->malli (fn ->malli
-                   ([s] (->malli s @vopts))
-                   ([s opts] (->malli' s opts)))
-         opts (vreset! vopts (assoc (or opts default-opts) ::->malli ->malli))]
+   (let [->malli (fn ->malli
+                   ([node] (->malli node opts))
+                   ([node opts]
+                    (let [vopts (volatile! nil)
+                          opts (-> opts
+                                   (update ::f/registry (fnil into {}) (::f/registry node))
+                                   (assoc ::->malli (fn
+                                                      ([node] (->malli node @vopts))
+                                                      ([node opts] (->malli node opts)))))]
+                      (vreset! vopts opts)
+                      (->malli' node opts))))]
      (-> node
          (->malli opts)
          (m/schema opts)))))
