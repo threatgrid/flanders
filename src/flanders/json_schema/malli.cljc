@@ -10,7 +10,6 @@
 (extend-type JSONSchemaRef
   fm/MalliNode
   (->malli' [{:keys [id] :as ddl} opts]
-    (prn "opts" (keys opts))
     (-> [:ref id]
         (fmu/describe ddl opts))))
 
@@ -18,4 +17,7 @@
   (let [opts (into fm/default-opts opts)
         {::fjs/keys [defs] :as f} (fjs/->flanders json-schema opts)
         c (fm/->malli f (assoc opts ::m/allow-invalid-refs true))]
-    (m/schema [:schema {:registry (into (sorted-map) (update-vals defs #(fm/->malli % (assoc opts ::m/allow-invalid-refs true))))} c] opts)))
+    (m/-update-properties c update :registry
+                          (fn [prev]
+                            (assert (not prev) ":registry already exists")
+                            (into (sorted-map) (update-vals defs #(fm/->malli % (assoc opts ::m/allow-invalid-refs true))))))))
