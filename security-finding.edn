@@ -1,5 +1,63 @@
-[:schema
- {:registry
+[:map
+ {:closed true,
+  :json-schema/example
+  {:severity_id 0,
+   :category_uid 10,
+   :status_id 0,
+   :data_sources ["string"],
+   :api nil,
+   :unmapped nil,
+   :class_name "string",
+   :osint [nil],
+   :type_uid 10,
+   :start_time_dt "string",
+   :impact_score 10,
+   :impact_id 0,
+   :enrichments [nil],
+   :nist ["string"],
+   :cloud nil,
+   :time 10,
+   :evidence "anything",
+   :process nil,
+   :start_time 10,
+   :risk_level "string",
+   :observables [nil],
+   :risk_score 10,
+   :time_dt "string",
+   :duration 10,
+   :state "string",
+   :class_uid 10,
+   :kill_chain [nil],
+   :end_time 10,
+   :category_name "string",
+   :analytic nil,
+   :activity_name "string",
+   :confidence_score 10,
+   :timezone_offset 10,
+   :status "string",
+   :count 10,
+   :severity "string",
+   :cis_csc [nil],
+   :status_detail "string",
+   :end_time_dt "string",
+   :status_code "string",
+   :attacks [nil],
+   :finding nil,
+   :raw_data "string",
+   :confidence "string",
+   :activity_id 0,
+   :resources [nil],
+   :type_name "string",
+   :confidence_id 0,
+   :impact "string",
+   :metadata nil,
+   :compliance nil,
+   :message "string",
+   :vulnerabilities [nil],
+   :malware [nil],
+   :state_id 0,
+   :risk_level_id 0},
+  :registry
   {"https://schema.ocsf.io/schema/classes/security_finding/$defs/logger"
    [:map
     {:closed true,
@@ -3255,271 +3313,210 @@
     [:start_line
      {:json-schema/example 10, :optional true}
      [:int {:json-schema/example 10}]]]}}
- [:map
-  {:closed true,
-   :json-schema/example
-   {:severity_id 0,
-    :category_uid 10,
-    :status_id 0,
-    :data_sources ["string"],
-    :api nil,
-    :unmapped nil,
-    :class_name "string",
-    :osint [nil],
-    :type_uid 10,
-    :start_time_dt "string",
-    :impact_score 10,
-    :impact_id 0,
-    :enrichments [nil],
-    :nist ["string"],
-    :cloud nil,
-    :time 10,
-    :evidence "anything",
-    :process nil,
-    :start_time 10,
-    :risk_level "string",
-    :observables [nil],
-    :risk_score 10,
-    :time_dt "string",
-    :duration 10,
-    :state "string",
-    :class_uid 10,
-    :kill_chain [nil],
-    :end_time 10,
-    :category_name "string",
-    :analytic nil,
-    :activity_name "string",
-    :confidence_score 10,
-    :timezone_offset 10,
-    :status "string",
-    :count 10,
-    :severity "string",
-    :cis_csc [nil],
-    :status_detail "string",
-    :end_time_dt "string",
-    :status_code "string",
-    :attacks [nil],
-    :finding nil,
-    :raw_data "string",
-    :confidence "string",
-    :activity_id 0,
-    :resources [nil],
-    :type_name "string",
-    :confidence_id 0,
-    :impact "string",
-    :metadata nil,
-    :compliance nil,
-    :message "string",
-    :vulnerabilities [nil],
-    :malware [nil],
-    :state_id 0,
-    :risk_level_id 0}}
-  [:activity_id
-   {:json-schema/example 0}
-   [:enum {:json-schema/example 0} 0 1 2 3 99]]
-  [:activity_name
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:analytic
-   {:json-schema/example nil, :optional true}
-   [:ref
-    {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"]]
-  [:api
-   {:json-schema/example nil, :optional true}
-   [:ref
-    {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/api"]]
-  [:attacks
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
-  [:category_name
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:category_uid
-   {:json-schema/example 10}
-   [:int {:json-schema/example 10}]]
-  [:cis_csc
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/cis_csc"]]]
-  [:class_name
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:class_uid
-   {:json-schema/example 10}
-   [:int {:json-schema/example 10}]]
-  [:cloud
+ [:activity_id
+  {:json-schema/example 0}
+  [:enum {:json-schema/example 0} 0 1 2 3 99]]
+ [:activity_name
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:analytic
+  {:json-schema/example nil, :optional true}
+  [:ref
    {:json-schema/example nil}
-   [:ref
-    {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cloud"]]
-  [:compliance
-   {:json-schema/example nil, :optional true}
-   [:ref
-    {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/compliance"]]
-  [:confidence
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:confidence_id
-   {:json-schema/example 0, :optional true}
-   [:enum {:json-schema/example 0} 0 1 2 3 99]]
-  [:confidence_score
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:count
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:data_sources
-   {:json-schema/example ["string"], :optional true}
-   [:sequential [:string {:json-schema/example "string"}]]]
-  [:duration
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:end_time
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:end_time_dt
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:enrichments
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/enrichment"]]]
-  [:evidence
-   {:json-schema/example "anything", :optional true}
-   [:any {:json-schema/example "anything"}]]
-  [:finding
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"]]
+ [:api
+  {:json-schema/example nil, :optional true}
+  [:ref
    {:json-schema/example nil}
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/api"]]
+ [:attacks
+  {:json-schema/example [nil], :optional true}
+  [:sequential
    [:ref
     {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/finding"]]
-  [:impact
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:impact_id
-   {:json-schema/example 0, :optional true}
-   [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
-  [:impact_score
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:kill_chain
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
-  [:malware
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/malware"]]]
-  [:message
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:metadata
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
+ [:category_name
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:category_uid
+  {:json-schema/example 10}
+  [:int {:json-schema/example 10}]]
+ [:cis_csc
+  {:json-schema/example [nil], :optional true}
+  [:sequential
+   [:ref
+    {:json-schema/example nil}
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cis_csc"]]]
+ [:class_name
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:class_uid
+  {:json-schema/example 10}
+  [:int {:json-schema/example 10}]]
+ [:cloud
+  {:json-schema/example nil}
+  [:ref
    {:json-schema/example nil}
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/cloud"]]
+ [:compliance
+  {:json-schema/example nil, :optional true}
+  [:ref
+   {:json-schema/example nil}
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/compliance"]]
+ [:confidence
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:confidence_id
+  {:json-schema/example 0, :optional true}
+  [:enum {:json-schema/example 0} 0 1 2 3 99]]
+ [:confidence_score
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:count
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:data_sources
+  {:json-schema/example ["string"], :optional true}
+  [:sequential [:string {:json-schema/example "string"}]]]
+ [:duration
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:end_time
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:end_time_dt
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:enrichments
+  {:json-schema/example [nil], :optional true}
+  [:sequential
    [:ref
     {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/metadata"]]
-  [:nist
-   {:json-schema/example ["string"], :optional true}
-   [:sequential [:string {:json-schema/example "string"}]]]
-  [:observables
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"]]]
-  [:osint
-   {:json-schema/example [nil]}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/osint"]]]
-  [:process
-   {:json-schema/example nil, :optional true}
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/enrichment"]]]
+ [:evidence
+  {:json-schema/example "anything", :optional true}
+  [:any {:json-schema/example "anything"}]]
+ [:finding
+  {:json-schema/example nil}
+  [:ref
+   {:json-schema/example nil}
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/finding"]]
+ [:impact
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:impact_id
+  {:json-schema/example 0, :optional true}
+  [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
+ [:impact_score
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:kill_chain
+  {:json-schema/example [nil], :optional true}
+  [:sequential
    [:ref
     {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/process"]]
-  [:raw_data
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:resources
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/resource_details"]]]
-  [:risk_level
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:risk_level_id
-   {:json-schema/example 0, :optional true}
-   [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
-  [:risk_score
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:severity
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:severity_id
-   {:json-schema/example 0}
-   [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
-  [:start_time
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:start_time_dt
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:state
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:state_id
-   {:json-schema/example 0}
-   [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
-  [:status
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:status_code
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:status_detail
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:status_id
-   {:json-schema/example 0, :optional true}
-   [:enum {:json-schema/example 0} 0 1 2 99]]
-  [:time {:json-schema/example 10} [:int {:json-schema/example 10}]]
-  [:time_dt
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:timezone_offset
-   {:json-schema/example 10, :optional true}
-   [:int {:json-schema/example 10}]]
-  [:type_name
-   {:json-schema/example "string", :optional true}
-   [:string {:json-schema/example "string"}]]
-  [:type_uid
-   {:json-schema/example 10}
-   [:int {:json-schema/example 10}]]
-  [:unmapped
-   {:json-schema/example nil, :optional true}
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/kill_chain_phase"]]]
+ [:malware
+  {:json-schema/example [nil], :optional true}
+  [:sequential
    [:ref
     {:json-schema/example nil}
-    "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]
-  [:vulnerabilities
-   {:json-schema/example [nil], :optional true}
-   [:sequential
-    [:ref
-     {:json-schema/example nil}
-     "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"]]]]]
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/malware"]]]
+ [:message
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:metadata
+  {:json-schema/example nil}
+  [:ref
+   {:json-schema/example nil}
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/metadata"]]
+ [:nist
+  {:json-schema/example ["string"], :optional true}
+  [:sequential [:string {:json-schema/example "string"}]]]
+ [:observables
+  {:json-schema/example [nil], :optional true}
+  [:sequential
+   [:ref
+    {:json-schema/example nil}
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"]]]
+ [:osint
+  {:json-schema/example [nil]}
+  [:sequential
+   [:ref
+    {:json-schema/example nil}
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/osint"]]]
+ [:process
+  {:json-schema/example nil, :optional true}
+  [:ref
+   {:json-schema/example nil}
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/process"]]
+ [:raw_data
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:resources
+  {:json-schema/example [nil], :optional true}
+  [:sequential
+   [:ref
+    {:json-schema/example nil}
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/resource_details"]]]
+ [:risk_level
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:risk_level_id
+  {:json-schema/example 0, :optional true}
+  [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
+ [:risk_score
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:severity
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:severity_id
+  {:json-schema/example 0}
+  [:enum {:json-schema/example 0} 0 1 2 3 4 5 6 99]]
+ [:start_time
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:start_time_dt
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:state
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:state_id
+  {:json-schema/example 0}
+  [:enum {:json-schema/example 0} 0 1 2 3 4 99]]
+ [:status
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:status_code
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:status_detail
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:status_id
+  {:json-schema/example 0, :optional true}
+  [:enum {:json-schema/example 0} 0 1 2 99]]
+ [:time {:json-schema/example 10} [:int {:json-schema/example 10}]]
+ [:time_dt
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:timezone_offset
+  {:json-schema/example 10, :optional true}
+  [:int {:json-schema/example 10}]]
+ [:type_name
+  {:json-schema/example "string", :optional true}
+  [:string {:json-schema/example "string"}]]
+ [:type_uid {:json-schema/example 10} [:int {:json-schema/example 10}]]
+ [:unmapped
+  {:json-schema/example nil, :optional true}
+  [:ref
+   {:json-schema/example nil}
+   "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"]]
+ [:vulnerabilities
+  {:json-schema/example [nil], :optional true}
+  [:sequential
+   [:ref
+    {:json-schema/example nil}
+    "https://schema.ocsf.io/schema/classes/security_finding/$defs/vulnerability"]]]]
