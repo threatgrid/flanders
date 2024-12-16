@@ -15,8 +15,7 @@
             [flanders.json-schema.malli :as js->malli]
             [flanders.json-schema.schema :as js->schema]
             [cheshire.core :as json]
-            flanders.json-schema.test-helpers-schema-security-finding
-            ))
+            flanders.json-schema.test-helpers-schema-security-finding))
 
 (def union-example
   {:title "union", ;;TODO
@@ -187,7 +186,7 @@
 (defn security-finding-json [] (json/decode (slurp (io/resource "security-finding.json"))))
 
 (def FlandersSecurityFinding (delay (sut/->flanders (security-finding-json) nil)))
-(def SchemaSecurityFinding (delay (js->schema/->schema (security-finding-json) nil)))
+(def SchemaSecurityFinding (delay (js->schema/->schema+clean (security-finding-json) nil)))
 (def MalliSecurityFinding (delay (js->malli/->malli (security-finding-json) nil)))
 
 (defn unqualify-vars [vs]
