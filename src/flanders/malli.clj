@@ -174,4 +174,5 @@
                                                                (into (sorted-map) (update-vals registry #(->malli % opts)))))))))]
      (-> node
          (->malli (assoc opts ::m/allow-invalid-refs true))
+         (m/form opts) ;; force valid refs
          (m/schema opts)))))

@@ -445,7 +445,9 @@
                "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]]}
             :json-schema/example []}
            "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
-         (m/form (->malli refs-json-schema-example)))))
+         (m/form (->malli refs-json-schema-example))))
+  (is (m/validate (->malli refs-json-schema-example) []))
+  )
 
 (comment
   (sut/->flanders refs-json-schema-example nil)
