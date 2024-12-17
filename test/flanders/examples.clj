@@ -22,3 +22,11 @@
     (f/map
      [(f/entry f/any-keyword f/any :required? false)])
     :required? true)])
+
+(def RefExample
+  (-> (f/ref "foo")
+      (f/update-registry assoc "foo" (f/int))))
+
+(def RecursiveRefExample
+  (-> (f/ref "foo")
+      (f/update-registry assoc "foo" (f/seq-of (f/ref "foo")))))

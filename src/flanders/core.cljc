@@ -265,7 +265,7 @@
      (eq ~value :name ~(core/str name) ~@opts)))
 
 (defn ref
-  "Create a dynamic ref."
+  "Create a dynamic ref schema."
   [id & {:as opts}]
   (ft/map->RefType
     (assoc opts :id id)))

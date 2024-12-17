@@ -1,7 +1,8 @@
 (ns flanders.core-test
   (:require
    [clojure.test :refer [deftest is]]
-   [flanders.core :as f])
+   [flanders.core :as f]
+   [flanders.examples :as fes])
   (:import
    (flanders.types EitherType MapType RefType SignatureType)))
 
@@ -48,8 +49,7 @@
   (is (thrown? java.lang.AssertionError (f/sig :parameters 10))))
 
 (deftest ref-test
-  (is (instance? RefType (f/ref "foo")))
-  (is (= {"foo" (f/int)}
-         (-> (f/ref "foo")
-             (f/update-registry assoc "foo" (f/int))
-             ::f/registry))))
+  (is (instance? RefType fes/RefExample))
+  (is (= {"foo" (f/int)} (-> fes/RefExample ::f/registry)))
+  (is (instance? RefType fes/RecursiveRefExample))
+  (is (= {"foo" (f/seq-of (f/ref "foo"))} (-> fes/RecursiveRefExample ::f/registry))))

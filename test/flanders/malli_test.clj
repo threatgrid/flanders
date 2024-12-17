@@ -225,3 +225,6 @@
          (-> Example
              fm/->malli
              ms/transform))))
+
+(deftest ref-test
+  )
