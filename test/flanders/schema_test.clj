@@ -162,8 +162,7 @@
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
 
 (deftest ref-test
-  (is (= nil
-         (-> fes/RefExample (fs/->schema {::fs/no-example true}))))
+  (is (= s/Int (-> fes/RefExample (fs/->schema {::fs/no-example true}))))
   (is (= nil
          (-> fes/RecursiveRefExample (fs/->schema {::fs/no-example true}) s/explain))))
 

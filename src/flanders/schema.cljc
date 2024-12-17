@@ -88,7 +88,6 @@
 ;; hmm, but schemas are identified by their dynamic scope. perhaps use a path into
 ;; the schema to identify overrides?
 (defn- create-defs [{::f/keys [registry] :as f} opts]
-  (prn "create-defs" registry (::f/registry opts))
   (when (seq registry)
     (let [temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
                                           ;; helps sort schemas during unit testing.
@@ -109,15 +108,15 @@
           opts (update opts ::f/registry (fnil into {}) (zipmap def-ids (mapv s/recursive def-vars)))]
       (into {} (map (fn [[def-id def-var]]
                       {:pre [(var? def-var)]}
-                      (let [_generated-schema (let [f (get registry def-id)
-                                                    _ (assert f def-id)
-                                                    frm `(s/defschema ~(-> def-var symbol name symbol)
-                                                           ~(str "JSON Schema id: " def-id "\n")
-                                                           ~(->schema f opts))]
-                                                (binding [*ns* temp-ns]
-                                                  (eval frm)))
-                            f (get registry def-id)]
-                        [def-id (s/recursive def-var)])))
+                      [def-id (delay
+                                (let [_generated-schema (let [f (get registry def-id)
+                                                              _ (assert f def-id)
+                                                              frm `(s/defschema ~(-> def-var symbol name symbol)
+                                                                     ~(str "JSON Schema id: " def-id "\n")
+                                                                     ~(->schema f opts))]
+                                                          (binding [*ns* temp-ns]
+                                                            (eval frm)))]
+                                  (s/recursive def-var)))]))
             def-ids->def-vars))))
 
 (defn ->schema
@@ -126,9 +125,7 @@
    (let [f (fn ->schema
              ([node] (->schema node opts))
              ([node opts]
-              (let [opts (-> opts
-                             (update ::f/registry (fnil into {}) (::f/registry node))
-                             (update ::ref->var (fnil into {}) (create-defs node opts)))]
+              (let [opts (update opts ::f/registry (fnil into {}) (::f/registry node))]
                 (->schema' node
                            (fn
                              ([node] (->schema node opts))
@@ -156,11 +153,27 @@
 ;; we have already seen this dynamic scope).
 ;; this mapping is analogous to malli.generator's mapping from dynamic refs
 ;; to test.check generators (in particular, its support for tying the knot for recursive-gen).
-(defn- ref->schema [{:keys [id] :as dll} {::f/keys [registry] :as opts}]
+(defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [seen] :as opts}]
+  (assert (string? id))
   (let [ref-id (fu/identify-ref-type dll opts)]
+    (prn "id" id (hash ref-id) (count (::rec-schema opts)))
     (-> (or (force (get-in opts [::rec-schema ref-id]))
-            (get registry id)
-            (throw (ex-info (format "Cannot resolve ref: %s" id) {})))
+            (let [s (or (get registry id)
+                        (throw (ex-info (format "Cannot resolve ref: %s" id) {})))
+                  d (delay
+                      (let [temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
+                                                            ;; helps sort schemas during unit testing.
+                                                            (stable-sortable-ns-segment)
+                                                            "."
+                                                            (str (random-uuid)))))
+                            def-var (intern temp-ns (def-id->var-sym id))
+                            _generated-schema (let [frm `(s/defschema ~(-> def-var symbol name symbol)
+                                                           ~(str "JSON Schema id: " id "\n")
+                                                           ~(->schema s opts))]
+                                                (binding [*ns* temp-ns]
+                                                  (eval frm)))]
+                        (s/recursive def-var)))]
+              (f s (assoc-in opts [::rec-schema ref-id] d))))
         (describe dll opts))))
 
 (extend-protocol SchemaNode
@@ -288,7 +301,7 @@
      dll
      opts))
 
-  RefType (->schema' [dll _ opts] (ref->schema dll opts)))
+  RefType (->schema' [dll f opts] (ref->schema dll f opts)))
 
 (defn ->schema-at-loc
   "Get the schema for a node, with location awareness"
