@@ -1,6 +1,7 @@
 (ns flanders.example
   (:require
    [flanders.core :as f]
+   [flanders.utils :as fu]
    #?(:clj  [flanders.types :as ft]
       :cljs [flanders.types
              :as ft
@@ -146,15 +147,14 @@
   (->example [{:keys [id default] :as node} f {::f/keys [registry] ::keys [seen] :as opts}]
     (if (some? default)
       default
-      (if (contains? seen id)
-        ;; heuristic to make examples finite but also informative.
-        ;; detecting true cycles with dynamic scope is more involved (see notes in malli.generators)
-        unreachable
-        (f (or (get registry id)
-               (throw (ex-info (format "Ref not in scope: %s" (pr-str id))
-                               {:registry registry
-                                :trace (::f/trace opts)})))
-           (update opts ::seen (fnil conj #{}) id))))))
+      (let [ref-scope-id (fu/identify-ref-type node)]
+        (if (contains? seen ref-scope-id)
+          unreachable ;; recursion detected, one unfolding is sufficient for an example
+          (f (or (get registry id)
+                 (throw (ex-info (format "Ref not in scope: %s" (pr-str id))
+                                 {:registry registry
+                                  :trace (::f/trace opts)})))
+             (update opts ::seen (fnil conj #{}) ref-scope-id)))))))
 
 ;; This is a fast implementation of making an example, but it could be better
 ;; - It could take advantage of generators (to be non-deterministic)
@@ -179,5 +179,5 @@
   ([ddl opts]
    (let [e (->example-tree' ddl opts)]
      (if (unreachable? e)
-       (throw (ex-info (str "Cannot create example, please add default: " (pr-str ddl)) {}))
+       (throw (ex-info (str "Infinite schema detected! " (pr-str ddl)) {}))
        e))))

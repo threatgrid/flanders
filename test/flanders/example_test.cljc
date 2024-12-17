@@ -7,7 +7,7 @@
 (deftest ref-test
   (is (= 10 (-> fes/RefExample fe/->example-tree)))
   (is (= [] (-> fes/RecursiveRefExample fe/->example-tree)))
-  (is (= [:ref {:registry {"a" [:ref {:registry {"a" [:enum 42]}}
-                                "a"]}}
-          "a"]
-         (-> fes/ShadowingRefExample fe/->example-tree))))
+  (is (= 42 (-> fes/ShadowingRefExample fe/->example-tree)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteRefExample fe/->example-tree))))

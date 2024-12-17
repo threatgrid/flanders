@@ -37,3 +37,7 @@
       (f/update-registry assoc "a"
                          (-> (f/ref "a")
                              (f/update-registry assoc "a" (f/enum #{42}))))))
+
+(def InfiniteRefExample
+  (-> (f/ref "a")
+      (f/update-registry assoc "a" (f/ref "a"))))
