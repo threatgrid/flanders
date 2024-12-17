@@ -8,8 +8,6 @@
             [flanders.core :as f]
             [flanders.example :as fe]
             [flanders.json-schema :as sut]
-            [flanders.json-schema.malli :as js->malli]
-            [flanders.json-schema.schema :as js->schema]
             [flanders.malli :as malli]
             [flanders.schema :as schema]
             [malli.core :as m]
@@ -19,7 +17,8 @@
             flanders.json-schema.test-helpers-schema-security-finding))
 
 (def union-example
-  {:title "union", ;;TODO
+  {:$id "something"
+   :title "union", ;;TODO
    :type "object",
    :properties (sorted-map
                  :x {:anyOf [{:type "integer"} {:type "string"}]}
@@ -152,6 +151,7 @@
    [[malli.core-test/Over6 {:json-schema/example 42}] {:type "integer", :format "int64", :minimum 6, :example 42}]])
 
 (deftest ->flanders-test
+  (sut/->flanders union-example nil)
   (is (= (m/form (->malli union-example))
          [:map
           {:closed true, :json-schema/example {:x 10, :y 10}}
@@ -464,7 +464,7 @@
     (spit f (binding [*print-level* nil
                       *print-length* nil
                       *print-namespace-maps* false]
-              (with-out-str (pp/pprint (m/form (js->malli/->malli json nil))))))))
+              (with-out-str (pp/pprint (m/form (->malli json nil))))))))
 
 (comment
   (generate-example-malli "security-finding.edn" @security-finding-json)

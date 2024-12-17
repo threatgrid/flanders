@@ -1,4 +1,5 @@
 (ns flanders.json-schema
+  (:refer-clojure :exclude [type])
   (:require [clojure.string :as str]
             [clojure.set :as set]
             [flanders.core :as f]
@@ -62,7 +63,9 @@
   [v opts]
   (cond
     (map? v) (let [{:strs [description title example
-                           $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary $schema]} (normalize-map v opts)
+                           $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary $schema
+                           type] :as v}
+                   (normalize-map v opts)
                    ;; TODO
                    _ (when $schema (assert (= "http://json-schema.org/draft-07/schema#" $schema) (pr-str $schema)))
                    _ (assert (nil? $anchor)) ;; TODO
@@ -92,8 +95,7 @@
                               (when-not (= 1 (count conjuncts))
                                 (throw (ex-info "Only a single allOf schema supported" {})))
                               (->flanders (first conjuncts) (conj-path opts "allOf" "0")))
-                            (case (some-> (get v "type")
-                                          (-normalize (conj-path opts "type")))
+                            (case (some-> type (-normalize (conj-path opts "type")))
                               "integer" (if-some [enum (seq (get v "enum"))]
                                           (f/enum (mapv long enum))
                                           (f/int))
