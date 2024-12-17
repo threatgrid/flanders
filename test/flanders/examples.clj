@@ -30,3 +30,10 @@
 (def RecursiveRefExample
   (-> (f/ref "foo")
       (f/update-registry assoc "foo" (f/seq-of (f/ref "foo")))))
+
+(def ShadowingRefExample
+  "equivalent to (f/enum 42)"
+  (-> (f/ref "a")
+      (f/update-registry assoc "a"
+                         (-> (f/ref "a")
+                             (f/update-registry assoc "a" (f/enum #{42}))))))

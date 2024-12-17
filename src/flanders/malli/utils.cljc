@@ -7,6 +7,6 @@
   (-> ?schema
       (m/schema opts)
       (m/-update-properties
-        #(-> %
-             (assoc :json-schema/example (example/->example-tree dll opts))
-             (cond-> description (assoc :json-schema/description description))))))
+        #(cond-> %
+           (not (:flanders.malli/no-example opts)) (assoc :json-schema/example (example/->example-tree dll opts))
+           description (assoc :json-schema/description description)))))

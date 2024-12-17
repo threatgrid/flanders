@@ -179,5 +179,5 @@
   ([ddl opts]
    (let [e (->example-tree' ddl opts)]
      (if (unreachable? e)
-       (throw (ex-info (str "Cannot create example, please add default: " (pr-str ddl))))
+       (throw (ex-info (str "Cannot create example, please add default: " (pr-str ddl)) {}))
        e))))

@@ -237,4 +237,8 @@
            :registry
            {"foo" [:sequential [:ref {:json-schema/example []} "foo"]]}}
           "foo"]
-         (-> fes/RecursiveRefExample fm/->malli m/form))))
+         (-> fes/RecursiveRefExample fm/->malli m/form)))
+  (is (= [:ref {:registry {"a" [:ref {:registry {"a" [:enum 42]}}
+                                "a"]}}
+          "a"]
+         (-> fes/ShadowingRefExample (fm/->malli {::fm/no-example true}) m/form))))

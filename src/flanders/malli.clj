@@ -55,7 +55,8 @@
                          (not (:open? key))
                          (seq (:values key)))
           description (some :description [key entry])
-          props (cond-> {:json-schema/example (example/->example-tree type)}
+          props (cond-> {}
+                  (not (::no-example opts)) (assoc :json-schema/example (example/->example-tree type))
                   optional? (assoc :optional true)
                   description (assoc :json-schema/description description))
           default-or-specific-key (->malli (assoc key :key? true))]
@@ -145,6 +146,8 @@
   KeywordType (->malli' [node opts] (maybe-key node opts :keyword))
   NumberType  (->malli' [node opts] (maybe-key node opts number?))
   StringType  (->malli' [node opts] (maybe-key node opts :string))
+
+  ;; malli refs and json schema refs are both dynamically scoped so the mapping is trivial
   RefType (->malli' [{:keys [id] :as node} opts] (-> [:ref id] (describe node opts))))
 
 (def default-opts {:registry (merge (m/default-schemas) (mu/schemas))})
@@ -154,7 +157,7 @@
   with support for :merge (usually via malli.util/schemas)."
   ([node] (->malli node nil))
   ([node opts]
-   (let [opts (or opts default-opts)
+   (let [opts (merge-with into default-opts opts)
          ->malli (fn ->malli
                    ([node] (->malli node opts))
                    ([{::f/keys [registry] :as node} opts]

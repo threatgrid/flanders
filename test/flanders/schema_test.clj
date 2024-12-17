@@ -1,8 +1,9 @@
-(ns #_:clj-kondo/ignore flanders.schema-test
+(ns flanders.schema-test
+  {:clj-kondo/ignore true}
   (:require
    [clojure.test :refer [deftest is testing]]
    [flanders.core :as f]
-   [flanders.examples :refer [Example OptionalKeywordMapEntryExample]]
+   [flanders.examples :as fes :refer [Example OptionalKeywordMapEntryExample]]
    [flanders.schema :as fs]
    [ring.swagger.json-schema :as js]
    [schema.core :as s]
@@ -159,3 +160,23 @@
   (is (= {:example "string" :description "Str"} (->swagger (assoc f/any-str :description "Str"))))
   (is (= {:example "a" :description "Str"} (->swagger (f/enum #{"b" "c" "a"} :description "Str"))))
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
+
+(deftest ref-test
+  (is (= [:ref
+          {:json-schema/example 10,
+           :registry {"foo" [:int {:json-schema/example 10}]}}
+          "foo"]
+         (-> fes/RefExample fs/->schema)))
+  (is (= [:ref
+          {:json-schema/example [],
+           :registry
+           {"foo" [:sequential [:ref {:json-schema/example []} "foo"]]}}
+          "foo"]
+         (-> fes/RecursiveRefExample fs/->schema))))
+
+(deftest dynamic-refs-to-static-defalias-mapping-test
+  (is (= (-> (f/seq-of (f/ref "a"))
+             (f/update-registry assoc "a"
+                                (-> (f/seq-of (f/ref "a"))
+                                    (f/update-registry assoc "a" (f/enum 42)))))))
+  )
