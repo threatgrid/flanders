@@ -162,31 +162,36 @@
   (is (= {:example "a" :description "Str"} (->swagger (f/enum #{"b" "c" "a"} :description "Str"))))
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
 
-(deftest ref-test
-  (is (= s/Int (-> fes/RefExample (fs/->schema {::fs/no-example true}))))
+(deftest ref-form-test
+  (is (= s/Int (-> fes/RefExample fs/->schema)))
   (is (= '{:schema (recursive #'ns-0/foo),
            :vars {ns-0/foo [(recursive #'ns-0/foo)]}}
          (-> fes/RecursiveRefExample
-             (fs/->schema {::fs/no-example true})
+             fs/->schema
              explain-transitive-schema)))
-  (is (= (s/enum 42) (-> fes/ShadowingRefExample (fs/->schema {::fs/no-example true}))))
-  (is (= (s/enum 42) (-> fes/ShadowingMultiRefExample (fs/->schema {::fs/no-example true}))))
+  (is (= (s/enum 42) (-> fes/ShadowingRefExample fs/->schema)))
+  (is (= (s/enum 42) (-> fes/ShadowingMultiRefExample fs/->schema)))
+  ;;FIXME
   (is (= '{:schema (cond-pre (cond-pre (cond-pre (recursive #'ns-0/a) Bool) Int)),
            :vars {ns-0/a (cond-pre (recursive #'ns-0/a) Bool)}}
-         (-> fes/InnerRecursionRefExample (fs/->schema {::fs/no-example true})
+         (-> fes/InnerRecursionRefExample
+             fs/->schema
              explain-transitive-schema)))
   (is (thrown-with-msg? Exception
                         #"Ref not in scope: \"a\""
                         (-> fes/UnscopedRefExample fs/->schema)))
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
-                        (-> fes/InfiniteRefExample fs/->schema)))
-  )
+                        (-> fes/InfiniteRefExample fs/->schema))))
 
-(deftest dynamic-refs-to-static-defalias-mapping-test
-  (is (= nil
-         (-> (f/seq-of (f/ref "a"))
-             (f/update-registry assoc "a"
-                                (-> (f/seq-of (f/ref "a"))
-                                    (f/update-registry assoc "a" (f/enum 42)))))))
-  )
+(deftest ref-validation-test
+  (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) [])))
+  (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) nil)))
+  (is (= "(not (sequential? 1))" (pr-str (s/check (fs/->schema fes/RecursiveRefExample) 1))))
+  (is (s/check (fs/->schema fes/InnerRecursionRefExample) 4))
+  (is (thrown-with-msg? Exception
+                        #"Ref not in scope: \"a\""
+                        (-> fes/UnscopedRefExample fs/->schema)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteRefExample fs/->schema))))
