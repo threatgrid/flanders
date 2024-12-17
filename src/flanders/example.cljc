@@ -144,7 +144,6 @@
 
   RefType
   (->example [{:keys [id default] :as node} f {::f/keys [registry] ::keys [seen] :as opts}]
-    (prn "RefType" id (keys registry) seen)
     (if (some? default)
       default
       (if (contains? seen id)
@@ -152,9 +151,9 @@
         ;; detecting true cycles with dynamic scope is more involved (see notes in malli.generators)
         unreachable
         (f (or (get registry id)
-               (throw (ex-info (format "Ref not in scope: %s (%s)" (pr-str id)
-                                       (vec (keys registry)))
-                               {:registry registry})))
+               (throw (ex-info (format "Ref not in scope: %s" (pr-str id))
+                               {:registry registry
+                                :trace (::f/trace opts)})))
            (update opts ::seen (fnil conj #{}) id))))))
 
 ;; This is a fast implementation of making an example, but it could be better
@@ -165,11 +164,9 @@
   "Get a JSON example for a DDL node"
   ([ddl] (->example-tree' ddl nil))
   ([ddl opts]
-   (prn "->example-tree'" (class ddl) (pr-str ddl))
-   (prn "^^ pr-str" (pr-str ddl))
-   (prn "^^ registry" (::f/registry ddl))
-   (prn "^^ opts registry" (::f/registry opts))
-   (let [opts (update opts ::f/registry (fnil into {}) (::f/registry ddl))]
+   (let [opts (-> opts
+                  (update ::f/registry (fnil into {}) (::f/registry ddl))
+                  (update ::f/trace (fnil conj []) (gensym "flanders.example")))]
      (->example ddl
                 (fn
                   ([ddl] (->example-tree' ddl opts))

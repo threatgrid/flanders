@@ -451,6 +451,7 @@
 (comment
   (sut/->flanders refs-json-schema-example nil)
   (->malli refs-json-schema-example)
+  (->schema refs-json-schema-example)
   )
 
 (defn generate-example-malli [file json]

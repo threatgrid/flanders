@@ -161,6 +161,7 @@
                     (let [vopts (volatile! nil)
                           opts (-> opts
                                    (update ::f/registry (fnil into {}) registry)
+                                   (update ::f/trace (fnil conj []) (gensym "flanders.malli"))
                                    (assoc ::->malli (fn
                                                       ([node] (->malli node @vopts))
                                                       ([node opts] (->malli node opts)))))

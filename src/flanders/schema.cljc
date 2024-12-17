@@ -98,17 +98,18 @@
           _ (assert (or (empty? def-vars)
                         (apply distinct? def-vars)))
           def-ids->def-vars (zipmap def-ids def-vars)
-          opts (update opts ::f/registry (fnil into {}) (zipmap def-ids (mapv s/recursive def-vars)))]
-      (into {} (map (fn [[def-id def-var]]
-                      {:pre [(var? def-var)]}
-                      [def-id (let [f (get registry def-id)
-                                    _ (assert f def-id)
-                                    frm `(s/defschema ~(-> def-var symbol name symbol)
-                                           ~(str "JSON Schema id: " def-id "\n")
-                                           ~(->schema f opts))]
-                                (binding [*ns* temp-ns]
-                                  (eval frm)))]))
-            def-ids->def-vars))))
+          opts (update opts ::f/registry (fnil into {}) (zipmap def-ids (mapv s/recursive def-vars)))
+          _ (into {} (map (fn [[def-id def-var]]
+                            {:pre [(var? def-var)]}
+                            [def-id (let [f (get registry def-id)
+                                          _ (assert f def-id)
+                                          frm `(s/defschema ~(-> def-var symbol name symbol)
+                                                 ~(str "JSON Schema id: " def-id "\n")
+                                                 ~(->schema f opts))]
+                                      (binding [*ns* temp-ns]
+                                        (eval frm)))]))
+                  def-ids->def-vars)]
+      def-ids->def-vars)))
 
 (defn ->schema
   ([node] (->schema' node ->schema nil))
@@ -116,7 +117,9 @@
    (let [f (fn ->schema
              ([node] (->schema node opts))
              ([node opts]
-              (let [opts (update opts ::f/registry (fnil into {}) (create-defs node opts))]
+              (let [opts (-> opts
+                             (update ::f/registry (fnil into {}) (::f/registry node))
+                             (update ::ref->var (fnil into {}) (create-defs node opts)))]
                 (->schema' node
                            (fn
                              ([node] (->schema node opts))
@@ -125,7 +128,7 @@
      (f node opts))))
 
 #?(:clj (defn ->schema+clean
-          "Like ->schema except makes allocated memory collectable if result is garbage collected."
+          "Like ->schema except makes allocated memory collectable if result is eligible for garbage collection."
           [json-schema opts]
           (let [gc (atom [])
                 _ (assert (not (::gc opts)))
@@ -264,9 +267,10 @@
      opts))
 
   RefType
-  (->schema' [{:keys [id] :as dll} _ {::f/keys [registry] :as opts}]
-    (-> (or (get registry id)
-            (throw (ex-info (format "Cannot resolve ref: %s" id))))
+  (->schema' [{:keys [id] :as dll} _ {::keys [ref->var] ::f/keys [registry] :as opts}]
+    (-> (s/recursive
+          (or (get ref->var id)
+              (throw (ex-info (format "Cannot resolve ref: %s" id) {}))))
         (describe dll opts))))
 
 (defn ->schema-at-loc
