@@ -15,7 +15,6 @@
    [flanders.predicates :as fp]
    [flanders.schema.utils :refer [describe]]
    [flanders.utils :as fu]
-   [flanders.example :as example]
    [flanders.protocols :as prots]
    [schema-tools.core :as st]
    [schema.core :as s])

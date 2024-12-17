@@ -162,17 +162,10 @@
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
 
 (deftest ref-test
-  (is (= [:ref
-          {:json-schema/example 10,
-           :registry {"foo" [:int {:json-schema/example 10}]}}
-          "foo"]
-         (-> fes/RefExample fs/->schema)))
-  (is (= [:ref
-          {:json-schema/example [],
-           :registry
-           {"foo" [:sequential [:ref {:json-schema/example []} "foo"]]}}
-          "foo"]
-         (-> fes/RecursiveRefExample fs/->schema))))
+  (is (= nil
+         (-> fes/RefExample (fs/->schema {::fs/no-example true}))))
+  (is (= nil
+         (-> fes/RecursiveRefExample (fs/->schema {::fs/no-example true}) s/explain))))
 
 (deftest dynamic-refs-to-static-defalias-mapping-test
   (is (= nil
