@@ -98,10 +98,7 @@
           _ (assert (or (empty? def-vars)
                         (apply distinct? def-vars)))
           def-ids->def-vars (zipmap def-ids def-vars)
-          opts (update opts ::f/registry (fnil into {})
-                       (zipmap def-ids (mapv (fn [v]
-                                               (s/recursive v))
-                                             def-vars)))]
+          opts (update opts ::f/registry (fnil into {}) (zipmap def-ids (mapv s/recursive def-vars)))]
       (into {} (map (fn [[def-id def-var]]
                       [def-id (let [f (get registry def-id)
                                     _ (assert f def-id)
