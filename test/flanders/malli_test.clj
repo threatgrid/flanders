@@ -1,7 +1,7 @@
 (ns flanders.malli-test
   (:require [clojure.test :refer [deftest is testing]]
             [clojure.walk :as w]
-            [flanders.examples
+            [flanders.examples :as fes
              :refer [Example
                      OptionalKeywordMapEntryExample]]
             [flanders.core :as f]
@@ -227,4 +227,14 @@
              ms/transform))))
 
 (deftest ref-test
-  )
+  (is (= [:ref
+          {:json-schema/example 10,
+           :registry {"foo" [:int {:json-schema/example 10}]}}
+          "foo"]
+         (-> fes/RefExample fm/->malli m/form)))
+  (is (= [:ref
+          {:json-schema/example [],
+           :registry
+           {"foo" [:sequential [:ref {:json-schema/example []} "foo"]]}}
+          "foo"]
+         (-> fes/RecursiveRefExample fm/->malli m/form))))
