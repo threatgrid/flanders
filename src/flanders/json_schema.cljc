@@ -79,6 +79,7 @@
                                                  (or $id parent-id
                                                      ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
                                                      (throw (ex-info "Must supply $id" {})))))
+                   $defs (some-> $defs (normalize-map opts) not-empty)
                    local-defs (not-empty
                                 (into {} (map (fn [[k v]]
                                                 (let [opts (conj-path opts "$defs" k)]

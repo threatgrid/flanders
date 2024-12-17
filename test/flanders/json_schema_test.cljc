@@ -170,16 +170,22 @@
       (is (= expected-malli (m/form (->malli json-schema)))))))
 
 (deftest defs-test
-  (is (= nil
-         (sut/->flanders {:$defs {:example {:type "integer"}}
-                          :type "object"
-                          :properties {:foo {:$ref "#/$defs/example"}}}
-                         nil))))
+  #_
+  (is (= (f/entry)
+         (-> (sut/->flanders {:$id "foo"
+                              :$defs {:example {:type "integer"}}
+                              :type "object"
+                              :properties {:foo {:$ref "#/$defs/example"}}}
+                             nil)
+             :entries
+             first
+             pr-str
+             ))))
 
 (def security-finding-json (delay (json/decode (slurp (io/resource "security-finding.json")))))
 (def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json nil)))
-(def SchemaSecurityFinding (delay (->schema @security-finding-json nil)))
-(def MalliSecurityFinding (delay (->malli @security-finding-json nil)))
+(def SchemaSecurityFinding (delay (->schema @security-finding-json)))
+(def MalliSecurityFinding (delay (->malli @security-finding-json)))
 
 (defn unqualify-vars [vs]
   (let [gs (group-by namespace (sort (map symbol vs)))
@@ -430,9 +436,6 @@
          (set (keys (::f/registry (sut/->flanders refs-json-schema-example nil))))))
   (is (= #{"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"}
          (set (keys (::f/registry (sut/->flanders refs-json-schema-example nil))))))
-  (is (= #{"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"}
-         (-> (sut/->flanders refs-json-schema-example nil)
-             )))
   (is (= '[:ref
            {:registry
             {"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"

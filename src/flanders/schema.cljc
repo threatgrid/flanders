@@ -100,9 +100,10 @@
           def-ids->def-vars (zipmap def-ids def-vars)
           opts (update opts ::f/registry (fnil into {}) (zipmap def-ids (mapv s/recursive def-vars)))]
       (into {} (map (fn [[def-id def-var]]
+                      {:pre [(var? def-var)]}
                       [def-id (let [f (get registry def-id)
                                     _ (assert f def-id)
-                                    frm `(s/defschema ~(-> def-var name symbol)
+                                    frm `(s/defschema ~(-> def-var symbol name symbol)
                                            ~(str "JSON Schema id: " def-id "\n")
                                            ~(->schema f opts))]
                                 (binding [*ns* temp-ns]
