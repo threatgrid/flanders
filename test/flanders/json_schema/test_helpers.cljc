@@ -42,19 +42,19 @@
                   s)
     @vars))
 
-(defn unqualify-recursive-vars-from-schema-explain [s]
-  (let [vs (collect-recursive-vars-from-schema s)
-        rename (unqualify-vars vs)]
-    (walk/postwalk (fn [v]
-                     (if (and (seq? v)
-                              (= 2 (count v))
-                              (= 'var (first v))
-                              (qualified-symbol? (second v)))
-                       ;;unqualify recursive vars
-                       (let [vsym (second v)]
-                         (list 'var (or (rename vsym) (throw (ex-info (str "Unknown var " vsym) {:rename rename})))))
-                       v))
-                   (s/explain s))))
+(defn unqualify-recursive-vars-from-schema-explain
+  ([s] (unqualify-recursive-vars-from-schema-explain s (unqualify-vars (collect-recursive-vars-from-schema s))))
+  ([s rename]
+   (walk/postwalk (fn [v]
+                    (if (and (seq? v)
+                             (= 2 (count v))
+                             (= 'var (first v))
+                             (qualified-symbol? (second v)))
+                      ;;unqualify recursive vars
+                      (let [vsym (second v)]
+                        (list 'var (or (rename vsym) (throw (ex-info (str "Unknown var " vsym) {:rename rename})))))
+                      v))
+                  (s/explain s))))
 
 ;; walks s/explain, schema walk might be more accurate
 (defn collect-transitive-recursive-vars-from-schema [s]
@@ -86,6 +86,15 @@
               *print-length* nil
               *print-namespace-maps* false]
       (pp/pprint v))))
+
+(defn explain-transitive-schema [s]
+  (let [transitive-var->uniquified (unqualify-vars (collect-transitive-recursive-vars-from-schema s))]
+    (prn transitive-var->uniquified)
+    {:schema (unqualify-recursive-vars-from-schema-explain s transitive-var->uniquified)
+     :vars (into {} (map (fn [[v uniq]]
+                           (prn v uniq)
+                           [uniq (unqualify-recursive-vars-from-schema-explain @(find-var v) transitive-var->uniquified)]))
+                 transitive-var->uniquified)}))
 
 (defn generate-expected-schema-results [file nsym s]
   (let [f (io/file file)]

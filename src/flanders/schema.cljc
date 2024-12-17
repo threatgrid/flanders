@@ -80,57 +80,12 @@
         (println "WARNING: Please increment max-nano-digits for unit test stability")))
     (format nano-padder n)))
 
-;; TODO populate ::rec-schema
-;; lazily create defalias's? only at true recursion points?
-;; might not work well with generator overrides.
-;; though, the user should ideally be only caring about the JSON Schema ref
-;; names, can we map them automatically to generator overrides?
-;; hmm, but schemas are identified by their dynamic scope. perhaps use a path into
-;; the schema to identify overrides?
-(defn- create-defs [{::f/keys [registry] :as f} opts]
-  (when (seq registry)
-    (let [temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
-                                          ;; helps sort schemas during unit testing.
-                                          (stable-sortable-ns-segment)
-                                          "."
-                                          (str (random-uuid)))))
-          _ (alter-meta! temp-ns assoc :doc (str "Helper namespace to generate the following JSON Schema:\n"
-                                                 #_ ;;TODO find original schema
-                                                 (with-out-str (pp/pprint json-schema))))
-          _ (run! #(ns-unmap temp-ns %) (keys (ns-map temp-ns)))
-          _ (some-> (::gc opts) (swap! (fnil conj []) conj #(remove-ns temp-ns)))
-          nstr (name (ns-name temp-ns))
-          def-ids (sort (keys registry))
-          def-vars (mapv #(intern temp-ns (def-id->var-sym %)) def-ids)
-          _ (assert (or (empty? def-vars)
-                        (apply distinct? def-vars)))
-          def-ids->def-vars (zipmap def-ids def-vars)
-          opts (update opts ::f/registry (fnil into {}) (zipmap def-ids (mapv s/recursive def-vars)))]
-      (into {} (map (fn [[def-id def-var]]
-                      {:pre [(var? def-var)]}
-                      [def-id (delay
-                                (let [_generated-schema (let [f (get registry def-id)
-                                                              _ (assert f def-id)
-                                                              frm `(s/defschema ~(-> def-var symbol name symbol)
-                                                                     ~(str "JSON Schema id: " def-id "\n")
-                                                                     ~(->schema f opts))]
-                                                          (binding [*ns* temp-ns]
-                                                            (eval frm)))]
-                                  (s/recursive def-var)))]))
-            def-ids->def-vars))))
-
 (defn ->schema
   ([node] (->schema node nil))
   ([node opts]
-   (let [f (fn ->schema
-             ([node] (->schema node opts))
-             ([node opts]
-              (let [opts (update opts ::f/registry (fnil into {}) (::f/registry node))]
-                (->schema' node
-                           (fn
-                             ([node] (->schema node opts))
-                             ([node opts] (->schema node opts)))
-                           opts))))]
+   (let [f (fn ->schema [node opts]
+             (let [opts (update opts ::f/registry (fnil into {}) (::f/registry node))]
+               (->schema' node ->schema opts)))]
      (f node opts))))
 
 #?(:clj (defn ->schema+clean
@@ -149,17 +104,16 @@
 
 ;; we need to map json schema's dynamically scoped refs onto s/defschema.
 ;; we accomplish this by unfolding refs. each unique level of refs has its
-;; own set of defalias's. we tie the knot when a loop is detected (when 
+;; own set of defschema's. we tie the knot when a loop is detected (when 
 ;; we have already seen this dynamic scope).
 ;; this mapping is analogous to malli.generator's mapping from dynamic refs
 ;; to test.check generators (in particular, its support for tying the knot for recursive-gen).
 (defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [seen] :as opts}]
   (assert (string? id))
   (let [ref-id (fu/identify-ref-type dll opts)]
-    (prn "id" id (hash ref-id) (count (::rec-schema opts)))
     (-> (or (force (get-in opts [::rec-schema ref-id]))
             (let [s (or (get registry id)
-                        (throw (ex-info (format "Cannot resolve ref: %s" id) {})))
+                        (throw (ex-info (format "Ref not in scope: %s" (pr-str id)) {})))
                   d (delay
                       (let [temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
                                                             ;; helps sort schemas during unit testing.
@@ -167,13 +121,17 @@
                                                             "."
                                                             (str (random-uuid)))))
                             def-var (intern temp-ns (def-id->var-sym id))
+                            rec-schema (s/recursive def-var)
                             _generated-schema (let [frm `(s/defschema ~(-> def-var symbol name symbol)
                                                            ~(str "JSON Schema id: " id "\n")
-                                                           ~(->schema s opts))]
+                                                           ~(->schema s (assoc-in opts [::rec-schema ref-id] (delay rec-schema))))]
                                                 (binding [*ns* temp-ns]
                                                   (eval frm)))]
-                        (s/recursive def-var)))]
-              (f s (assoc-in opts [::rec-schema ref-id] d))))
+                        (s/recursive def-var)))
+                  res (f s (assoc-in opts [::rec-schema ref-id] d))]
+              (if (realized? d)
+                @d
+                res)))
         (describe dll opts))))
 
 (extend-protocol SchemaNode
@@ -182,14 +140,14 @@
 
   EitherType
   (->schema' [{:keys [choices tests] :as dll} f opts]
-    (-> (let [choice-schemas (map f choices)]
+    (-> (let [choice-schemas (map #(f % opts) choices)]
           (if (empty? tests)
             (apply s/cond-pre choice-schemas)
             (apply s/conditional (mapcat vector tests choice-schemas))))
         (describe dll opts)))
 
   MapEntry
-  (->schema' [{:keys [key type required?] :as entry} f _]
+  (->schema' [{:keys [key type required?] :as entry} f opts]
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
     (let [description (some :description [key entry type])
@@ -199,12 +157,13 @@
                  (seq (:values key)))
           s/optional-key
           identity)
-        (f (assoc key :key? true)))
+        (f (assoc key :key? true) opts))
        (f (cond-> type
             ;; TODO ideally we would attach these to the key, but this is unreliable.
             ;; for starters, st/optional-keys and any related operations clears the metadata.
             description (assoc :description description)
-            (some? default) (assoc :default default)))]))
+            (some? default) (assoc :default default))
+          opts)]))
 
   MapType
   (->schema' [{:keys [entries] :as dll} f opts]
@@ -213,30 +172,30 @@
        (reduce (fn [m [k v]]
                  (st/assoc m k v))
                {}
-               (map f entries))
+               (map #(f % opts) entries))
        (when (:name dll)
          {:name (symbol (:name dll))}))
      dll
      opts))
 
   ParameterListType
-  (->schema' [{:keys [parameters]} f _]
-    (mapv f parameters))
+  (->schema' [{:keys [parameters]} f opts]
+    (mapv #(f % opts) parameters))
 
   SequenceOfType
   (->schema' [{:keys [type] :as dll} f opts]
-    (describe [(f type)] dll opts))
+    (describe [(f type opts)] dll opts))
 
   SetOfType
   (->schema' [{:keys [type] :as dll} f opts]
-    (describe #{(f type)} dll opts))
+    (describe #{(f type opts)} dll opts))
 
   SignatureType
   (->schema' [{:keys [parameters rest-parameter return] :as dll} f opts]
-    (-> (let [parameters (f parameters)]
-          (s/make-fn-schema (f return)
+    (-> (let [parameters (f parameters opts)]
+          (s/make-fn-schema (f return opts)
                             (if (some? rest-parameter)
-                              [(conj parameters [(f rest-parameter)])]
+                              [(conj parameters [(f rest-parameter opts)])]
                               [parameters])))
         (describe dll opts)))
 

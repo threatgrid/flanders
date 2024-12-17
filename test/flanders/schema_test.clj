@@ -6,6 +6,7 @@
    [flanders.examples :as fes :refer [Example OptionalKeywordMapEntryExample]]
    [flanders.schema :as fs]
    [ring.swagger.json-schema :as js]
+   [flanders.json-schema.test-helpers :refer [unqualify-recursive-vars-from-schema-explain explain-transitive-schema]]
    [schema.core :as s]
    [schema-tools.core :as st]))
 
@@ -163,8 +164,24 @@
 
 (deftest ref-test
   (is (= s/Int (-> fes/RefExample (fs/->schema {::fs/no-example true}))))
-  (is (= nil
-         (-> fes/RecursiveRefExample (fs/->schema {::fs/no-example true}) s/explain))))
+  (is (= '{:schema (recursive #'ns-0/foo),
+           :vars {ns-0/foo [(recursive #'ns-0/foo)]}}
+         (-> fes/RecursiveRefExample
+             (fs/->schema {::fs/no-example true})
+             explain-transitive-schema)))
+  (is (= (s/enum 42) (-> fes/ShadowingRefExample (fs/->schema {::fs/no-example true}))))
+  (is (= (s/enum 42) (-> fes/ShadowingMultiRefExample (fs/->schema {::fs/no-example true}))))
+  (is (= '{:schema (cond-pre (cond-pre (cond-pre (recursive #'ns-0/a) Bool) Int)),
+           :vars {ns-0/a (cond-pre (recursive #'ns-0/a) Bool)}}
+         (-> fes/InnerRecursionRefExample (fs/->schema {::fs/no-example true})
+             explain-transitive-schema)))
+  (is (thrown-with-msg? Exception
+                        #"Ref not in scope: \"a\""
+                        (-> fes/UnscopedRefExample fs/->schema)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteRefExample fs/->schema)))
+  )
 
 (deftest dynamic-refs-to-static-defalias-mapping-test
   (is (= nil
