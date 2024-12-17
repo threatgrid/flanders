@@ -1,9 +1,16 @@
 (ns flanders.json-schema.test-helpers
   (:require [clojure.walk :as walk]
             [schema-tools.walk :as stw]
+            [flanders.json-schema :as fjs]
             [clojure.pprint :as pp]
+            [flanders.schema :as schema]
+            [flanders.malli :as malli]
+            [malli.core :as m]
             [clojure.java.io :as io]
             [schema.core :as s]))
+
+(defn ->malli [v] (malli/->malli (fjs/->flanders v nil) nil))
+(defn ->schema [v] (#?(:clj schema/->schema+clean :default schema/->schema) (fjs/->flanders v nil) nil))
 
 (defn unqualify-vars [vs]
   (let [gs (group-by namespace (sort (map symbol vs)))
@@ -108,8 +115,79 @@
               ))
     (require nsym :reload)))
 
-(comment
-  (generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
-                                    'flanders.json-schema.test-helpers-schema-security-finding
-                                    @SchemaSecurityFinding)
-  )
+(defn generate-example-malli [file json]
+  (let [f (io/file file)]
+    (io/make-parents f)
+    (spit f (binding [*print-level* nil
+                      *print-length* nil
+                      *print-namespace-maps* false]
+              (with-out-str (pp/pprint (m/form (->malli json nil))))))))
+
+;; examples
+
+(def example-security-finding
+  {:severity_id 0,
+   :category_uid 10,
+   :status_id 0,
+   :data_sources ["string"],
+   :api {:operation "foo"} ,
+   :unmapped {} ,
+   :class_name "string",
+   :osint [],
+   :type_uid 10,
+   :start_time_dt "string",
+   :impact_score 10,
+   :impact_id 0,
+   :enrichments [],
+   :nist ["string"],
+   :cloud {:provider "foo"} ,
+   :time 10,
+   :evidence "anything",
+   :process {} ,
+   :start_time 10,
+   :risk_level "string",
+   :observables [],
+   :risk_score 10,
+   :time_dt "string",
+   :duration 10,
+   :state "string",
+   :class_uid 10,
+   :kill_chain [],
+   :end_time 10,
+   :category_name "string",
+   :analytic {:type_id 0} ,
+   :activity_name "string",
+   :confidence_score 10,
+   :timezone_offset 10,
+   :status "string",
+   :count 10,
+   :severity "string",
+   :cis_csc [],
+   :status_detail "string",
+   :end_time_dt "string",
+   :status_code "string",
+   :attacks [],
+   :finding {:title "foo" :uid "foo"} ,
+   :raw_data "string",
+   :confidence "string",
+   :activity_id 0,
+   :resources [],
+   :type_name "string",
+   :confidence_id 0,
+   :impact "string",
+   :metadata {:product {:vendor_name "asdf"} :version "foo"} ,
+   :compliance {:standards []},
+   :message "string",
+   :vulnerabilities [],
+   :malware [],
+   :state_id 0,
+   :risk_level_id 0})
+
+(def union-example
+  {:$id "something"
+   :title "union", ;;TODO
+   :type "object",
+   :properties (sorted-map
+                 :x {:anyOf [{:type "integer"} {:type "string"}]}
+                 :y {:type "integer"}),
+   :required [:x :y]})

@@ -3,7 +3,7 @@
    [clojure.test :refer [deftest is]]
    [flanders.core :as f])
   (:import
-   (flanders.types EitherType MapType SignatureType)))
+   (flanders.types EitherType MapType RefType SignatureType)))
 
 #_{:clj-kondo/ignore [:inline-def :clojure-lsp/unused-public-var]}
 (deftest def-entity-type-test
@@ -46,3 +46,10 @@
 (deftest sig-test
   (is (instance? SignatureType (f/sig)))
   (is (thrown? java.lang.AssertionError (f/sig :parameters 10))))
+
+(deftest ref-test
+  (is (instance? RefType (f/ref "foo")))
+  (is (= {"foo" (f/int)}
+         (-> (f/ref "foo")
+             (f/update-registry assoc "foo" (f/int))
+             ::f/registry))))

@@ -264,6 +264,13 @@
   `(def ~name
      (eq ~value :name ~(core/str name) ~@opts)))
 
-(defn ref [id & {:as opts}]
+(defn ref
+  "Create a dynamic ref."
+  [id & {:as opts}]
   (ft/map->RefType
     (assoc opts :id id)))
+
+(defn update-registry
+  "Update the registry of a schema"
+  [m f & args]
+  (update m ::registry #(apply f (or % {}) args)))
