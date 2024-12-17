@@ -33,7 +33,7 @@
   (-> (f/ref "foo")
       (f/update-registry assoc "foo" (f/seq-of (f/ref "foo")))))
 
-;; see explanation in flanders.utils
+;; see explanation in flanders.utils (first schema)
 (def ShadowingRefExample
   "equivalent to (f/enum 42), but using multiple levels of shadowing refs"
   (-> (f/ref "a")
@@ -41,7 +41,7 @@
                          (-> (f/ref "a")
                              (f/update-registry assoc "a" (f/enum #{42}))))))
 
-;; see explanation in flanders.utils
+;; see explanation in flanders.utils (second schema)
 (def ShadowingMultiRefExample
   "equivalent to (f/enum 42), but using multiple levels of shadowing refs that
   create multiple levels of dynamic scope whose registries have the same keys
@@ -53,6 +53,19 @@
                                  (f/update-registry assoc
                                                     "a" (f/ref "b")
                                                     "b" (f/enum #{42}))))))
+
+;; see explanation in flanders.utils (third schema)
+(def InnerRecursionRefExample
+  (-> (f/either :choices [(-> (f/either :choices [(f/ref "a") (f/ref "b")])
+                              (f/update-registry assoc
+                                                 "b" (f/int)))])
+      (f/update-registry assoc
+                         "a" (-> (f/either :choices [(f/ref "a") (f/ref "b")])
+                                 (f/update-registry assoc
+                                                    "b" (f/bool))))))
+
+(def UnscopedRefExample
+  (f/ref "a"))
 
 (def InfiniteRefExample
   "uses refs to create a schema that expands infinitely with no base cases."
