@@ -1,6 +1,8 @@
-(ns #_:clj-kondo/ignore flanders.schema
+(ns flanders.schema
+  {:clj-kondo/ignore true}
   (:refer-clojure :exclude [type key])
   (:require
+   [clojure.string :as str]
    #?(:clj  [clojure.core.match :refer [match]]
       :cljs [cljs.core.match :refer-macros [match]])
    #?(:clj  [flanders.types]
@@ -34,8 +36,81 @@
             SignatureType
             StringType])))
 
+(declare ->schema)
+
 (defprotocol SchemaNode
   (->schema' [node f opts]))
+
+(defn def-id->var-sym [defstr]
+  (symbol (namespace-munge (munge (str/replace defstr "." "_DOT_")))))
+
+(comment
+  (= ;"Logger"
+     'https_COLON__SLASH__SLASH_schema.ocsf.io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_logger
+     (def-id->var-sym
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/"
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/logger"))
+  (= "KeyboardInfo"
+     (def-id->var-sym
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/"
+       "https://schema.ocsf.io/schema/classes/security_finding/$defs/keyboard_info"))
+  )
+
+;; stable ns sorting for tests
+
+(def max-nano-digits 18)
+(def max-nano (long (Math/pow 10 max-nano-digits)))
+(def nano-padder (str "%0" max-nano-digits "d"))
+
+(defn unique-nano []
+  (let [v (System/nanoTime)]
+    (loop []
+      (let [v' (System/nanoTime)]
+        (if (= v (System/nanoTime))
+          (recur)
+          v')))))
+
+;; assumes schema conversion is single threaded
+;; another idea is hash the $defs and use that in the ns name
+(defn stable-sortable-ns-segment []
+  (let [n (unique-nano)]
+    (when (>= n max-nano)
+      (binding [*err* *out*]
+        ;; just affects unit tests. also won't happen for a long time
+        (println "WARNING: Please increment max-nano-digits for unit test stability")))
+    (format nano-padder n)))
+
+(defn- create-defs [{::f/keys [registry] :as f} opts]
+  (when (seq registry)
+    (let [temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
+                                          ;; helps sort schemas during unit testing.
+                                          (stable-sortable-ns-segment)
+                                          "."
+                                          (str (random-uuid)))))
+          _ (alter-meta! temp-ns assoc :doc (str "Helper namespace to generate the following JSON Schema:\n"
+                                                 #_ ;;TODO find original schema
+                                                 (with-out-str (pp/pprint json-schema))))
+          _ (run! #(ns-unmap temp-ns %) (keys (ns-map temp-ns)))
+          _ (some-> (::gc opts) (swap! (fnil conj []) conj #(remove-ns temp-ns)))
+          nstr (name (ns-name temp-ns))
+          def-ids (sort (keys registry))
+          def-vars (mapv #(intern temp-ns (def-id->var-sym %)) def-ids)
+          _ (assert (or (empty? def-vars)
+                        (apply distinct? def-vars)))
+          def-ids->def-vars (zipmap def-ids def-vars)
+          opts (update opts ::f/registry (fnil into {})
+                       (zipmap def-ids (mapv (fn [v]
+                                               (s/recursive v))
+                                             def-vars)))]
+      (into {} (map (fn [[def-id def-var]]
+                      [def-id (let [f (get registry def-id)
+                                    _ (assert f def-id)
+                                    frm `(s/defschema ~(-> def-var name symbol)
+                                           ~(str "JSON Schema id: " def-id "\n")
+                                           ~(->schema f opts))]
+                                (binding [*ns* temp-ns]
+                                  (eval frm)))]))
+            def-ids->def-vars))))
 
 (defn ->schema
   ([node] (->schema' node ->schema nil))
@@ -43,7 +118,7 @@
    (let [f (fn ->schema
              ([node] (->schema node opts))
              ([node opts]
-              (let [opts (update opts ::f/registry (fnil into {}) (::f/registry node))]
+              (let [opts (update opts ::f/registry (fnil into {}) (create-defs node opts))]
                 (->schema' node
                            (fn
                              ([node] (->schema node opts))
@@ -61,10 +136,10 @@
   ;; Branches
 
   EitherType
-  (->schema' [{:keys [choices tests] :as dll} f _]
+  (->schema' [{:keys [choices tests] :as dll} f opts]
     (-> (let [choice-schemas (map f choices)]
           (apply s/conditional (mapcat vector tests choice-schemas)))
-        (describe dll)))
+        (describe dll opts)))
 
   MapEntry
   (->schema' [{:keys [key type required?] :as entry} f _]
@@ -85,7 +160,7 @@
             (some? default) (assoc :default default)))]))
 
   MapType
-  (->schema' [{:keys [entries] :as dll} f _]
+  (->schema' [{:keys [entries] :as dll} f opts]
     (describe
      (with-meta
        (reduce (fn [m [k v]]
@@ -94,58 +169,61 @@
                (map f entries))
        (when (:name dll)
          {:name (symbol (:name dll))}))
-     dll))
+     dll
+     opts))
 
   ParameterListType
   (->schema' [{:keys [parameters]} f _]
     (mapv f parameters))
 
   SequenceOfType
-  (->schema' [{:keys [type] :as dll} f _]
-    (describe [(f type)] dll))
+  (->schema' [{:keys [type] :as dll} f opts]
+    (describe [(f type)] dll opts))
 
   SetOfType
-  (->schema' [{:keys [type] :as dll} f _]
-    (describe #{(f type)} dll))
+  (->schema' [{:keys [type] :as dll} f opts]
+    (describe #{(f type)} dll opts))
 
   SignatureType
-  (->schema' [{:keys [parameters rest-parameter return] :as dll} f _]
+  (->schema' [{:keys [parameters rest-parameter return] :as dll} f opts]
     (-> (let [parameters (f parameters)]
           (s/make-fn-schema (f return)
                             (if (some? rest-parameter)
                               [(conj parameters [(f rest-parameter)])]
                               [parameters])))
-        (describe dll)))
+        (describe dll opts)))
 
   ;; Leaves
 
   AnythingType
-  (->schema' [dll _ _]
-    (describe s/Any dll))
+  (->schema' [dll _ opts]
+    (describe s/Any dll opts))
 
   BooleanType
-  (->schema' [{:keys [open? default] :as dll} _ _]
+  (->schema' [{:keys [open? default] :as dll} _ opts]
     (describe
      (match [open? default]
             [true  _] s/Bool
             [_     d] (s/enum d))
-     dll))
+     dll
+     opts))
 
   InstType
-  (->schema' [dll _ _]
-    (describe s/Inst dll))
+  (->schema' [dll _ opts]
+    (describe s/Inst dll opts))
 
   IntegerType
-  (->schema' [{:keys [open? values] :as dll} _ _]
+  (->schema' [{:keys [open? values] :as dll} _ opts]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Int
             [_     nil] s/Int
             :else       (apply s/enum values))
-     dll))
+     dll
+     opts))
 
   KeywordType
-  (->schema' [{:keys [key? open? values] :as dll} _ _]
+  (->schema' [{:keys [key? open? values] :as dll} _ opts]
     (let [kw-schema
           (match [key? open? (seq values)]
                  [_    true  _         ] s/Keyword
@@ -154,30 +232,33 @@
                  :else                   (apply s/enum values))]
       (if key?
         kw-schema
-        (describe kw-schema dll))))
+        (describe kw-schema dll opts))))
 
   NumberType
-  (->schema' [{:keys [open? values] :as dll} _ _]
+  (->schema' [{:keys [open? values] :as dll} _ opts]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Num
             [_     nil] s/Num
             :else       (apply s/enum values))
-     dll))
+     dll
+     opts))
 
   StringType
-  (->schema' [{:keys [open? values] :as dll} _ _]
+  (->schema' [{:keys [open? values] :as dll} _ opts]
     (describe
      (match [open? (seq values)]
             [true  _  ] s/Str
             [_     nil] s/Str
             :else       (apply s/enum values))
-     dll))
+     dll
+     opts))
 
   RefType
-  (->schema' [{:keys [id] :as dll} _ {::keys [ref->var] :as opts}]
-    (-> (s/recursive (find-var (get ref->var id)))
-        (describe dll))))
+  (->schema' [{:keys [id] :as dll} _ {::f/keys [registry] :as opts}]
+    (-> (or (get registry id)
+            (throw (ex-info (format "Cannot resolve ref: %s" id))))
+        (describe dll opts))))
 
 (defn ->schema-at-loc
   "Get the schema for a node, with location awareness"
