@@ -147,7 +147,7 @@
   (->example [{:keys [id default] :as node} f {::f/keys [registry] ::keys [seen] :as opts}]
     (if (some? default)
       default
-      (let [ref-scope-id (fu/identify-ref-type node)]
+      (let [ref-scope-id (fu/identify-ref-type node opts)]
         (if (contains? seen ref-scope-id)
           unreachable ;; recursion detected, one unfolding is sufficient for an example
           (f (or (get registry id)

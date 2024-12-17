@@ -145,7 +145,7 @@
 (defn identify-ref-type
   "Return an opaque identifier suitable for detecting when this schema
   occurs again in the same dynamic scope."
-  [node]
+  [{:keys [id] :as node} {::f/keys [registry]}]
   {:pre [(instance? flanders.types.RefType node)]}
-  {:scope (::f/registry node)
-   :name (:id node)})
+  {:scope registry
+   :name id})
