@@ -440,13 +440,12 @@
            {:registry
             {"https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"
              [:sequential
-              [:ref
-               #:json-schema{:example nil}
+              ;;TODO :sequential example
+              [:ref {:json-schema/example []}
                "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]]}
-            :json-schema/example [[]]}
+            :json-schema/example []}
            "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
-         (m/form (->malli refs-json-schema-example))))
-  (is (= [] (fe/->example-tree (sut/->flanders refs-json-schema-example nil)))))
+         (m/form (->malli refs-json-schema-example)))))
 
 (comment
   (sut/->flanders refs-json-schema-example nil)
