@@ -160,8 +160,8 @@
             [:int #:json-schema{:example 10}]
             [:string #:json-schema{:example "string"}]]]
           [:y #:json-schema{:example 10} [:int #:json-schema{:example 10}]]]))
-  (is (= (->schema union-example)
-         )))
+  (is (= (s/explain (->schema union-example))
+         '{:x (cond-pre Int Str), :y Int})))
 
 #_
 (deftest malli-expectations-test

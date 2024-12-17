@@ -144,7 +144,9 @@
   EitherType
   (->schema' [{:keys [choices tests] :as dll} f opts]
     (-> (let [choice-schemas (map f choices)]
-          (apply s/conditional (mapcat vector tests choice-schemas)))
+          (if (empty? tests)
+            (apply s/cond-pre choice-schemas)
+            (apply s/conditional (mapcat vector tests choice-schemas))))
         (describe dll opts)))
 
   MapEntry
