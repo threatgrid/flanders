@@ -86,6 +86,8 @@
 ;; might not work well with generator overrides.
 ;; though, the user should ideally be only caring about the JSON Schema ref
 ;; names, can we map them automatically to generator overrides?
+;; hmm, but schemas are identified by their dynamic scope. perhaps use a path into
+;; the schema to identify overrides?
 (defn- create-defs [{::f/keys [registry] :as f} opts]
   (prn "create-defs" registry (::f/registry opts))
   (when (seq registry)
