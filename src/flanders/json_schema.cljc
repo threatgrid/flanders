@@ -48,7 +48,7 @@
   (assert (map? m))
   (let [seen (volatile! #{})]
     (update-keys m (fn [k]
-                     (let [n (-normalize k (conj-path opts k))]
+                     (let [n (-normalize k (conj-path opts ""))]
                        (when (@seen n)
                          (throw (ex-info "Clash while normalizing" {:m m :k k :n n})))
                        (vswap! seen conj n)

@@ -27,7 +27,7 @@
    :required [:x :y]})
 
 (defn ->malli [v] (malli/->malli (sut/->flanders v nil) nil))
-(defn ->schema [v] (schema/->schema (sut/->flanders v nil) nil))
+(defn ->schema [v] (#?(:clj schema/->schema :cljs schema/->schema+clean) (sut/->flanders v nil) nil))
 
 ;; https://github.com/metosin/malli/blob/6a2d9bd45d4973b4541cfdacdc4185240aa9a518/test/malli/json_schema_test.cljc#L9C1-L133C1
 (def malli-expectations
@@ -186,8 +186,8 @@
 
 (def security-finding-json (delay (json/decode (slurp (io/resource "security-finding.json")))))
 (def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json nil)))
-(def SchemaSecurityFinding (delay (js->schema/->schema+clean @security-finding-json nil)))
-(def MalliSecurityFinding (delay (js->malli/->malli @security-finding-json nil)))
+(def SchemaSecurityFinding (delay (->schema @security-finding-json nil)))
+(def MalliSecurityFinding (delay (->malli @security-finding-json nil)))
 
 (defn unqualify-vars [vs]
   (let [gs (group-by namespace (sort (map symbol vs)))
