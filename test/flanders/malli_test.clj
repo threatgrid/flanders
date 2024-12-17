@@ -8,6 +8,7 @@
             [flanders.malli :as fm]
             [malli.core :as m]
             [malli.swagger :as ms]
+            [malli.generator :as mg]
             [malli.util :as mu]))
 
 (def swagger-props #{:json-schema/description :json-schema/example})
@@ -272,4 +273,18 @@
            {:registry {"b" [:int #:json-schema{:example 10}]}}
            [:ref #:json-schema{:example true} "a"]
            [:ref #:json-schema{:example 10} "b"]]]
-         (-> fes/InnerRecursionRefExample fm/->malli m/form))))
+         (-> fes/InnerRecursionRefExample fm/->malli m/form)))
+  (is (thrown-with-msg? Exception
+                        #"Ref not in scope: \"a\""
+                        (-> fes/UnscopedRefExample fm/->malli)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteRefExample fm/->malli))))
+
+(deftest ref-generator-test
+  (is (= '(0 -1 0 -3 0 1 16 0 7 3) (-> fes/RefExample fm/->malli (mg/sample {:seed 0}))))
+  (is (= '([] [] [[] []] [[] []] [] [[]] [] [[] []] [[]] [[[] []] [[] []]])
+         (-> fes/RecursiveRefExample fm/->malli (mg/sample {:seed 0}))))
+  (is (= '(42 42 42 42 42 42 42 42 42 42) (-> fes/ShadowingRefExample fm/->malli (mg/sample {:seed 0}))))
+  (is (= '(42 42 42 42 42 42 42 42 42 42) (-> fes/ShadowingMultiRefExample fm/->malli (mg/sample {:seed 0}))))
+  (is (= '(true -1 0 -1 true true false true true 0) (-> fes/InnerRecursionRefExample fm/->malli (mg/sample {:seed 0})))))
