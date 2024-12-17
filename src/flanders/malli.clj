@@ -154,7 +154,8 @@
   with support for :merge (usually via malli.util/schemas)."
   ([node] (->malli node nil))
   ([node opts]
-   (let [->malli (fn ->malli
+   (let [opts (or opts default-opts)
+         ->malli (fn ->malli
                    ([node] (->malli node opts))
                    ([{::f/keys [registry] :as node} opts]
                     (let [vopts (volatile! nil)

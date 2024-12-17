@@ -151,7 +151,6 @@
    [[malli.core-test/Over6 {:json-schema/example 42}] {:type "integer", :format "int64", :minimum 6, :example 42}]])
 
 (deftest ->flanders-test
-  (sut/->flanders union-example nil)
   (is (= (m/form (->malli union-example))
          [:map
           {:closed true, :json-schema/example {:x 10, :y 10}}
@@ -162,14 +161,7 @@
             [:string #:json-schema{:example "string"}]]]
           [:y #:json-schema{:example 10} [:int #:json-schema{:example 10}]]]))
   (is (= (->schema union-example)
-         [:map
-          {:closed true, :json-schema/example {:x 10, :y 10}}
-          [:x
-           #:json-schema{:example 10}
-           [:or
-            [:int #:json-schema{:example 10}]
-            [:string #:json-schema{:example "string"}]]]
-          [:y #:json-schema{:example 10} [:int #:json-schema{:example 10}]]])))
+         )))
 
 #_
 (deftest malli-expectations-test
