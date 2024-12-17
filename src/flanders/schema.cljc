@@ -81,7 +81,11 @@
         (println "WARNING: Please increment max-nano-digits for unit test stability")))
     (format nano-padder n)))
 
-
+;; TODO populate ::rec-schema
+;; lazily create defalias's? only at true recursion points?
+;; might not work well with generator overrides.
+;; though, the user should ideally be only caring about the JSON Schema ref
+;; names, can we map them automatically to generator overrides?
 (defn- create-defs [{::f/keys [registry] :as f} opts]
   (prn "create-defs" registry (::f/registry opts))
   (when (seq registry)
@@ -152,7 +156,7 @@
 ;; this mapping is analogous to malli.generator's mapping from dynamic refs
 ;; to test.check generators (in particular, its support for tying the knot for recursive-gen).
 (defn- ref->schema [{:keys [id] :as dll} {::f/keys [registry] :as opts}]
-  (let [ref-id (fu/identify-ref-type dll)]
+  (let [ref-id (fu/identify-ref-type dll opts)]
     (-> (or (force (get-in opts [::rec-schema ref-id]))
             (get registry id)
             (throw (ex-info (format "Cannot resolve ref: %s" id) {})))

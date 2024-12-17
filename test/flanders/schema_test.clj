@@ -175,7 +175,8 @@
          (-> fes/RecursiveRefExample fs/->schema))))
 
 (deftest dynamic-refs-to-static-defalias-mapping-test
-  (is (= (-> (f/seq-of (f/ref "a"))
+  (is (= nil
+         (-> (f/seq-of (f/ref "a"))
              (f/update-registry assoc "a"
                                 (-> (f/seq-of (f/ref "a"))
                                     (f/update-registry assoc "a" (f/enum 42)))))))
