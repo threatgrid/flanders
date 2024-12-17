@@ -3,6 +3,7 @@
     [flanders.example :as example]
     [malli.core :as m]))
 
+;;TODO move back to flanders malli
 (defn describe [?schema {:keys [description] :as dll} opts]
   (-> ?schema
       (m/schema opts)
