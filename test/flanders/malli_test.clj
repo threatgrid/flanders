@@ -226,7 +226,7 @@
              fm/->malli
              ms/transform))))
 
-(deftest ref-test
+(deftest ref-form-test
   (is (= [:ref
           {:json-schema/example 10,
            :registry {"foo" [:int {:json-schema/example 10}]}}
@@ -238,7 +238,38 @@
            {"foo" [:sequential [:ref {:json-schema/example []} "foo"]]}}
           "foo"]
          (-> fes/RecursiveRefExample fm/->malli m/form)))
-  (is (= [:ref {:registry {"a" [:ref {:registry {"a" [:enum 42]}}
-                                "a"]}}
+  (is (= [:ref
+          {:json-schema/example 42,
+           :registry
+           {"a"
+            [:ref
+             {:json-schema/example 42,
+              :registry {"a" [:enum {:json-schema/example 42} 42]}}
+             "a"]}}
           "a"]
-         (-> fes/ShadowingRefExample (fm/->malli {::fm/no-example true}) m/form))))
+         (-> fes/ShadowingRefExample fm/->malli m/form)))
+  (is (= [:ref
+          {:json-schema/example 42,
+           :registry
+           {"a" [:ref {:json-schema/example 42} "b"],
+            "b"
+            [:ref
+             {:json-schema/example 42,
+              :registry
+              {"a" [:ref {:json-schema/example 42} "b"],
+               "b" [:enum {:json-schema/example 42} 42]}}
+             "a"]}}
+          "a"]
+         (-> fes/ShadowingMultiRefExample fm/->malli m/form)))
+  (is (= [:or
+          {:registry
+           {"a"
+            [:or
+             {:registry {"b" [:boolean #:json-schema{:example true}]}}
+             [:ref #:json-schema{:example true} "a"]
+             [:ref #:json-schema{:example true} "b"]]}}
+          [:or
+           {:registry {"b" [:int #:json-schema{:example 10}]}}
+           [:ref #:json-schema{:example true} "a"]
+           [:ref #:json-schema{:example 10} "b"]]]
+         (-> fes/InnerRecursionRefExample fm/->malli m/form))))
