@@ -162,6 +162,14 @@
   (is (= {:example "a" :description "Str"} (->swagger (f/enum #{"b" "c" "a"} :description "Str"))))
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
 
+
+(comment
+  (s/defschema RecursiveCondPreSchema
+    (s/cond-pre (s/recursive #'RecursiveCondPreSchema)
+                s/Bool))
+  (s/validate RecursiveCondPreSchema 1)
+  )
+
 (deftest ref-form-test
   (is (= s/Int (-> fes/RefExample fs/->schema)))
   (is (= '{:schema (recursive #'ns-0/foo),
@@ -171,7 +179,6 @@
              explain-transitive-schema)))
   (is (= (s/enum 42) (-> fes/ShadowingRefExample fs/->schema)))
   (is (= (s/enum 42) (-> fes/ShadowingMultiRefExample fs/->schema)))
-  ;;FIXME
   (is (= '{:schema (cond-pre (cond-pre (cond-pre (recursive #'ns-0/a) Bool) Int)),
            :vars {ns-0/a (cond-pre (recursive #'ns-0/a) Bool)}}
          (-> fes/InnerRecursionRefExample
@@ -182,7 +189,11 @@
                         (-> fes/UnscopedRefExample fs/->schema)))
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
-                        (-> fes/InfiniteRefExample fs/->schema))))
+                        (-> fes/InfiniteRefExample fs/->schema)))
+  ;; FIXME
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteEitherExample fs/->schema))))
 
 (deftest ref-validation-test
   (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) [])))

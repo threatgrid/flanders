@@ -279,7 +279,27 @@
                         (-> fes/UnscopedRefExample fm/->malli)))
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
-                        (-> fes/InfiniteRefExample fm/->malli))))
+                        (-> fes/InfiniteRefExample fm/->malli)))
+  ;; FIXME
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteEitherExample fm/->malli))))
+
+(deftest ref-validation-test
+  (is (m/validate (fm/->malli fes/RefExample) 10))
+  (is (m/explain (fm/->malli fes/RefExample) nil))
+  (is (m/validate (fm/->malli fes/RecursiveRefExample) []))
+  (is (m/explain (fm/->malli fes/RecursiveRefExample) 1))
+  (is (m/validate (fm/->malli fes/ShadowingRefExample) 42))
+  (is (m/explain (fm/->malli fes/ShadowingRefExample) 41))
+  (is (m/validate (fm/->malli fes/ShadowingMultiRefExample) 42))
+  (is (m/explain (fm/->malli fes/ShadowingMultiRefExample) 41))
+  ;; FIXME
+  (is (m/validate (fm/->malli fes/InnerRecursionRefExample) true))
+  ;; FIXME
+  (is (m/validate (fm/->malli fes/InnerRecursionRefExample) 0))
+  ;; FIXME
+  (is (m/explain (fm/->malli fes/InnerRecursionRefExample) nil)))
 
 (deftest ref-generator-test
   (is (= '(0 -1 0 -3 0 1 16 0 7 3) (-> fes/RefExample fm/->malli (mg/sample {:seed 0}))))

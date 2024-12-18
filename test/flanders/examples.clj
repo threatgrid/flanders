@@ -71,3 +71,8 @@
   "uses refs to create a schema that expands infinitely with no base cases."
   (-> (f/ref "a")
       (f/update-registry assoc "a" (f/ref "a"))))
+
+(def InfiniteEitherExample
+  "uses either schemas to create a schema that makes no progress during validation."
+  (-> (f/ref "a")
+      (f/update-registry assoc "a" (f/either :choices [(f/ref "a") (f/bool)]))))
