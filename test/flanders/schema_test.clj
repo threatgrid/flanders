@@ -167,6 +167,9 @@
          (-> fes/RefExample
              fs/->schema
              explain-transitive-schema)))
+  ;;FIXME should just be ns-0/foo
+  ;(defalias foo [(recursive #'foo)])
+  ;(recursive #'foo)
   (is (= '{:schema (recursive #'ns-0/foo),
            :vars
            {ns-0/foo [(recursive #'ns-1/foo)], ns-1/foo [(recursive #'ns-1/foo)]}}
@@ -215,5 +218,4 @@
   (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) nil)))
   (is (= '(not (sequential? 1)) (read-string (pr-str (s/check (fs/->schema fes/RecursiveRefExample) 1)))))
   (is (nil? (s/check (fs/->schema fes/ShadowingMultiRefExample) 42)))
-  (is (= '(not (#{42} 41)) (read-string (pr-str (s/check (fs/->schema fes/ShadowingMultiRefExample) 41)))))
-  )
+  (is (= '(not (#{42} 41)) (read-string (pr-str (s/check (fs/->schema fes/ShadowingMultiRefExample) 41))))))

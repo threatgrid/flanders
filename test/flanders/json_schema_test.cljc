@@ -1,7 +1,10 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.edn :as edn]
             [cheshire.core :as json]
+            [clojure.pprint :as pp]
             [clojure.java.io :as io]
+            [flanders.example :as fe]
             [flanders.core :as f]
             [flanders.json-schema :as sut]
             [flanders.json-schema.test-helpers :as th :refer [->malli ->schema]]
@@ -14,6 +17,7 @@
 
 (def security-finding-json (delay (json/decode (slurp (io/resource "security-finding.json")))))
 (def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json nil)))
+(def example-SecurityFinding (delay (fe/->example-tree @FlandersSecurityFinding)))
 (def SchemaSecurityFinding (delay (->schema @security-finding-json)))
 (def MalliSecurityFinding (delay (->malli @security-finding-json)))
 
@@ -36,6 +40,10 @@
   (th/generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
                                        'flanders.json-schema.test-helpers-schema-security-finding
                                        @SchemaSecurityFinding)
+  (spit "test-resources/expected-example-SecurityFinding.edn" (with-out-str
+                                                                (println ";;Generated and tested by flanders.json-schema-test")
+                                                                (println ";;The expected result of flanders.example on OCSF security_finding class")
+                                                                (th/pprint-reproducibly @example-SecurityFinding)))
   )
 
 (deftest ocsf-test
@@ -55,6 +63,9 @@
     (is (s/validate @SchemaSecurityFinding th/example-security-finding))
     )
   (testing "malli ops"
+    (is (= (edn/read-string (slurp "test-resources/expected-example-SecurityFinding.edn"))
+           @example-SecurityFinding))
+    (is (m/form @MalliSecurityFinding))
     (is (some? (m/explain @MalliSecurityFinding {})))
     ;;FIXME
     #_

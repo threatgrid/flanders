@@ -152,12 +152,14 @@
   ;; however, we want to detect infinite schemas at compile time, so we expand the schema
   ;; as side effect to ensure we always make progress.
   RefType (->malli' [{:keys [id] :as node} {::f/keys [registry] ::keys [->malli schema-level rec-ref-levels] :as opts}]
+                    (prn "RefType")
                     (let [_ensure-progress (let [ref-id (fu/identify-ref-type node opts)
                                                  _ (when (get-in rec-ref-levels [ref-id schema-level])
                                                      ;; made no progress when expanding recursive schema
                                                      ;; e.g., [:ref {:registry {"a" [:or [:ref "a"] :int]}} "a"]
                                                      (throw (ex-info (str "Infinite schema detected: " (pr-str node)) {})))
                                                  opts (assoc-in opts [::rec-ref-levels ref-id schema-level] true)]
+                                             (prn "ref-id" ref-id)
                                              (or (force (get-in opts [::rec-schema ref-id]))
                                                  (let [s (or (get registry id)
                                                              (throw (ex-info (format "Ref not in scope: %s" (pr-str id)) {})))
