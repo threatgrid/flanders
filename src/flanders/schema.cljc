@@ -86,9 +86,7 @@
    (let [f (fn ->schema [node opts]
              (let [opts (-> opts
                             (update ::schema-level #(cond-> (or % [])
-                                                      (not (or (instance? EitherType %)
-                                                               (instance? RefType %)))
-                                                      (conj %)))
+                                                      (fu/progress-schema? node) (conj node)))
                             (update ::f/registry (fnil into {}) (::f/registry node)))]
                (->schema' node ->schema opts)))]
      (f node opts))))
@@ -107,18 +105,12 @@
 (def get-schema
   (memoize ->schema))
 
-;; we need to map json schema's dynamically scoped refs onto s/defschema.
-;; we accomplish this by unfolding refs. each unique level of refs has its
-;; own set of defschema's. we tie the knot when a loop is detected (when 
-;; we have already seen this dynamic scope).
-;; this mapping is analogous to malli.generator's mapping from dynamic refs
-;; to test.check generators (in particular, its support for tying the knot for recursive-gen).
 (defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [seen schema-level rec-ref-levels] :as opts}]
   (assert (string? id))
-  (prn "rec-ref-levels" (count rec-ref-levels))
   (let [ref-id (fu/identify-ref-type dll opts)
         _ (when (get-in rec-ref-levels [ref-id schema-level])
             ;; made no progress when expanding recursive schema
+            ;; e.g., (defschema A (s/either A s/Int))
             (throw (ex-info (str "Infinite schema detected: " (pr-str dll)) {})))
         opts (assoc-in opts [::rec-ref-levels ref-id schema-level] true)]
     (-> (or (force (get-in opts [::rec-schema ref-id]))
@@ -152,6 +144,7 @@
   (->schema' [{:keys [choices tests] :as dll} f opts]
     (-> (let [choice-schemas (map #(f % opts) choices)]
           (if (empty? tests)
+            ;; FIXME choice-schemas must be mutually exclusive for cond-pre to work.
             (apply s/cond-pre choice-schemas)
             (apply s/conditional (mapcat vector tests choice-schemas))))
         (describe dll opts)))

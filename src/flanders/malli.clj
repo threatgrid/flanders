@@ -4,6 +4,7 @@
   (:require
     [flanders.core :as f]
     [flanders.types]
+    [flanders.utils :as fu]
     [flanders.example :as example]
     [flanders.malli.utils :refer [describe]]
     [malli.core :as m]
@@ -147,8 +148,26 @@
   NumberType  (->malli' [node opts] (maybe-key node opts number?))
   StringType  (->malli' [node opts] (maybe-key node opts :string))
 
-  ;; malli refs and json schema refs are both dynamically scoped so the mapping is trivial
-  RefType (->malli' [{:keys [id] :as node} opts] (-> [:ref id] (describe node opts))))
+  ;; malli refs and json schema refs are both dynamically scoped so the mapping is trivial.
+  ;; however, we want to detect infinite schemas at compile time, so we expand the schema
+  ;; as side effect to ensure we always make progress.
+  RefType (->malli' [{:keys [id] :as node} {::f/keys [registry] ::keys [->malli schema-level rec-ref-levels] :as opts}]
+                    (let [_ensure-progress (let [ref-id (fu/identify-ref-type node opts)
+                                                 _ (when (get-in rec-ref-levels [ref-id schema-level])
+                                                     ;; made no progress when expanding recursive schema
+                                                     ;; e.g., [:ref {:registry {"a" [:or [:ref "a"] :int]}} "a"]
+                                                     (throw (ex-info (str "Infinite schema detected: " (pr-str node)) {})))
+                                                 opts (assoc-in opts [::rec-ref-levels ref-id schema-level] true)]
+                                             (or (force (get-in opts [::rec-schema ref-id]))
+                                                 (let [s (or (get registry id)
+                                                             (throw (ex-info (format "Ref not in scope: %s" (pr-str id)) {})))
+                                                       d (delay [:ref id])
+                                                       res (->malli s (assoc-in opts [::rec-schema ref-id] d))]
+                                                   (if (realized? d)
+                                                     @d
+                                                     res))))]
+                      (-> [:ref id]
+                          (describe node opts)))))
 
 (def default-opts {:registry (merge (m/default-schemas) (mu/schemas))})
 
@@ -163,8 +182,9 @@
                    ([{::f/keys [registry] :as node} opts]
                     (let [vopts (volatile! nil)
                           opts (-> opts
+                                   (update ::schema-level #(cond-> (or % [])
+                                                             (fu/progress-schema? node) (conj node)))
                                    (update ::f/registry (fnil into {}) registry)
-                                   (update ::f/trace (fnil conj []) (gensym "flanders.malli"))
                                    (assoc ::->malli (fn
                                                       ([node] (->malli node @vopts))
                                                       ([node opts] (->malli node opts)))))

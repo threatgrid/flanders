@@ -149,3 +149,7 @@
   {:pre [(instance? flanders.types.RefType node)]}
   {:scope registry
    :name id})
+
+(defn progress-schema? [node]
+  (not (or (instance? flanders.types.EitherType node)
+           (instance? flanders.types.RefType node))))

@@ -280,14 +280,16 @@
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
                         (-> fes/InfiniteRefExample fm/->malli)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteEitherExample fm/->malli)))
   (testing "infinite schema detected even without examples walked"
     (is (thrown-with-msg? Exception
                           #"Infinite schema detected"
-                          (-> fes/InfiniteRefExample (fm/->malli {::fm/no-example true})))))
-  ;; FIXME
-  (is (thrown-with-msg? Exception
-                        #"Infinite schema detected"
-                        (-> fes/InfiniteEitherExample fm/->malli))))
+                          (-> fes/InfiniteRefExample (fm/->malli {::fm/no-example true}))))
+    (is (thrown-with-msg? Exception
+                          #"Infinite schema detected"
+                          (-> fes/InfiniteEitherExample (fm/->malli {::fm/no-example true}))))))
 
 (deftest ref-validation-test
   (is (m/validate (fm/->malli fes/RefExample) 10))

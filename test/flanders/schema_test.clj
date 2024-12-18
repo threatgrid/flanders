@@ -190,11 +190,13 @@
   (testing "infinite schema detected even without examples walked"
     (is (thrown-with-msg? Exception
                           #"Infinite schema detected"
-                          (-> fes/InfiniteRefExample (fs/->schema {::fs/no-example true})))))
+                          (-> fes/InfiniteRefExample (fs/->schema {::fs/no-example true}))))
+    (is (thrown-with-msg? Exception
+                          #"Infinite schema detected"
+                          (-> fes/InfiniteEitherExample (fs/->schema {::fs/no-example true})))))
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
                         (-> fes/InfiniteRefExample fs/->schema)))
-  ;; FIXME
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
                         (-> fes/InfiniteEitherExample fs/->schema))))
