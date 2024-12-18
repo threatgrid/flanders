@@ -172,6 +172,7 @@
                                                    (if (realized? d)
                                                      @d
                                                      res))))]
+                      ;;TODO just return id if never recursive in this schema
                       (-> [:ref id]
                           (describe node opts)))))
 
