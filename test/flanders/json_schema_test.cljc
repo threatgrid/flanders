@@ -75,8 +75,18 @@
            @example-SecurityFinding))
     (is (= (edn/read-string (slurp "test-resources/expected-malli-SecurityFinding-no-example.edn"))
            (m/form @MalliSecurityFinding-no-example)))
+    (is (m/validate @MalliSecurityFinding-no-example @example-SecurityFinding))
+    (is (= [{:path [:flanders.json-schema-test/extra],
+             :in [:flanders.json-schema-test/extra],
+             :value true,
+             :type :malli.core/extra-key}]
+           (->> (m/explain @MalliSecurityFinding-no-example (assoc @example-SecurityFinding ::extra true))
+                :errors
+                (mapv #(dissoc % :schema)))))
+    ;;FIXME OOM
+    ;(is (= ::FIXME (mg/generate @MalliSecurityFinding-no-example)))
     (is (= ::FIXME (m/form @MalliSecurityFinding)))
-    (is (some? (m/explain @MalliSecurityFinding {})))
+    (is (= ::FIXME (m/explain @MalliSecurityFinding {})))
     ;;FIXME
     #_
     (is (m/validate @MalliSecurityFinding th/example-security-finding))
