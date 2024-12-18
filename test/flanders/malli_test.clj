@@ -280,6 +280,10 @@
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
                         (-> fes/InfiniteRefExample fm/->malli)))
+  (testing "infinite schema detected even without examples walked"
+    (is (thrown-with-msg? Exception
+                          #"Infinite schema detected"
+                          (-> fes/InfiniteRefExample (fm/->malli {::fm/no-example true})))))
   ;; FIXME
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"

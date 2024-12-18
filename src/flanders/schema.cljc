@@ -84,7 +84,12 @@
   ([node] (->schema node nil))
   ([node opts]
    (let [f (fn ->schema [node opts]
-             (let [opts (update opts ::f/registry (fnil into {}) (::f/registry node))]
+             (let [opts (-> opts
+                            (update ::schema-level #(cond-> (or % [])
+                                                      (not (or (instance? EitherType %)
+                                                               (instance? RefType %)))
+                                                      (conj %)))
+                            (update ::f/registry (fnil into {}) (::f/registry node)))]
                (->schema' node ->schema opts)))]
      (f node opts))))
 
@@ -108,9 +113,14 @@
 ;; we have already seen this dynamic scope).
 ;; this mapping is analogous to malli.generator's mapping from dynamic refs
 ;; to test.check generators (in particular, its support for tying the knot for recursive-gen).
-(defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [seen] :as opts}]
+(defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [seen schema-level rec-ref-levels] :as opts}]
   (assert (string? id))
-  (let [ref-id (fu/identify-ref-type dll opts)]
+  (prn "rec-ref-levels" (count rec-ref-levels))
+  (let [ref-id (fu/identify-ref-type dll opts)
+        _ (when (get-in rec-ref-levels [ref-id schema-level])
+            ;; made no progress when expanding recursive schema
+            (throw (ex-info (str "Infinite schema detected: " (pr-str dll)) {})))
+        opts (assoc-in opts [::rec-ref-levels ref-id schema-level] true)]
     (-> (or (force (get-in opts [::rec-schema ref-id]))
             (let [s (or (get registry id)
                         (throw (ex-info (format "Ref not in scope: %s" (pr-str id)) {})))

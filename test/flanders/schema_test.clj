@@ -187,6 +187,10 @@
   (is (thrown-with-msg? Exception
                         #"Ref not in scope: \"a\""
                         (-> fes/UnscopedRefExample fs/->schema)))
+  (testing "infinite schema detected even without examples walked"
+    (is (thrown-with-msg? Exception
+                          #"Infinite schema detected"
+                          (-> fes/InfiniteRefExample (fs/->schema {::fs/no-example true})))))
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
                         (-> fes/InfiniteRefExample fs/->schema)))
