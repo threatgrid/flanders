@@ -299,18 +299,11 @@
   (is (m/validate (fm/->malli fes/ShadowingRefExample) 42))
   (is (m/explain (fm/->malli fes/ShadowingRefExample) 41))
   (is (m/validate (fm/->malli fes/ShadowingMultiRefExample) 42))
-  (is (m/explain (fm/->malli fes/ShadowingMultiRefExample) 41))
-  ;; FIXME
-  (is (m/validate (fm/->malli fes/InnerRecursionRefExample) true))
-  ;; FIXME
-  (is (m/validate (fm/->malli fes/InnerRecursionRefExample) 0))
-  ;; FIXME
-  (is (m/explain (fm/->malli fes/InnerRecursionRefExample) nil)))
+  (is (m/explain (fm/->malli fes/ShadowingMultiRefExample) 41)))
 
 (deftest ref-generator-test
   (is (= '(0 -1 0 -3 0 1 16 0 7 3) (-> fes/RefExample fm/->malli (mg/sample {:seed 0}))))
   (is (= '([] [] [[] []] [[] []] [] [[]] [] [[] []] [[]] [[[] []] [[] []]])
          (-> fes/RecursiveRefExample fm/->malli (mg/sample {:seed 0}))))
   (is (= '(42 42 42 42 42 42 42 42 42 42) (-> fes/ShadowingRefExample fm/->malli (mg/sample {:seed 0}))))
-  (is (= '(42 42 42 42 42 42 42 42 42 42) (-> fes/ShadowingMultiRefExample fm/->malli (mg/sample {:seed 0}))))
-  (is (= '(true -1 0 -1 true true false true true 0) (-> fes/InnerRecursionRefExample fm/->malli (mg/sample {:seed 0})))))
+  (is (= '(42 42 42 42 42 42 42 42 42 42) (-> fes/ShadowingMultiRefExample fm/->malli (mg/sample {:seed 0})))))

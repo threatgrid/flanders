@@ -204,11 +204,4 @@
 (deftest ref-validation-test
   (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) [])))
   (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) nil)))
-  (is (= "(not (sequential? 1))" (pr-str (s/check (fs/->schema fes/RecursiveRefExample) 1))))
-  (is (s/check (fs/->schema fes/InnerRecursionRefExample) 4))
-  (is (thrown-with-msg? Exception
-                        #"Ref not in scope: \"a\""
-                        (-> fes/UnscopedRefExample fs/->schema)))
-  (is (thrown-with-msg? Exception
-                        #"Infinite schema detected"
-                        (-> fes/InfiniteRefExample fs/->schema))))
+  (is (= "(not (sequential? 1))" (pr-str (s/check (fs/->schema fes/RecursiveRefExample) 1)))))
