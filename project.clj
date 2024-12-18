@@ -22,7 +22,8 @@
                   ["vcs" "push"]]
 
   :profiles {:dev
-             {:dependencies [[org.clojure/test.check "1.1.1"]
+             {:jvm-opts ["-Dflanders-dev-time=true"]
+              :dependencies [[org.clojure/test.check "1.1.1"]
                              [cheshire "5.9.0"]
                              [metosin/malli "0.17.0"]]
               :resource-paths ["test-resources"]}})

@@ -83,9 +83,11 @@
 (def ^:private max-ms 10000)
 (defn- ensure-timely [opts]
   (when (Thread/interrupted) (throw (InterruptedException.)))
-  (let [{::keys [init-ms] :as opts} (update opts ::init-ms #(or % (System/currentTimeMillis)))]
-    (assert (<= (System/currentTimeMillis) (+ init-ms max-ms))
-            "Too long")
+  (if (= "true" (System/getProperty "flanders-dev-time"))
+    (let [{::keys [init-ms] :as opts} (update opts ::init-ms #(or % (System/currentTimeMillis)))]
+      (assert (<= (System/currentTimeMillis) (+ init-ms max-ms))
+              "Too long")
+      opts)
     opts))
 
 (defn ->schema
