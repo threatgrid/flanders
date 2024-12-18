@@ -58,7 +58,12 @@
           description (some :description [key entry])
           props (not-empty
                   (cond-> {}
-                    (not (::no-example opts)) (assoc :json-schema/example (example/->example-tree type))
+                    (not (::no-example opts)) (assoc :json-schema/example (try (example/->example-tree type opts)
+                                                                               (catch Exception e
+                                                                                 (throw (ex-info
+                                                                                          "Failed to generate example"
+                                                                                          {:schema type}
+                                                                                          e)))))
                     optional? (assoc :optional true)
                     description (assoc :json-schema/description description)))
           default-or-specific-key (->malli (assoc key :key? true))]

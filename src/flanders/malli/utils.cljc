@@ -9,5 +9,9 @@
       (m/schema opts)
       (m/-update-properties
         #(cond-> %
-           (not (:flanders.malli/no-example opts)) (assoc :json-schema/example (example/->example-tree dll opts))
+           (not (:flanders.malli/no-example opts)) (assoc :json-schema/example (try (example/->example-tree dll opts)
+                                                                                    (catch Exception e
+                                                                                      (throw (ex-info "Error generating example"
+                                                                                                      {:schema dll}
+                                                                                                      e)))))
            description (assoc :json-schema/description description)))))

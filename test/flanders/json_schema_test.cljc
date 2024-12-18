@@ -46,6 +46,12 @@
                                                                 (println ";;The expected result of flanders.example on OCSF security_finding class")
                                                                 (th/pprint-reproducibly @example-SecurityFinding)))
 
+  (spit "test-resources/expected-malli-SecurityFinding.edn"
+        (with-out-str
+          (println ";;Generated and tested by flanders.json-schema-test")
+          (println ";;The expected result of converting OCSF security_finding class with examples")
+          (th/pprint-reproducibly (m/form @MalliSecurityFinding))))
+
   (spit "test-resources/expected-malli-SecurityFinding-no-example.edn"
         (with-out-str
           (println ";;Generated and tested by flanders.json-schema-test")
@@ -84,18 +90,20 @@
            (->> (m/explain @MalliSecurityFinding-no-example (assoc @example-SecurityFinding ::extra true))
                 :errors
                 (mapv #(dissoc % :schema)))))
+    (is (= (edn/read-string (slurp "test-resources/expected-malli-SecurityFinding.edn"))
+           (m/form @MalliSecurityFinding)))
+    (is (= [{:path [:flanders.json-schema-test/extra],
+             :in [:flanders.json-schema-test/extra],
+             :value true,
+             :type :malli.core/extra-key}]
+           (->> (m/explain @MalliSecurityFinding (assoc @example-SecurityFinding ::extra true))
+                :errors
+                (mapv #(dissoc % :schema)))))
+    (is (m/validate @MalliSecurityFinding th/example-security-finding))
     ;;FIXME OOM
     ;(is (= ::FIXME (mg/generate @MalliSecurityFinding-no-example)))
-    (is (= ::FIXME (m/form @MalliSecurityFinding)))
-    (is (= ::FIXME (m/explain @MalliSecurityFinding {})))
-    ;;FIXME
-    #_
-    (is (m/validate @MalliSecurityFinding th/example-security-finding))
-    ;;FIXME
-    #_
-    (is (mg/generate @MalliSecurityFinding {:seed 0}))
-    )
-  )
+    ;(is (mg/generate @MalliSecurityFinding {:seed 0}))
+    ))
 
 (def refs-json-schema-example
   {"$defs" {"aref" {"type" "array"
