@@ -32,7 +32,6 @@
 (defn syms-from-distinct-namespaces [n]
   (mapv #(symbol (str "sym" % (str (random-uuid))) (str (random-uuid))) (range n)))
 
-;; walks s/explain, schema walk might be more accurate
 (defn collect-recursive-vars-from-schema [s]
   (let [vars (atom #{})]
     (stw/postwalk (fn [s]
@@ -41,6 +40,15 @@
                     s)
                   s)
     @vars))
+
+(defn collect-transitive-recursive-vars-from-schema [s]
+  (loop [seen #{}
+         remaining (collect-recursive-vars-from-schema s)]
+    (if-some [v (first remaining)]
+      (if (seen v)
+        (recur seen (disj remaining v))
+        (recur (conj seen v) (into (disj remaining v) (-> v deref collect-recursive-vars-from-schema))))
+      seen)))
 
 (defn unqualify-recursive-vars-from-schema-explain
   ([s] (unqualify-recursive-vars-from-schema-explain s (unqualify-vars (collect-recursive-vars-from-schema s))))
@@ -52,20 +60,9 @@
                              (qualified-symbol? (second v)))
                       ;;unqualify recursive vars
                       (let [vsym (second v)]
-                        (list 'var (or (rename vsym) (throw (ex-info (str "Unknown var " vsym) {:rename rename})))))
+                        (list 'var (or (rename vsym) (throw (ex-info (str "Unknown var " (pr-str vsym)) {:rename rename})))))
                       v))
                   (s/explain s))))
-
-;; walks s/explain, schema walk might be more accurate
-(defn collect-transitive-recursive-vars-from-schema [s]
-  (loop [seen #{}
-         remaining (collect-recursive-vars-from-schema s)]
-    (if-some [v (first remaining)]
-      (recur (cond-> seen
-               (not (seen v)) (-> (conj v)
-                                  (into (-> v deref collect-recursive-vars-from-schema))))
-             (disj remaining v))
-      seen)))
 
 (defn pprint-reproducibly [v]
   (let [v (walk/postwalk (fn [v]
@@ -89,10 +86,8 @@
 
 (defn explain-transitive-schema [s]
   (let [transitive-var->uniquified (unqualify-vars (collect-transitive-recursive-vars-from-schema s))]
-    (prn transitive-var->uniquified)
     {:schema (unqualify-recursive-vars-from-schema-explain s transitive-var->uniquified)
      :vars (into {} (map (fn [[v uniq]]
-                           (prn v uniq)
                            [uniq (unqualify-recursive-vars-from-schema-explain @(find-var v) transitive-var->uniquified)]))
                  transitive-var->uniquified)}))
 

@@ -46,3 +46,16 @@
   (is (= #{#'ASchema #'BSchema}
          (sut/collect-transitive-recursive-vars-from-schema ASchema)
          (sut/collect-transitive-recursive-vars-from-schema BSchema))))
+
+(s/defschema b2 (s/enum 42))
+(s/defschema a2 (s/recursive #'b2))
+(s/defschema b1 (s/recursive #'a2))
+(s/defschema a1 (s/recursive #'b1))
+
+(deftest explain-transitive-schema-test
+  (is (= '{:schema (recursive #'ns-0/b1),
+           :vars
+           {ns-0/a2 (recursive #'ns-0/b2),
+            ns-0/b1 (recursive #'ns-0/a2),
+            ns-0/b2 (enum 42)}}
+         (sut/explain-transitive-schema a1))))

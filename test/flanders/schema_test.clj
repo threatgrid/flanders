@@ -6,7 +6,7 @@
    [flanders.examples :as fes :refer [Example OptionalKeywordMapEntryExample]]
    [flanders.schema :as fs]
    [ring.swagger.json-schema :as js]
-   [flanders.json-schema.test-helpers :refer [unqualify-recursive-vars-from-schema-explain explain-transitive-schema]]
+   [flanders.json-schema.test-helpers :refer [collect-transitive-recursive-vars-from-schema unqualify-recursive-vars-from-schema-explain explain-transitive-schema]]
    [schema.core :as s]
    [schema-tools.core :as st]))
 
@@ -168,13 +168,23 @@
     (s/cond-pre (s/recursive #'RecursiveCondPreSchema)
                 s/Bool))
   (s/validate RecursiveCondPreSchema 1)
+  (def shadow-schema
+    (-> fes/ShadowingMultiRefExample
+        fs/->schema
+        ))
+
+  (explain-transitive-schema shadow-schema)
+  (explain-transitive-schema flanders.json-schema.schema.000221609420435125.17d7e183-7191-4c68-847e-1912bf813414/a)
+  (explain-transitive-schema flanders.json-schema.schema.000221609421443375.83bbc702-77d8-471e-b99a-b7d2aca42846/b)
+  (explain-transitive-schema flanders.json-schema.schema.000221609421586291.a894b9da-f98f-41aa-a55a-ba5f42545ead/a)
+  (explain-transitive-schema flanders.json-schema.schema.000221609421747000.8d76625c-6e28-4215-a7a0-6a9699e3b6fd/b)
   )
 
 (deftest ref-form-test
   (is (= '{:schema (recursive #'ns-0/foo), :vars {ns-0/foo Int}}
          (-> fes/RefExample
-                   fs/->schema
-                   explain-transitive-schema)))
+             fs/->schema
+             explain-transitive-schema)))
   (is (= '{:schema (recursive #'ns-0/foo),
            :vars
            {ns-0/foo [(recursive #'ns-1/foo)], ns-1/foo [(recursive #'ns-1/foo)]}}
@@ -186,8 +196,12 @@
          (-> fes/ShadowingRefExample
              fs/->schema
              explain-transitive-schema)))
-  ;;FIXME
-  (is (= (s/enum 42)
+  (is (= '{:schema (recursive #'ns-0/a),
+           :vars
+           {ns-0/a (recursive #'ns-1/b),
+            ns-1/b (recursive #'ns-2/a),
+            ns-2/a (recursive #'ns-3/b),
+            ns-3/b (enum 42)}}
          (-> fes/ShadowingMultiRefExample
              fs/->schema
              explain-transitive-schema)))

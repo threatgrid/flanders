@@ -100,21 +100,21 @@
                                                      [(fu/identify-ref-type (f/ref id) opts) (delay (s/recursive @(id->var id)))]))
                                            (keys (::f/registry node)))
                    ref-id->rec-schema (into {} (map (fn [[id s]]
-                                                  (let [ref-id (fu/identify-ref-type (f/ref id) opts)]
-                                                    [ref-id
-                                                     (delay
-                                                       (let [temp-ns @temp-ns
-                                                             def-var @(id->var id)
-                                                             _generated-schema (let [frm `(s/defschema ~(-> def-var symbol name symbol)
-                                                                                            ~(str "JSON Schema id: " id "\n")
-                                                                                            ~(->schema s (update opts ::rec-schema ref-id->recursive)))]
-                                                                                 (binding [*ns* temp-ns]
-                                                                                   (eval frm)))]
-                                                         @(ref-id->recursive ref-id)))])))
+                                                      (let [ref-id (fu/identify-ref-type (f/ref id) opts)]
+                                                        [ref-id
+                                                         (delay
+                                                           (let [temp-ns @temp-ns
+                                                                 def-var @(id->var id)
+                                                                 _generated-schema (let [frm `(s/defschema ~(-> def-var symbol name symbol)
+                                                                                                ~(str "JSON Schema id: " id "\n")
+                                                                                                ~(->schema s (update opts ::rec-schema ref-id->recursive)))]
+                                                                                     (binding [*ns* temp-ns]
+                                                                                       (eval frm)))]
+                                                             @(ref-id->recursive ref-id)))])))
                                         (::f/registry node))
                    opts (update opts ::rec-schema (fnil into {}) ref-id->rec-schema)
                    s (->schema' node ->schema opts)
-                   ;;generate reachable recursive defschema's
+                   ;;force reachable defschema's
                    _ (doseq [[id d] id->var
                              :when (realized? d)]
                        @(ref-id->rec-schema (fu/identify-ref-type (f/ref id) opts)))]
