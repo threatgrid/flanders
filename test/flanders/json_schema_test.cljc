@@ -99,10 +99,42 @@
                 :errors
                 (mapv #(dissoc % :schema)))))
     (is (m/validate @MalliSecurityFinding th/example-security-finding))
-    ;;FIXME OOM
-    ;(is (= ::FIXME (mg/generate @MalliSecurityFinding-no-example)))
-    ;(is (mg/generate @MalliSecurityFinding {:seed 0}))
-    ))
+    (is (= {:severity_id 0,
+            :osint
+            [{:type_id 8,
+              :email
+              {:cc [],
+               :delivered_to "",
+               :from "k",
+               :reply_to "",
+               :size -1,
+               :to [],
+               :uid "V",
+               :x_originating_ip []},
+              :autonomous_system {:name "m", :number 0},
+              :uid "3",
+              :value "h",
+              :type "",
+              :kill_chain [],
+              :signatures [],
+              :attacks
+              [{:tactic {:name "d", :src_url "E"}, :tactics [], :version ""}],
+              :vendor_name "x",
+              :location
+              {:desc "",
+               :geohash "2",
+               :isp "V",
+               :long -1,
+               :postal_code "",
+               :provider ""},
+              :confidence_id 2,
+              :email_auth
+              {:dkim "", :dkim_domain "", :dmarc "", :dmarc_override ""},
+              :vulnerabilities []}]}
+           (select-keys (mg/generate @MalliSecurityFinding-no-example {:seed 0 :size 1})
+                        [:severity_id :osint])))
+    (is (m/validate @MalliSecurityFinding-no-example (mg/generate @MalliSecurityFinding-no-example {:seed 0 :size 1})))
+    (is (m/validate @MalliSecurityFinding (mg/generate @MalliSecurityFinding {:seed 0 :size 1})))))
 
 (def refs-json-schema-example
   {"$defs" {"aref" {"type" "array"
