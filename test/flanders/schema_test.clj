@@ -162,24 +162,6 @@
   (is (= {:example "a" :description "Str"} (->swagger (f/enum #{"b" "c" "a"} :description "Str"))))
   (is (= {:example "default" :description "Str"} (->swagger (assoc f/any-str :description "Str" :default "default")))))
 
-
-(comment
-  (s/defschema RecursiveCondPreSchema
-    (s/cond-pre (s/recursive #'RecursiveCondPreSchema)
-                s/Bool))
-  (s/validate RecursiveCondPreSchema 1)
-  (def shadow-schema
-    (-> fes/ShadowingMultiRefExample
-        fs/->schema
-        ))
-
-  (explain-transitive-schema shadow-schema)
-  (explain-transitive-schema flanders.json-schema.schema.000221609420435125.17d7e183-7191-4c68-847e-1912bf813414/a)
-  (explain-transitive-schema flanders.json-schema.schema.000221609421443375.83bbc702-77d8-471e-b99a-b7d2aca42846/b)
-  (explain-transitive-schema flanders.json-schema.schema.000221609421586291.a894b9da-f98f-41aa-a55a-ba5f42545ead/a)
-  (explain-transitive-schema flanders.json-schema.schema.000221609421747000.8d76625c-6e28-4215-a7a0-6a9699e3b6fd/b)
-  )
-
 (deftest ref-form-test
   (is (= '{:schema (recursive #'ns-0/foo), :vars {ns-0/foo Int}}
          (-> fes/RefExample
@@ -226,10 +208,12 @@
                           (-> fes/InfiniteRefExample (fs/->schema {::fs/no-example true}))))
     (is (thrown-with-msg? Exception
                           #"Infinite schema detected"
-                          (-> fes/InfiniteEitherExample (fs/->schema {::fs/no-example true})))))
-)
+                          (-> fes/InfiniteEitherExample (fs/->schema {::fs/no-example true}))))))
 
 (deftest ref-validation-test
   (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) [])))
   (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) nil)))
-  (is (= "(not (sequential? 1))" (pr-str (s/check (fs/->schema fes/RecursiveRefExample) 1)))))
+  (is (= '(not (sequential? 1)) (read-string (pr-str (s/check (fs/->schema fes/RecursiveRefExample) 1)))))
+  (is (nil? (s/check (fs/->schema fes/ShadowingMultiRefExample) 42)))
+  (is (= '(not (#{42} 41)) (read-string (pr-str (s/check (fs/->schema fes/ShadowingMultiRefExample) 41)))))
+  )
