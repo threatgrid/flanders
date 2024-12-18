@@ -24,6 +24,6 @@
   :profiles {:dev
              {:jvm-opts ["-Dflanders-dev-time=true"]
               :dependencies [[org.clojure/test.check "1.1.1"]
-                             [cheshire "5.9.0"]
+                             [cheshire "5.13.0"]
                              [metosin/malli "0.17.0"]]
               :resource-paths ["test-resources"]}})
