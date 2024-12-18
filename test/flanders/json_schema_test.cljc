@@ -75,7 +75,7 @@
            @example-SecurityFinding))
     (is (= (edn/read-string (slurp "test-resources/expected-malli-SecurityFinding-no-example.edn"))
            (m/form @MalliSecurityFinding-no-example)))
-    (is (m/form @MalliSecurityFinding))
+    (is (= ::FIXME (m/form @MalliSecurityFinding)))
     (is (some? (m/explain @MalliSecurityFinding {})))
     ;;FIXME
     #_

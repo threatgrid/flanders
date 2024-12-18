@@ -16,7 +16,6 @@
     {:closed true}
     [:end_line {:optional true} :int]
     [:file
-     {}
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/file"]]
     [:owner
@@ -40,7 +39,7 @@
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
     [:license {:optional true} :string]
-    [:name {} :string]
+    [:name :string]
     [:package_manager {:optional true} :string]
     [:path {:optional true} :string]
     [:purl {:optional true} :string]
@@ -52,7 +51,7 @@
     [:type {:optional true} :string]
     [:type_id {:optional true} [:enum 0 1 2 99]]
     [:vendor_name {:optional true} :string]
-    [:version {} :string]],
+    [:version :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/agent"
    [:map
     {:closed true}
@@ -80,7 +79,7 @@
       [:ref
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/analytic"]]]
     [:type {:optional true} :string]
-    [:type_id {} [:enum 0 1 2 3 4 5 6 7 8 9 10 11 99]]
+    [:type_id [:enum 0 1 2 3 4 5 6 7 8 9 10 11 99]]
     [:uid {:optional true} :string]
     [:version {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/api"
@@ -90,7 +89,7 @@
      {:optional true}
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"]]
-    [:operation {} :string]
+    [:operation :string]
     [:request
      {:optional true}
      [:ref
@@ -138,20 +137,19 @@
     [:expiration_time {:optional true} :int]
     [:expiration_time_dt {:optional true} :string]
     [:fingerprints
-     {}
      [:sequential
       [:ref
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]]
     [:is_self_signed {:optional true} :boolean]
-    [:issuer {} :string]
-    [:serial_number {} :string]
+    [:issuer :string]
+    [:serial_number :string]
     [:subject {:optional true} :string]
     [:uid {:optional true} :string]
     [:version {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cis_csc"
    [:map
     {:closed true}
-    [:control {} :string]
+    [:control :string]
     [:version {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cloud"
    [:map
@@ -165,7 +163,7 @@
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/organization"]]
     [:project_uid {:optional true} :string]
-    [:provider {} :string]
+    [:provider :string]
     [:region {:optional true} :string]
     [:zone {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/compliance"
@@ -183,7 +181,7 @@
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"]]]
     [:control {:optional true} :string]
     [:requirements {:optional true} [:sequential :string]]
-    [:standards {} [:sequential :string]]
+    [:standards [:sequential :string]]
     [:status {:optional true} :string]
     [:status_code {:optional true} :string]
     [:status_detail {:optional true} :string]
@@ -237,11 +235,11 @@
     [:references {:optional true} [:sequential :string]]
     [:title {:optional true} :string]
     [:type {:optional true} :string]
-    [:uid {} :string]],
+    [:uid :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cvss"
    [:map
     {:closed true}
-    [:base_score {} number?]
+    [:base_score number?]
     [:depth {:optional true} [:enum "Base" "Environmental" "Temporal"]]
     [:metrics
      {:optional true}
@@ -251,13 +249,13 @@
     [:overall_score {:optional true} number?]
     [:severity {:optional true} :string]
     [:vector_string {:optional true} :string]
-    [:version {} :string]],
+    [:version :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cwe"
    [:map
     {:closed true}
     [:caption {:optional true} :string]
     [:src_url {:optional true} :string]
-    [:uid {} :string]],
+    [:uid :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"
    [:map
     {:closed true}
@@ -349,7 +347,7 @@
     [:subnet {:optional true} :string]
     [:subnet_uid {:optional true} :string]
     [:type {:optional true} :string]
-    [:type_id {} [:enum 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 99]]
+    [:type_id [:enum 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 99]]
     [:uid {:optional true} :string]
     [:uid_alt {:optional true} :string]
     [:vlan_uid {:optional true} :string]
@@ -381,7 +379,7 @@
    [:map
     {:closed true}
     [:algorithm {:optional true} :string]
-    [:algorithm_id {} [:enum 0 1 2 3 4 99]]
+    [:algorithm_id [:enum 0 1 2 3 4 99]]
     [:certificate
      {:optional true}
      [:ref
@@ -410,7 +408,7 @@
     [:flag_ids {:optional true} [:sequential [:enum 0 1 2 3 4 5 6 99]]]
     [:flags {:optional true} [:sequential :string]]
     [:packet_uid {:optional true} :int]
-    [:rdata {} :string]
+    [:rdata :string]
     [:ttl {:optional true} :int]
     [:type {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/domain_contact"
@@ -424,7 +422,7 @@
     [:name {:optional true} :string]
     [:phone_number {:optional true} :string]
     [:type {:optional true} :string]
-    [:type_id {} [:enum 0 1 2 3 4 5 99]]
+    [:type_id [:enum 0 1 2 3 4 5 99]]
     [:uid {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/email"
    [:map
@@ -435,7 +433,7 @@
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/data_classification"]]
     [:delivered_to {:optional true} :string]
-    [:from {} :string]
+    [:from :string]
     [:message_uid {:optional true} :string]
     [:raw_header {:optional true} :string]
     [:reply_to {:optional true} :string]
@@ -443,7 +441,7 @@
     [:smtp_from {:optional true} :string]
     [:smtp_to {:optional true} [:sequential :string]]
     [:subject {:optional true} :string]
-    [:to {} [:sequential :string]]
+    [:to [:sequential :string]]
     [:uid {:optional true} :string]
     [:x_originating_ip {:optional true} [:sequential :string]]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/email_auth"
@@ -461,9 +459,9 @@
     {:closed true}
     [:created_time {:optional true} :int]
     [:created_time_dt {:optional true} :string]
-    [:data {} :any]
+    [:data :any]
     [:desc {:optional true} :string]
-    [:name {} :string]
+    [:name :string]
     [:provider {:optional true} :string]
     [:reputation
      {:optional true}
@@ -472,21 +470,21 @@
     [:short_desc {:optional true} :string]
     [:src_url {:optional true} :string]
     [:type {:optional true} :string]
-    [:value {} :string]],
+    [:value :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/epss"
    [:map
     {:closed true}
     [:created_time {:optional true} :int]
     [:created_time_dt {:optional true} :string]
     [:percentile {:optional true} number?]
-    [:score {} :string]
+    [:score :string]
     [:version {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/extension"
    [:map
     {:closed true}
-    [:name {} :string]
-    [:uid {} :string]
-    [:version {} :string]],
+    [:name :string]
+    [:uid :string]
+    [:version :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/feature"
    [:map
     {:closed true}
@@ -531,7 +529,7 @@
      {:optional true}
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/user"]]
-    [:name {} :string]
+    [:name :string]
     [:owner
      {:optional true}
      [:ref
@@ -549,7 +547,7 @@
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/digital_signature"]]
     [:size {:optional true} :int]
     [:type {:optional true} :string]
-    [:type_id {} [:enum 0 1 2 3 4 5 6 7 99]]
+    [:type_id [:enum 0 1 2 3 4 5 6 7 99]]
     [:uid {:optional true} :string]
     [:version {:optional true} :string]
     [:xattributes
@@ -580,15 +578,15 @@
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"]]
     [:src_url {:optional true} :string]
     [:supporting_data {:optional true} :any]
-    [:title {} :string]
+    [:title :string]
     [:types {:optional true} [:sequential :string]]
-    [:uid {} :string]],
+    [:uid :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"
    [:map
     {:closed true}
     [:algorithm {:optional true} :string]
-    [:algorithm_id {} [:enum 0 1 2 3 4 5 6 7 99]]
-    [:value {} :string]],
+    [:algorithm_id [:enum 0 1 2 3 4 5 6 7 99]]
+    [:value :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/group"
    [:map
     {:closed true}
@@ -605,7 +603,7 @@
     [:name {:optional true} :string]
     [:path {:optional true} :string]
     [:tag {:optional true} :string]
-    [:uid {} :string]],
+    [:uid :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/kb_article"
    [:map
     {:closed true}
@@ -632,7 +630,7 @@
     [:size {:optional true} :int]
     [:src_url {:optional true} :string]
     [:title {:optional true} :string]
-    [:uid {} :string]],
+    [:uid :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/keyboard_info"
    [:map
     {:closed true}
@@ -645,7 +643,7 @@
    [:map
     {:closed true}
     [:phase {:optional true} :string]
-    [:phase_id {} [:enum 0 1 2 3 4 5 6 7 99]]],
+    [:phase_id [:enum 0 1 2 3 4 5 6 7 99]]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/ldap_person"
    [:map
     {:closed true}
@@ -721,7 +719,6 @@
    [:map
     {:closed true}
     [:classification_ids
-     {}
      [:sequential
       [:enum
        0
@@ -793,16 +790,15 @@
     [:processed_time {:optional true} :int]
     [:processed_time_dt {:optional true} :string]
     [:product
-     {}
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/product"]]
     [:profiles {:optional true} [:sequential :string]]
     [:sequence {:optional true} :int]
     [:tenant_uid {:optional true} :string]
     [:uid {:optional true} :string]
-    [:version {} :string]],
+    [:version :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/metric"
-   [:map {:closed true} [:name {} :string] [:value {} :string]],
+   [:map {:closed true} [:name :string] [:value :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/network_interface"
    [:map
     {:closed true}
@@ -813,21 +809,20 @@
     [:namespace {:optional true} :string]
     [:subnet_prefix {:optional true} :int]
     [:type {:optional true} :string]
-    [:type_id {} [:enum 0 1 2 3 4 99]]
+    [:type_id [:enum 0 1 2 3 4 99]]
     [:uid {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"
    [:map {:closed true}],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"
    [:map
     {:closed true}
-    [:name {} :string]
+    [:name :string]
     [:reputation
      {:optional true}
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/reputation"]]
     [:type {:optional true} :string]
     [:type_id
-     {}
      [:enum
       0
       1
@@ -878,11 +873,11 @@
     [:cpu_bits {:optional true} :int]
     [:edition {:optional true} :string]
     [:lang {:optional true} :string]
-    [:name {} :string]
+    [:name :string]
     [:sp_name {:optional true} :string]
     [:sp_ver {:optional true} :int]
     [:type {:optional true} :string]
-    [:type_id {} [:enum 0 99 100 101 200 201 300 301 302 400 401 402]]
+    [:type_id [:enum 0 99 100 101 200 201 300 301 302 400 401 402]]
     [:version {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/osint"
    [:map
@@ -933,9 +928,9 @@
      {:optional true}
      [:enum "AMBER" "AMBER STRICT" "CLEAR" "GREEN" "RED"]]
     [:type {:optional true} :string]
-    [:type_id {} [:enum 0 1 2 3 4 5 6 7 8 9 10 99]]
+    [:type_id [:enum 0 1 2 3 4 5 6 7 8 9 10 99]]
     [:uid {:optional true} :string]
-    [:value {} :string]
+    [:value :string]
     [:vendor_name {:optional true} :string]
     [:vulnerabilities
      {:optional true}
@@ -957,13 +952,13 @@
      [:ref
       "https://schema.ocsf.io/schema/classes/security_finding/$defs/fingerprint"]]
     [:license {:optional true} :string]
-    [:name {} :string]
+    [:name :string]
     [:purl {:optional true} :string]
     [:release {:optional true} :string]
     [:type {:optional true} :string]
     [:type_id {:optional true} [:enum 0 1 2 99]]
     [:vendor_name {:optional true} :string]
-    [:version {} :string]],
+    [:version :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/policy"
    [:map
     {:closed true}
@@ -1042,7 +1037,7 @@
     [:path {:optional true} :string]
     [:uid {:optional true} :string]
     [:url_string {:optional true} :string]
-    [:vendor_name {} :string]
+    [:vendor_name :string]
     [:version {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/related_event"
    [:map
@@ -1066,11 +1061,11 @@
     [:type {:optional true} :string]
     [:type_name {:optional true} :string]
     [:type_uid {:optional true} :int]
-    [:uid {} :string]],
+    [:uid :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/remediation"
    [:map
     {:closed true}
-    [:desc {} :string]
+    [:desc :string]
     [:kb_article_list
      {:optional true}
      [:sequential
@@ -1081,10 +1076,10 @@
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/reputation"
    [:map
     {:closed true}
-    [:base_score {} number?]
+    [:base_score number?]
     [:provider {:optional true} :string]
     [:score {:optional true} :string]
-    [:score_id {} [:enum 0 1 2 3 4 5 6 7 8 9 10 99]]],
+    [:score_id [:enum 0 1 2 3 4 5 6 7 8 9 10 99]]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/request"
    [:map
     {:closed true}
@@ -1095,7 +1090,7 @@
        "https://schema.ocsf.io/schema/classes/security_finding/$defs/container"]]]
     [:data {:optional true} :any]
     [:flags {:optional true} [:sequential :string]]
-    [:uid {} :string]],
+    [:uid :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/resource_details"
    [:map
     {:closed true}
@@ -1303,7 +1298,7 @@
     [:status {:optional true} :string]
     [:subdomains {:optional true} [:sequential :string]]
     [:subnet {:optional true} :string]]}}
- [:activity_id {} [:enum 0 1 2 3 99]]
+ [:activity_id [:enum 0 1 2 3 99]]
  [:activity_name {:optional true} :string]
  [:analytic
   {:optional true}
@@ -1319,16 +1314,15 @@
    [:ref
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
  [:category_name {:optional true} :string]
- [:category_uid {} :int]
+ [:category_uid :int]
  [:cis_csc
   {:optional true}
   [:sequential
    [:ref
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/cis_csc"]]]
  [:class_name {:optional true} :string]
- [:class_uid {} :int]
+ [:class_uid :int]
  [:cloud
-  {}
   [:ref
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cloud"]]
  [:compliance
@@ -1350,7 +1344,6 @@
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/enrichment"]]]
  [:evidence {:optional true} :any]
  [:finding
-  {}
   [:ref
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/finding"]]
  [:impact {:optional true} :string]
@@ -1368,7 +1361,6 @@
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/malware"]]]
  [:message {:optional true} :string]
  [:metadata
-  {}
   [:ref
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/metadata"]]
  [:nist {:optional true} [:sequential :string]]
@@ -1378,7 +1370,6 @@
    [:ref
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"]]]
  [:osint
-  {}
   [:sequential
    [:ref
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/osint"]]]
@@ -1396,20 +1387,20 @@
  [:risk_level_id {:optional true} [:enum 0 1 2 3 4 99]]
  [:risk_score {:optional true} :int]
  [:severity {:optional true} :string]
- [:severity_id {} [:enum 0 1 2 3 4 5 6 99]]
+ [:severity_id [:enum 0 1 2 3 4 5 6 99]]
  [:start_time {:optional true} :int]
  [:start_time_dt {:optional true} :string]
  [:state {:optional true} :string]
- [:state_id {} [:enum 0 1 2 3 4 99]]
+ [:state_id [:enum 0 1 2 3 4 99]]
  [:status {:optional true} :string]
  [:status_code {:optional true} :string]
  [:status_detail {:optional true} :string]
  [:status_id {:optional true} [:enum 0 1 2 99]]
- [:time {} :int]
+ [:time :int]
  [:time_dt {:optional true} :string]
  [:timezone_offset {:optional true} :int]
  [:type_name {:optional true} :string]
- [:type_uid {} :int]
+ [:type_uid :int]
  [:unmapped
   {:optional true}
   [:ref

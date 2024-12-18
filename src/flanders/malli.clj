@@ -56,10 +56,11 @@
                          (not (:open? key))
                          (seq (:values key)))
           description (some :description [key entry])
-          props (cond-> {}
-                  (not (::no-example opts)) (assoc :json-schema/example (example/->example-tree type))
-                  optional? (assoc :optional true)
-                  description (assoc :json-schema/description description))
+          props (not-empty
+                  (cond-> {}
+                    (not (::no-example opts)) (assoc :json-schema/example (example/->example-tree type))
+                    optional? (assoc :optional true)
+                    description (assoc :json-schema/description description)))
           default-or-specific-key (->malli (assoc key :key? true))]
       (case (:op default-or-specific-key)
         :specific-key (-> [(:schema default-or-specific-key)]
