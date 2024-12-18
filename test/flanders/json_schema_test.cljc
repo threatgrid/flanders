@@ -57,7 +57,6 @@
           (println ";;Generated and tested by flanders.json-schema-test")
           (println ";;The expected result of converting OCSF security_finding class without attaching examples")
           (th/pprint-reproducibly (m/form @MalliSecurityFinding-no-example))))
-  
   )
 
 (deftest ocsf-test
@@ -157,16 +156,8 @@
             :json-schema/example []}
            "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
          (m/form (->malli refs-json-schema-example))))
-  (is (m/validate (->malli refs-json-schema-example) []))
-  )
+  (is (m/validate (->malli refs-json-schema-example) [])))
 
 (comment
-  (sut/->flanders refs-json-schema-example nil)
-  (->malli refs-json-schema-example)
-  (->schema refs-json-schema-example)
-  )
-
-(comment
-  (generate-example-malli "security-finding.edn" @security-finding-json)
   (keys (:flanders.json-schema/defs-scope @FlandersSecurityFinding))
   )
