@@ -19,13 +19,15 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@3.7
         with:
           lein: 2.9.8
       - name: Cache project dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.m2/repository
@@ -51,7 +53,9 @@ jobs:
     runs-on: ubuntu-20.04
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install Java
         uses: actions/setup-java@v3
@@ -75,7 +79,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Cache project dependencies
         uses: actions/cache@v3
         with:

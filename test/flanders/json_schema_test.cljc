@@ -1,5 +1,7 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.string :as str]
+            [clojure.walk :as walk]
             [clojure.edn :as edn]
             [cheshire.core :as json]
             [clojure.pprint :as pp]
@@ -157,6 +159,42 @@
            "https://schema.ocsf.io/schema/classes/security_finding/$defs/aref"]
          (m/form (->malli refs-json-schema-example))))
   (is (m/validate (->malli refs-json-schema-example) [])))
+
+(def json-schema-test-suite
+  {"http://json-schema.org/draft-07/schema#" [{:file "JSON-Schema-Test-Suite/tests/draft7/boolean_schema.json"
+                                               :config {;; flanders has no opposite for f/any
+                                                        "boolean schema 'false'" :skip}}
+                                              {:file "JSON-Schema-Test-Suite/tests/draft7/const.json"}]})
+
+(defn ->printable [data]
+  (walk/postwalk
+    (fn [data]
+      (if (string? data)
+        ;; replace non-printable
+        (str/replace data #"\p{C}" "<NOTPRINTABLE>")
+        data))
+    data))
+
+(deftest json-schema-test-suite-test
+  (doseq [[version files] json-schema-test-suite
+          {:keys [file config]} files
+          :let [suite (json/decode (slurp file))
+                _ (assert (seq suite))]
+          {:strs [description schema tests]} suite
+          :let [config (get config description)]
+          :when (not= :skip config)]
+    (testing (str version "\n" file "\n" "Test suite: " description)
+      (assert (seq tests))
+      (doseq [{:strs [description data valid]} tests
+              :let [config (get config description)]
+              :when (not= :skip config)
+              backend [:malli #_:schema]]
+        (testing (str "\n" description "\n" (pr-str (->printable data)))
+          (case backend
+            :malli (let [m (is (->malli schema {::sut/$schema version}))]
+                     (when (m/schema? m)
+                       (is (= valid (m/validate m data))
+                           (pr-str (m/form m)))))))))))
 
 (comment
   (keys (:flanders.json-schema/defs-scope @FlandersSecurityFinding))
