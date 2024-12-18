@@ -171,35 +171,49 @@
   )
 
 (deftest ref-form-test
-  (is (= s/Int (-> fes/RefExample fs/->schema)))
+  (is (= '{:schema (recursive #'ns-0/foo), :vars {ns-0/foo Int}}
+         (-> fes/RefExample
+                   fs/->schema
+                   explain-transitive-schema)))
   (is (= '{:schema (recursive #'ns-0/foo),
-           :vars {ns-0/foo [(recursive #'ns-0/foo)]}}
+           :vars
+           {ns-0/foo [(recursive #'ns-1/foo)], ns-1/foo [(recursive #'ns-1/foo)]}}
          (-> fes/RecursiveRefExample
              fs/->schema
              explain-transitive-schema)))
-  (is (= (s/enum 42) (-> fes/ShadowingRefExample fs/->schema)))
-  (is (= (s/enum 42) (-> fes/ShadowingMultiRefExample fs/->schema)))
-  (is (= '{:schema (cond-pre (cond-pre (cond-pre (recursive #'ns-0/a) Bool) Int)),
-           :vars {ns-0/a (cond-pre (recursive #'ns-0/a) Bool)}}
-         (-> fes/InnerRecursionRefExample
+  (is (= '{:schema (recursive #'ns-0/a),
+           :vars {ns-0/a (recursive #'ns-1/a), ns-1/a (enum 42)}}
+         (-> fes/ShadowingRefExample
+             fs/->schema
+             explain-transitive-schema)))
+  ;;FIXME
+  (is (= (s/enum 42)
+         (-> fes/ShadowingMultiRefExample
              fs/->schema
              explain-transitive-schema)))
   (is (thrown-with-msg? Exception
                         #"Ref not in scope: \"a\""
                         (-> fes/UnscopedRefExample fs/->schema)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InnerRecursionRefExample fs/->schema)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteRefExample fs/->schema)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InfiniteEitherExample fs/->schema)))
   (testing "infinite schema detected even without examples walked"
+    (is (thrown-with-msg? Exception
+                          #"Infinite schema detected"
+                          (-> fes/InnerRecursionRefExample (fs/->schema {::fs/no-example true}))))
     (is (thrown-with-msg? Exception
                           #"Infinite schema detected"
                           (-> fes/InfiniteRefExample (fs/->schema {::fs/no-example true}))))
     (is (thrown-with-msg? Exception
                           #"Infinite schema detected"
                           (-> fes/InfiniteEitherExample (fs/->schema {::fs/no-example true})))))
-  (is (thrown-with-msg? Exception
-                        #"Infinite schema detected"
-                        (-> fes/InfiniteRefExample fs/->schema)))
-  (is (thrown-with-msg? Exception
-                        #"Infinite schema detected"
-                        (-> fes/InfiniteEitherExample fs/->schema))))
+)
 
 (deftest ref-validation-test
   (is (nil? (s/check (fs/->schema fes/RecursiveRefExample) [])))

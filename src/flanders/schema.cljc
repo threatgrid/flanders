@@ -87,8 +87,38 @@
              (let [opts (-> opts
                             (update ::schema-level #(cond-> (or % [])
                                                       (fu/progress-schema? node) (conj node)))
-                            (update ::f/registry (fnil into {}) (::f/registry node)))]
-               (->schema' node ->schema opts)))]
+                            (update ::f/registry (fnil into {}) (::f/registry node)))
+                   temp-ns (delay (create-ns (symbol (str "flanders.json-schema.schema."
+                                                          ;; helps sort schemas during unit testing.
+                                                          (stable-sortable-ns-segment)
+                                                          "."
+                                                          (str (random-uuid))))))
+                   id->var (into {} (map (fn [id]
+                                           [id (delay (intern @temp-ns (def-id->var-sym id)))]))
+                                 (keys (::f/registry node)))
+                   ref-id->recursive (into {} (map (fn [id]
+                                                     [(fu/identify-ref-type (f/ref id) opts) (delay (s/recursive @(id->var id)))]))
+                                           (keys (::f/registry node)))
+                   ref-id->rec-schema (into {} (map (fn [[id s]]
+                                                  (let [ref-id (fu/identify-ref-type (f/ref id) opts)]
+                                                    [ref-id
+                                                     (delay
+                                                       (let [temp-ns @temp-ns
+                                                             def-var @(id->var id)
+                                                             _generated-schema (let [frm `(s/defschema ~(-> def-var symbol name symbol)
+                                                                                            ~(str "JSON Schema id: " id "\n")
+                                                                                            ~(->schema s (update opts ::rec-schema ref-id->recursive)))]
+                                                                                 (binding [*ns* temp-ns]
+                                                                                   (eval frm)))]
+                                                         @(ref-id->recursive ref-id)))])))
+                                        (::f/registry node))
+                   opts (update opts ::rec-schema (fnil into {}) ref-id->rec-schema)
+                   s (->schema' node ->schema opts)
+                   ;;generate reachable recursive defschema's
+                   _ (doseq [[id d] id->var
+                             :when (realized? d)]
+                       @(ref-id->rec-schema (fu/identify-ref-type (f/ref id) opts)))]
+               s))]
      (f node opts))))
 
 #?(:clj (defn ->schema+clean
@@ -105,23 +135,24 @@
 (def get-schema
   (memoize ->schema))
 
-(defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [seen schema-level rec-ref-levels] :as opts}]
+(defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [schema-level rec-ref-levels] :as opts}]
   (assert (string? id))
   (let [ref-id (fu/identify-ref-type dll opts)
         _ (when (get-in rec-ref-levels [ref-id schema-level])
             ;; made no progress when expanding recursive schema
             ;; e.g., (defschema A (s/either A s/Int))
             (throw (ex-info (str "Infinite schema detected: " (pr-str dll)) {})))
-        opts (assoc-in opts [::rec-ref-levels ref-id schema-level] true)]
+        opts (assoc-in opts [::rec-ref-levels ref-id schema-level] true)
+        temp-ns (delay (create-ns (symbol (str "flanders.json-schema.schema."
+                                               ;; helps sort schemas during unit testing.
+                                               (stable-sortable-ns-segment)
+                                               "."
+                                               (str (random-uuid))))))]
     (-> (or (force (get-in opts [::rec-schema ref-id]))
             (let [s (or (get registry id)
                         (throw (ex-info (format "Ref not in scope: %s" (pr-str id)) {})))
                   d (delay
-                      (let [temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
-                                                            ;; helps sort schemas during unit testing.
-                                                            (stable-sortable-ns-segment)
-                                                            "."
-                                                            (str (random-uuid)))))
+                      (let [temp-ns @temp-ns
                             def-var (intern temp-ns (def-id->var-sym id))
                             rec-schema (s/recursive def-var)
                             _generated-schema (let [frm `(s/defschema ~(-> def-var symbol name symbol)
@@ -131,7 +162,8 @@
                                                   (eval frm)))]
                         (s/recursive def-var)))
                   res (f s (assoc-in opts [::rec-schema ref-id] d))]
-              (if (realized? d)
+              (if true #_(realized? d)
+                ;; always generate defschema's to save memory when generating validators
                 @d
                 res)))
         (describe dll opts))))

@@ -264,7 +264,7 @@
          (-> fes/ShadowingMultiRefExample fm/->malli m/form)))
   (is (thrown-with-msg? Exception
                         #"Infinite schema detected"
-                        (-> fes/InnerRecursionRefExample fm/->malli m/form)))
+                        (-> fes/InnerRecursionRefExample fm/->malli)))
   (is (thrown-with-msg? Exception
                         #"Ref not in scope: \"a\""
                         (-> fes/UnscopedRefExample fm/->malli)))
@@ -275,6 +275,9 @@
                         #"Infinite schema detected"
                         (-> fes/InfiniteEitherExample fm/->malli)))
   (testing "infinite schema detected even without examples walked"
+    (is (thrown-with-msg? Exception
+                          #"Infinite schema detected"
+                          (-> fes/InnerRecursionRefExample (fm/->malli {::fm/no-example true}))))
     (is (thrown-with-msg? Exception
                           #"Infinite schema detected"
                           (-> fes/InfiniteRefExample (fm/->malli {::fm/no-example true}))))
