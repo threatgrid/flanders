@@ -262,18 +262,9 @@
              "a"]}}
           "a"]
          (-> fes/ShadowingMultiRefExample fm/->malli m/form)))
-  (is (= [:or
-          {:registry
-           {"a"
-            [:or
-             {:registry {"b" [:boolean #:json-schema{:example true}]}}
-             [:ref #:json-schema{:example true} "a"]
-             [:ref #:json-schema{:example true} "b"]]}}
-          [:or
-           {:registry {"b" [:int #:json-schema{:example 10}]}}
-           [:ref #:json-schema{:example true} "a"]
-           [:ref #:json-schema{:example 10} "b"]]]
-         (-> fes/InnerRecursionRefExample fm/->malli m/form)))
+  (is (thrown-with-msg? Exception
+                        #"Infinite schema detected"
+                        (-> fes/InnerRecursionRefExample fm/->malli m/form)))
   (is (thrown-with-msg? Exception
                         #"Ref not in scope: \"a\""
                         (-> fes/UnscopedRefExample fm/->malli)))
