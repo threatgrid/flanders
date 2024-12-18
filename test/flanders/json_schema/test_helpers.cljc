@@ -46,6 +46,7 @@
 (defn collect-transitive-recursive-vars-from-schema [s]
   (loop [seen #{}
          remaining (collect-recursive-vars-from-schema s)]
+    (when (Thread/interrupted) (throw (InterruptedException.)))
     (if-some [v (first remaining)]
       (if (seen v)
         (recur seen (disj remaining v))

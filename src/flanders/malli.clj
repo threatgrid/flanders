@@ -177,6 +177,15 @@
 
 (def default-opts {:registry (merge (m/default-schemas) (mu/schemas))})
 
+(def ^:private max-ms 10000)
+(defn- ensure-timely [opts]
+  (when (Thread/interrupted) (throw (InterruptedException.)))
+  (let [{::keys [init-ms] :as opts} (update opts ::init-ms #(or % (System/currentTimeMillis)))]
+    (assert (<= (System/currentTimeMillis) (+ init-ms max-ms))
+            "Too long")
+    opts))
+
+
 (defn ->malli
   "Convert a ctim schema to malli. Malli opts must contain a registry
   with support for :merge (usually via malli.util/schemas)."
@@ -188,6 +197,7 @@
                    ([{::f/keys [registry] :as node} opts]
                     (let [vopts (volatile! nil)
                           opts (-> opts
+                                   ensure-timely
                                    (update ::schema-level #(cond-> (or % [])
                                                              (fu/progress-schema? node) (conj node)))
                                    (update ::f/registry (fnil into {}) registry)

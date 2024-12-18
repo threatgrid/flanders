@@ -80,11 +80,20 @@
         (println "WARNING: Please increment max-nano-digits for unit test stability")))
     (format nano-padder n)))
 
+(def ^:private max-ms 10000)
+(defn- ensure-timely [opts]
+  (when (Thread/interrupted) (throw (InterruptedException.)))
+  (let [{::keys [init-ms] :as opts} (update opts ::init-ms #(or % (System/currentTimeMillis)))]
+    (assert (<= (System/currentTimeMillis) (+ init-ms max-ms))
+            "Too long")
+    opts))
+
 (defn ->schema
   ([node] (->schema node nil))
   ([node opts]
    (let [f (fn ->schema [node opts]
              (let [opts (-> opts
+                            ensure-timely
                             (update ::schema-level #(cond-> (or % [])
                                                       (fu/progress-schema? node) (conj node)))
                             (update ::f/registry (fnil into {}) (::f/registry node)))
@@ -135,6 +144,12 @@
 (def get-schema
   (memoize ->schema))
 
+(def ^:private max-ref-depth 10)
+(defn- inc-ref-depth [opts]
+  (let [{::keys [ref-depth] :as opts} (update opts ::ref-depth (fnil inc -1))]
+    (assert (<= ref-depth max-ref-depth))
+    opts))
+
 (defn- ref->schema [{:keys [id] :as dll} f {::f/keys [registry] ::keys [schema-level rec-ref-levels] :as opts}]
   (assert (string? id))
   (let [ref-id (fu/identify-ref-type dll opts)
@@ -143,13 +158,7 @@
             ;; e.g., (defschema A (s/either A s/Int))
             (throw (ex-info (str "Infinite schema detected: " (pr-str dll)) {})))
         opts (assoc-in opts [::rec-ref-levels ref-id schema-level] true)]
-    (prn "id" id)
-    (prn (ffirst (::rec-ref-levels opts)))
-    (prn ref-id)
-    (prn )
-    (prn "in" (get-in opts [::rec-schema ref-id]))
     (-> (or (force (get-in opts [::rec-schema ref-id]))
-            (prn "new dynamic scope" id)
             (let [s (or (get registry id)
                         (throw (ex-info (format "Ref not in scope: %s" (pr-str id)) {})))
                   d (let [temp-ns (create-ns (symbol (str "flanders.json-schema.schema."
