@@ -9,7 +9,9 @@
             [clojure.java.io :as io]
             [schema.core :as s]))
 
-(defn ->malli [v] (malli/->malli (fjs/->flanders v nil) nil))
+(defn ->malli
+  ([v] (->malli v nil))
+  ([v opts] (malli/->malli (fjs/->flanders v opts) opts)))
 (defn ->schema [v] (#?(:clj schema/->schema+clean :default schema/->schema) (fjs/->flanders v nil) nil))
 
 (defn unqualify-vars [vs]

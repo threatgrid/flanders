@@ -20,6 +20,7 @@
 (def example-SecurityFinding (delay (fe/->example-tree @FlandersSecurityFinding)))
 (def SchemaSecurityFinding (delay (->schema @security-finding-json)))
 (def MalliSecurityFinding (delay (->malli @security-finding-json)))
+(def MalliSecurityFinding-no-example (delay (->malli @security-finding-json {:flanders.malli/no-example true})))
 
 ;; tests
 
@@ -44,6 +45,13 @@
                                                                 (println ";;Generated and tested by flanders.json-schema-test")
                                                                 (println ";;The expected result of flanders.example on OCSF security_finding class")
                                                                 (th/pprint-reproducibly @example-SecurityFinding)))
+
+  (spit "test-resources/expected-malli-SecurityFinding-no-example.edn"
+        (with-out-str
+          (println ";;Generated and tested by flanders.json-schema-test")
+          (println ";;The expected result of converting OCSF security_finding class without attaching examples")
+          (th/pprint-reproducibly (m/form @MalliSecurityFinding-no-example))))
+  
   )
 
 (deftest ocsf-test
@@ -65,6 +73,8 @@
   (testing "malli ops"
     (is (= (edn/read-string (slurp "test-resources/expected-example-SecurityFinding.edn"))
            @example-SecurityFinding))
+    (is (= (edn/read-string (slurp "test-resources/expected-malli-SecurityFinding-no-example.edn"))
+           (m/form @MalliSecurityFinding-no-example)))
     (is (m/form @MalliSecurityFinding))
     (is (some? (m/explain @MalliSecurityFinding {})))
     ;;FIXME
