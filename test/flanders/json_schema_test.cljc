@@ -76,6 +76,7 @@
     (is (= (edn/read-string (slurp "test-resources/expected-malli-SecurityFinding-no-example.edn"))
            (m/form @MalliSecurityFinding-no-example)))
     (is (m/validate @MalliSecurityFinding-no-example @example-SecurityFinding))
+    (is (m/validate @MalliSecurityFinding-no-example th/example-security-finding))
     (is (= [{:path [:flanders.json-schema-test/extra],
              :in [:flanders.json-schema-test/extra],
              :value true,
