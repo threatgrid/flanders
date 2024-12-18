@@ -6,1148 +6,17 @@
    :category_uid Int,
    :class_uid Int,
    :cloud
-   {:provider Str,
-    (optional-key :account)
-    {(optional-key :labels) [Str],
-     (optional-key :name) Str,
-     (optional-key :type) Str,
-     (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-     (optional-key :uid) Str},
-    (optional-key :org)
-    {(optional-key :name) Str,
-     (optional-key :ou_name) Str,
-     (optional-key :ou_uid) Str,
-     (optional-key :uid) Str},
-    (optional-key :project_uid) Str,
-    (optional-key :region) Str,
-    (optional-key :zone) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cloud),
    :finding
-   {:title Str,
-    :uid Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :desc) Str,
-    (optional-key :first_seen_time) Int,
-    (optional-key :first_seen_time_dt) Str,
-    (optional-key :last_seen_time) Int,
-    (optional-key :last_seen_time_dt) Str,
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :product_uid) Str,
-    (optional-key :related_events)
-    [{:uid Str,
-      (optional-key :attacks)
-      [{(optional-key :sub_technique)
-        {(optional-key :name) Str,
-         (optional-key :src_url) Str,
-         (optional-key :uid) Str},
-        (optional-key :tactic)
-        {(optional-key :name) Str,
-         (optional-key :src_url) Str,
-         (optional-key :uid) Str},
-        (optional-key :tactics)
-        [{(optional-key :name) Str,
-          (optional-key :src_url) Str,
-          (optional-key :uid) Str}],
-        (optional-key :technique)
-        {(optional-key :name) Str,
-         (optional-key :src_url) Str,
-         (optional-key :uid) Str},
-        (optional-key :version) Str}],
-      (optional-key :kill_chain)
-      [{:phase_id (enum 0 7 1 4 99 6 3 2 5),
-        (optional-key :phase) Str}],
-      (optional-key :observables)
-      [{:name Str,
-        :type_id
-        (enum
-         0
-         7
-         20
-         27
-         1
-         24
-         4
-         15
-         99
-         21
-         13
-         22
-         29
-         6
-         28
-         25
-         17
-         3
-         12
-         2
-         23
-         19
-         11
-         9
-         5
-         14
-         26
-         16
-         30
-         10
-         18
-         8),
-        (optional-key :reputation)
-        {:base_score Num,
-         :score_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-         (optional-key :provider) Str,
-         (optional-key :score) Str},
-        (optional-key :type) Str,
-        (optional-key :value) Str}],
-      (optional-key :product_uid) Str,
-      (optional-key :type) Str,
-      (optional-key :type_name) Str,
-      (optional-key :type_uid) Int}],
-    (optional-key :remediation)
-    {:desc Str,
-     (optional-key :kb_article_list)
-     [{:uid Str,
-       (optional-key :avg_timespan)
-       {(optional-key :duration) Int,
-        (optional-key :duration_days) Int,
-        (optional-key :duration_hours) Int,
-        (optional-key :duration_mins) Int,
-        (optional-key :duration_months) Int,
-        (optional-key :duration_secs) Int,
-        (optional-key :duration_weeks) Int,
-        (optional-key :duration_years) Int,
-        (optional-key :type) Str,
-        (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-       (optional-key :bulletin) Str,
-       (optional-key :classification) Str,
-       (optional-key :created_time) Int,
-       (optional-key :created_time_dt) Str,
-       (optional-key :install_state) Str,
-       (optional-key :install_state_id) (enum 0 1 99 3 2),
-       (optional-key :is_superseded) Bool,
-       (optional-key :os)
-       {:name Str,
-        :type_id (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-        (optional-key :build) Str,
-        (optional-key :country) Str,
-        (optional-key :cpe_name) Str,
-        (optional-key :cpu_bits) Int,
-        (optional-key :edition) Str,
-        (optional-key :lang) Str,
-        (optional-key :sp_name) Str,
-        (optional-key :sp_ver) Int,
-        (optional-key :type) Str,
-        (optional-key :version) Str},
-       (optional-key :product)
-       {:vendor_name Str,
-        (optional-key :cpe_name) Str,
-        (optional-key :data_classification)
-        {(optional-key :category) Str,
-         (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :confidentiality) Str,
-         (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :policy)
-         {(optional-key :desc) Str,
-          (optional-key :group)
-          {(optional-key :desc) Str,
-           (optional-key :domain) Str,
-           (optional-key :name) Str,
-           (optional-key :privileges) [Str],
-           (optional-key :type) Str,
-           (optional-key :uid) Str},
-          (optional-key :is_applied) Bool,
-          (optional-key :name) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str}},
-        (optional-key :feature)
-        {(optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str},
-        (optional-key :lang) Str,
-        (optional-key :name) Str,
-        (optional-key :path) Str,
-        (optional-key :uid) Str,
-        (optional-key :url_string) Str,
-        (optional-key :version) Str},
-       (optional-key :severity) Str,
-       (optional-key :size) Int,
-       (optional-key :src_url) Str,
-       (optional-key :title) Str}],
-     (optional-key :kb_articles) [Str],
-     (optional-key :references) [Str]},
-    (optional-key :src_url) Str,
-    (optional-key :supporting_data) Any,
-    (optional-key :types) [Str]},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_finding),
    :metadata
-   {:product
-    {:vendor_name Str,
-     (optional-key :cpe_name) Str,
-     (optional-key :data_classification)
-     {(optional-key :category) Str,
-      (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-      (optional-key :confidentiality) Str,
-      (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-      (optional-key :policy)
-      {(optional-key :desc) Str,
-       (optional-key :group)
-       {(optional-key :desc) Str,
-        (optional-key :domain) Str,
-        (optional-key :name) Str,
-        (optional-key :privileges) [Str],
-        (optional-key :type) Str,
-        (optional-key :uid) Str},
-       (optional-key :is_applied) Bool,
-       (optional-key :name) Str,
-       (optional-key :uid) Str,
-       (optional-key :version) Str}},
-     (optional-key :feature)
-     {(optional-key :name) Str,
-      (optional-key :uid) Str,
-      (optional-key :version) Str},
-     (optional-key :lang) Str,
-     (optional-key :name) Str,
-     (optional-key :path) Str,
-     (optional-key :uid) Str,
-     (optional-key :url_string) Str,
-     (optional-key :version) Str},
-    :version Str,
-    (optional-key :correlation_uid) Str,
-    (optional-key :data_classification)
-    {(optional-key :category) Str,
-     (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-     (optional-key :confidentiality) Str,
-     (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-     (optional-key :policy)
-     {(optional-key :desc) Str,
-      (optional-key :group)
-      {(optional-key :desc) Str,
-       (optional-key :domain) Str,
-       (optional-key :name) Str,
-       (optional-key :privileges) [Str],
-       (optional-key :type) Str,
-       (optional-key :uid) Str},
-      (optional-key :is_applied) Bool,
-      (optional-key :name) Str,
-      (optional-key :uid) Str,
-      (optional-key :version) Str}},
-    (optional-key :event_code) Str,
-    (optional-key :extension) {:name Str, :uid Str, :version Str},
-    (optional-key :extensions) [{:name Str, :uid Str, :version Str}],
-    (optional-key :labels) [Str],
-    (optional-key :log_level) Str,
-    (optional-key :log_name) Str,
-    (optional-key :log_provider) Str,
-    (optional-key :log_version) Str,
-    (optional-key :logged_time) Int,
-    (optional-key :logged_time_dt) Str,
-    (optional-key :loggers)
-    [{(optional-key :device)
-      {:type_id (enum 0 7 1 4 15 99 13 6 3 12 2 11 9 5 14 10 8),
-       (optional-key :agent_list)
-       [{(optional-key :name) Str,
-         (optional-key :policies)
-         [{(optional-key :desc) Str,
-           (optional-key :group)
-           {(optional-key :desc) Str,
-            (optional-key :domain) Str,
-            (optional-key :name) Str,
-            (optional-key :privileges) [Str],
-            (optional-key :type) Str,
-            (optional-key :uid) Str},
-           (optional-key :is_applied) Bool,
-           (optional-key :name) Str,
-           (optional-key :uid) Str,
-           (optional-key :version) Str}],
-         (optional-key :type) Str,
-         (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 8),
-         (optional-key :uid) Str,
-         (optional-key :uid_alt) Str,
-         (optional-key :vendor_name) Str,
-         (optional-key :version) Str}],
-       (optional-key :autoscale_uid) Str,
-       (optional-key :boot_time) Int,
-       (optional-key :boot_time_dt) Str,
-       (optional-key :container)
-       {(optional-key :hash)
-        {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-         :value Str,
-         (optional-key :algorithm) Str},
-        (optional-key :image)
-        {:uid Str,
-         (optional-key :labels) [Str],
-         (optional-key :name) Str,
-         (optional-key :path) Str,
-         (optional-key :tag) Str},
-        (optional-key :name) Str,
-        (optional-key :network_driver) Str,
-        (optional-key :orchestrator) Str,
-        (optional-key :pod_uuid) Str,
-        (optional-key :runtime) Str,
-        (optional-key :size) Int,
-        (optional-key :tag) Str,
-        (optional-key :uid) Str},
-       (optional-key :created_time) Int,
-       (optional-key :created_time_dt) Str,
-       (optional-key :desc) Str,
-       (optional-key :domain) Str,
-       (optional-key :first_seen_time) Int,
-       (optional-key :first_seen_time_dt) Str,
-       (optional-key :groups)
-       [{(optional-key :desc) Str,
-         (optional-key :domain) Str,
-         (optional-key :name) Str,
-         (optional-key :privileges) [Str],
-         (optional-key :type) Str,
-         (optional-key :uid) Str}],
-       (optional-key :hostname) Str,
-       (optional-key :hw_info)
-       {(optional-key :bios_date) Str,
-        (optional-key :bios_manufacturer) Str,
-        (optional-key :bios_ver) Str,
-        (optional-key :chassis) Str,
-        (optional-key :cpu_bits) Int,
-        (optional-key :cpu_cores) Int,
-        (optional-key :cpu_count) Int,
-        (optional-key :cpu_speed) Int,
-        (optional-key :cpu_type) Str,
-        (optional-key :desktop_display)
-        {(optional-key :color_depth) Int,
-         (optional-key :physical_height) Int,
-         (optional-key :physical_orientation) Int,
-         (optional-key :physical_width) Int,
-         (optional-key :scale_factor) Int},
-        (optional-key :keyboard_info)
-        {(optional-key :function_keys) Int,
-         (optional-key :ime) Str,
-         (optional-key :keyboard_layout) Str,
-         (optional-key :keyboard_subtype) Int,
-         (optional-key :keyboard_type) Str},
-        (optional-key :ram_size) Int,
-        (optional-key :serial_number) Str},
-       (optional-key :hypervisor) Str,
-       (optional-key :image)
-       {:uid Str,
-        (optional-key :labels) [Str],
-        (optional-key :name) Str,
-        (optional-key :path) Str,
-        (optional-key :tag) Str},
-       (optional-key :imei) Str,
-       (optional-key :instance_uid) Str,
-       (optional-key :interface_name) Str,
-       (optional-key :interface_uid) Str,
-       (optional-key :ip) Str,
-       (optional-key :is_compliant) Bool,
-       (optional-key :is_managed) Bool,
-       (optional-key :is_personal) Bool,
-       (optional-key :is_trusted) Bool,
-       (optional-key :last_seen_time) Int,
-       (optional-key :last_seen_time_dt) Str,
-       (optional-key :location)
-       {(optional-key :city) Str,
-        (optional-key :continent) Str,
-        (optional-key :coordinates) [Num],
-        (optional-key :country) Str,
-        (optional-key :desc) Str,
-        (optional-key :geohash) Str,
-        (optional-key :is_on_premises) Bool,
-        (optional-key :isp) Str,
-        (optional-key :lat) Num,
-        (optional-key :long) Num,
-        (optional-key :postal_code) Str,
-        (optional-key :provider) Str,
-        (optional-key :region) Str},
-       (optional-key :mac) Str,
-       (optional-key :modified_time) Int,
-       (optional-key :modified_time_dt) Str,
-       (optional-key :name) Str,
-       (optional-key :namespace_pid) Int,
-       (optional-key :network_interfaces)
-       [{:type_id (enum 0 1 4 99 3 2),
-         (optional-key :hostname) Str,
-         (optional-key :ip) Str,
-         (optional-key :mac) Str,
-         (optional-key :name) Str,
-         (optional-key :namespace) Str,
-         (optional-key :subnet_prefix) Int,
-         (optional-key :type) Str,
-         (optional-key :uid) Str}],
-       (optional-key :org)
-       {(optional-key :name) Str,
-        (optional-key :ou_name) Str,
-        (optional-key :ou_uid) Str,
-        (optional-key :uid) Str},
-       (optional-key :os)
-       {:name Str,
-        :type_id (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-        (optional-key :build) Str,
-        (optional-key :country) Str,
-        (optional-key :cpe_name) Str,
-        (optional-key :cpu_bits) Int,
-        (optional-key :edition) Str,
-        (optional-key :lang) Str,
-        (optional-key :sp_name) Str,
-        (optional-key :sp_ver) Int,
-        (optional-key :type) Str,
-        (optional-key :version) Str},
-       (optional-key :owner)
-       (recursive
-        #'ns-01/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-       (optional-key :region) Str,
-       (optional-key :risk_level) Str,
-       (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-       (optional-key :risk_score) Int,
-       (optional-key :subnet) Str,
-       (optional-key :subnet_uid) Str,
-       (optional-key :type) Str,
-       (optional-key :uid) Str,
-       (optional-key :uid_alt) Str,
-       (optional-key :vlan_uid) Str,
-       (optional-key :vpc_uid) Str,
-       (optional-key :zone) Str},
-      (optional-key :log_level) Str,
-      (optional-key :log_name) Str,
-      (optional-key :log_provider) Str,
-      (optional-key :log_version) Str,
-      (optional-key :logged_time) Int,
-      (optional-key :logged_time_dt) Str,
-      (optional-key :name) Str,
-      (optional-key :product)
-      {:vendor_name Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :data_classification)
-       {(optional-key :category) Str,
-        (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :confidentiality) Str,
-        (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :policy)
-        {(optional-key :desc) Str,
-         (optional-key :group)
-         {(optional-key :desc) Str,
-          (optional-key :domain) Str,
-          (optional-key :name) Str,
-          (optional-key :privileges) [Str],
-          (optional-key :type) Str,
-          (optional-key :uid) Str},
-         (optional-key :is_applied) Bool,
-         (optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str}},
-       (optional-key :feature)
-       {(optional-key :name) Str,
-        (optional-key :uid) Str,
-        (optional-key :version) Str},
-       (optional-key :lang) Str,
-       (optional-key :name) Str,
-       (optional-key :path) Str,
-       (optional-key :uid) Str,
-       (optional-key :url_string) Str,
-       (optional-key :version) Str},
-      (optional-key :transmit_time) Int,
-      (optional-key :transmit_time_dt) Str,
-      (optional-key :uid) Str,
-      (optional-key :version) Str}],
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :original_time) Str,
-    (optional-key :processed_time) Int,
-    (optional-key :processed_time_dt) Str,
-    (optional-key :profiles) [Str],
-    (optional-key :sequence) Int,
-    (optional-key :tenant_uid) Str,
-    (optional-key :uid) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_metadata),
    :osint
-   [{:type_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-     :value Str,
-     (optional-key :answers)
-     [{:rdata Str,
-       (optional-key :class) Str,
-       (optional-key :flag_ids) [(enum 0 1 4 99 6 3 2 5)],
-       (optional-key :flags) [Str],
-       (optional-key :packet_uid) Int,
-       (optional-key :ttl) Int,
-       (optional-key :type) Str}],
-     (optional-key :attacks)
-     [{(optional-key :sub_technique)
-       {(optional-key :name) Str,
-        (optional-key :src_url) Str,
-        (optional-key :uid) Str},
-       (optional-key :tactic)
-       {(optional-key :name) Str,
-        (optional-key :src_url) Str,
-        (optional-key :uid) Str},
-       (optional-key :tactics)
-       [{(optional-key :name) Str,
-         (optional-key :src_url) Str,
-         (optional-key :uid) Str}],
-       (optional-key :technique)
-       {(optional-key :name) Str,
-        (optional-key :src_url) Str,
-        (optional-key :uid) Str},
-       (optional-key :version) Str}],
-     (optional-key :autonomous_system)
-     {(optional-key :name) Str, (optional-key :number) Int},
-     (optional-key :comment) Str,
-     (optional-key :confidence) Str,
-     (optional-key :confidence_id) (enum 0 1 99 3 2),
-     (optional-key :email)
-     {:from Str,
-      :to [Str],
-      (optional-key :cc) [Str],
-      (optional-key :data_classification)
-      {(optional-key :category) Str,
-       (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-       (optional-key :confidentiality) Str,
-       (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-       (optional-key :policy)
-       {(optional-key :desc) Str,
-        (optional-key :group)
-        {(optional-key :desc) Str,
-         (optional-key :domain) Str,
-         (optional-key :name) Str,
-         (optional-key :privileges) [Str],
-         (optional-key :type) Str,
-         (optional-key :uid) Str},
-        (optional-key :is_applied) Bool,
-        (optional-key :name) Str,
-        (optional-key :uid) Str,
-        (optional-key :version) Str}},
-      (optional-key :delivered_to) Str,
-      (optional-key :message_uid) Str,
-      (optional-key :raw_header) Str,
-      (optional-key :reply_to) Str,
-      (optional-key :size) Int,
-      (optional-key :smtp_from) Str,
-      (optional-key :smtp_to) [Str],
-      (optional-key :subject) Str,
-      (optional-key :uid) Str,
-      (optional-key :x_originating_ip) [Str]},
-     (optional-key :email_auth)
-     {(optional-key :dkim) Str,
-      (optional-key :dkim_domain) Str,
-      (optional-key :dkim_signature) Str,
-      (optional-key :dmarc) Str,
-      (optional-key :dmarc_override) Str,
-      (optional-key :dmarc_policy) Str,
-      (optional-key :spf) Str},
-     (optional-key :kill_chain)
-     [{:phase_id (enum 0 7 1 4 99 6 3 2 5),
-       (optional-key :phase) Str}],
-     (optional-key :location)
-     {(optional-key :city) Str,
-      (optional-key :continent) Str,
-      (optional-key :coordinates) [Num],
-      (optional-key :country) Str,
-      (optional-key :desc) Str,
-      (optional-key :geohash) Str,
-      (optional-key :is_on_premises) Bool,
-      (optional-key :isp) Str,
-      (optional-key :lat) Num,
-      (optional-key :long) Num,
-      (optional-key :postal_code) Str,
-      (optional-key :provider) Str,
-      (optional-key :region) Str},
-     (optional-key :name) Str,
-     (optional-key :signatures)
-     [{:algorithm_id (enum 0 1 4 99 3 2),
-       (optional-key :algorithm) Str,
-       (optional-key :certificate)
-       {:fingerprints
-        [{:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-          :value Str,
-          (optional-key :algorithm) Str}],
-        :issuer Str,
-        :serial_number Str,
-        (optional-key :created_time) Int,
-        (optional-key :created_time_dt) Str,
-        (optional-key :expiration_time) Int,
-        (optional-key :expiration_time_dt) Str,
-        (optional-key :is_self_signed) Bool,
-        (optional-key :subject) Str,
-        (optional-key :uid) Str,
-        (optional-key :version) Str},
-       (optional-key :created_time) Int,
-       (optional-key :created_time_dt) Str,
-       (optional-key :developer_uid) Str,
-       (optional-key :digest)
-       {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-        :value Str,
-        (optional-key :algorithm) Str},
-       (optional-key :state) Str,
-       (optional-key :state_id) (enum 0 1 4 99 3 2 5)}],
-     (optional-key :src_url) Str,
-     (optional-key :subdomains) [Str],
-     (optional-key :tlp)
-     (enum "AMBER STRICT" "CLEAR" "AMBER" "GREEN" "RED"),
-     (optional-key :type) Str,
-     (optional-key :uid) Str,
-     (optional-key :vendor_name) Str,
-     (optional-key :vulnerabilities)
-     [{(optional-key :affected_code)
-       [{:file
-         {:name Str,
-          :type_id (enum 0 7 1 4 99 6 3 2 5),
-          (optional-key :accessed_time) Int,
-          (optional-key :accessed_time_dt) Str,
-          (optional-key :accessor)
-          (recursive
-           #'ns-02/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-          (optional-key :attributes) Int,
-          (optional-key :company_name) Str,
-          (optional-key :confidentiality) Str,
-          (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-          (optional-key :created_time) Int,
-          (optional-key :created_time_dt) Str,
-          (optional-key :creator)
-          (recursive
-           #'ns-03/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-          (optional-key :data_classification)
-          {(optional-key :category) Str,
-           (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-           (optional-key :confidentiality) Str,
-           (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-           (optional-key :policy)
-           {(optional-key :desc) Str,
-            (optional-key :group)
-            {(optional-key :desc) Str,
-             (optional-key :domain) Str,
-             (optional-key :name) Str,
-             (optional-key :privileges) [Str],
-             (optional-key :type) Str,
-             (optional-key :uid) Str},
-            (optional-key :is_applied) Bool,
-            (optional-key :name) Str,
-            (optional-key :uid) Str,
-            (optional-key :version) Str}},
-          (optional-key :desc) Str,
-          (optional-key :ext) Str,
-          (optional-key :hashes)
-          [{:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-            :value Str,
-            (optional-key :algorithm) Str}],
-          (optional-key :is_system) Bool,
-          (optional-key :mime_type) Str,
-          (optional-key :modified_time) Int,
-          (optional-key :modified_time_dt) Str,
-          (optional-key :modifier)
-          (recursive
-           #'ns-04/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-          (optional-key :owner)
-          (recursive
-           #'ns-05/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-          (optional-key :parent_folder) Str,
-          (optional-key :path) Str,
-          (optional-key :product)
-          {:vendor_name Str,
-           (optional-key :cpe_name) Str,
-           (optional-key :data_classification)
-           {(optional-key :category) Str,
-            (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :confidentiality) Str,
-            (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :policy)
-            {(optional-key :desc) Str,
-             (optional-key :group)
-             {(optional-key :desc) Str,
-              (optional-key :domain) Str,
-              (optional-key :name) Str,
-              (optional-key :privileges) [Str],
-              (optional-key :type) Str,
-              (optional-key :uid) Str},
-             (optional-key :is_applied) Bool,
-             (optional-key :name) Str,
-             (optional-key :uid) Str,
-             (optional-key :version) Str}},
-           (optional-key :feature)
-           {(optional-key :name) Str,
-            (optional-key :uid) Str,
-            (optional-key :version) Str},
-           (optional-key :lang) Str,
-           (optional-key :name) Str,
-           (optional-key :path) Str,
-           (optional-key :uid) Str,
-           (optional-key :url_string) Str,
-           (optional-key :version) Str},
-          (optional-key :security_descriptor) Str,
-          (optional-key :signature)
-          {:algorithm_id (enum 0 1 4 99 3 2),
-           (optional-key :algorithm) Str,
-           (optional-key :certificate)
-           {:fingerprints
-            [{:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-              :value Str,
-              (optional-key :algorithm) Str}],
-            :issuer Str,
-            :serial_number Str,
-            (optional-key :created_time) Int,
-            (optional-key :created_time_dt) Str,
-            (optional-key :expiration_time) Int,
-            (optional-key :expiration_time_dt) Str,
-            (optional-key :is_self_signed) Bool,
-            (optional-key :subject) Str,
-            (optional-key :uid) Str,
-            (optional-key :version) Str},
-           (optional-key :created_time) Int,
-           (optional-key :created_time_dt) Str,
-           (optional-key :developer_uid) Str,
-           (optional-key :digest)
-           {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-            :value Str,
-            (optional-key :algorithm) Str},
-           (optional-key :state) Str,
-           (optional-key :state_id) (enum 0 1 4 99 3 2 5)},
-          (optional-key :size) Int,
-          (optional-key :type) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str,
-          (optional-key :xattributes) {}},
-         (optional-key :end_line) Int,
-         (optional-key :owner)
-         (recursive
-          #'ns-06/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-         (optional-key :remediation)
-         {:desc Str,
-          (optional-key :kb_article_list)
-          [{:uid Str,
-            (optional-key :avg_timespan)
-            {(optional-key :duration) Int,
-             (optional-key :duration_days) Int,
-             (optional-key :duration_hours) Int,
-             (optional-key :duration_mins) Int,
-             (optional-key :duration_months) Int,
-             (optional-key :duration_secs) Int,
-             (optional-key :duration_weeks) Int,
-             (optional-key :duration_years) Int,
-             (optional-key :type) Str,
-             (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-            (optional-key :bulletin) Str,
-            (optional-key :classification) Str,
-            (optional-key :created_time) Int,
-            (optional-key :created_time_dt) Str,
-            (optional-key :install_state) Str,
-            (optional-key :install_state_id) (enum 0 1 99 3 2),
-            (optional-key :is_superseded) Bool,
-            (optional-key :os)
-            {:name Str,
-             :type_id
-             (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-             (optional-key :build) Str,
-             (optional-key :country) Str,
-             (optional-key :cpe_name) Str,
-             (optional-key :cpu_bits) Int,
-             (optional-key :edition) Str,
-             (optional-key :lang) Str,
-             (optional-key :sp_name) Str,
-             (optional-key :sp_ver) Int,
-             (optional-key :type) Str,
-             (optional-key :version) Str},
-            (optional-key :product)
-            {:vendor_name Str,
-             (optional-key :cpe_name) Str,
-             (optional-key :data_classification)
-             {(optional-key :category) Str,
-              (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-              (optional-key :confidentiality) Str,
-              (optional-key :confidentiality_id)
-              (enum 0 1 4 99 6 3 2 5),
-              (optional-key :policy)
-              {(optional-key :desc) Str,
-               (optional-key :group)
-               {(optional-key :desc) Str,
-                (optional-key :domain) Str,
-                (optional-key :name) Str,
-                (optional-key :privileges) [Str],
-                (optional-key :type) Str,
-                (optional-key :uid) Str},
-               (optional-key :is_applied) Bool,
-               (optional-key :name) Str,
-               (optional-key :uid) Str,
-               (optional-key :version) Str}},
-             (optional-key :feature)
-             {(optional-key :name) Str,
-              (optional-key :uid) Str,
-              (optional-key :version) Str},
-             (optional-key :lang) Str,
-             (optional-key :name) Str,
-             (optional-key :path) Str,
-             (optional-key :uid) Str,
-             (optional-key :url_string) Str,
-             (optional-key :version) Str},
-            (optional-key :severity) Str,
-            (optional-key :size) Int,
-            (optional-key :src_url) Str,
-            (optional-key :title) Str}],
-          (optional-key :kb_articles) [Str],
-          (optional-key :references) [Str]},
-         (optional-key :start_line) Int}],
-       (optional-key :affected_packages)
-       [{:name Str,
-         :version Str,
-         (optional-key :architecture) Str,
-         (optional-key :cpe_name) Str,
-         (optional-key :epoch) Int,
-         (optional-key :fixed_in_version) Str,
-         (optional-key :hash)
-         {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-          :value Str,
-          (optional-key :algorithm) Str},
-         (optional-key :license) Str,
-         (optional-key :package_manager) Str,
-         (optional-key :path) Str,
-         (optional-key :purl) Str,
-         (optional-key :release) Str,
-         (optional-key :remediation)
-         {:desc Str,
-          (optional-key :kb_article_list)
-          [{:uid Str,
-            (optional-key :avg_timespan)
-            {(optional-key :duration) Int,
-             (optional-key :duration_days) Int,
-             (optional-key :duration_hours) Int,
-             (optional-key :duration_mins) Int,
-             (optional-key :duration_months) Int,
-             (optional-key :duration_secs) Int,
-             (optional-key :duration_weeks) Int,
-             (optional-key :duration_years) Int,
-             (optional-key :type) Str,
-             (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-            (optional-key :bulletin) Str,
-            (optional-key :classification) Str,
-            (optional-key :created_time) Int,
-            (optional-key :created_time_dt) Str,
-            (optional-key :install_state) Str,
-            (optional-key :install_state_id) (enum 0 1 99 3 2),
-            (optional-key :is_superseded) Bool,
-            (optional-key :os)
-            {:name Str,
-             :type_id
-             (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-             (optional-key :build) Str,
-             (optional-key :country) Str,
-             (optional-key :cpe_name) Str,
-             (optional-key :cpu_bits) Int,
-             (optional-key :edition) Str,
-             (optional-key :lang) Str,
-             (optional-key :sp_name) Str,
-             (optional-key :sp_ver) Int,
-             (optional-key :type) Str,
-             (optional-key :version) Str},
-            (optional-key :product)
-            {:vendor_name Str,
-             (optional-key :cpe_name) Str,
-             (optional-key :data_classification)
-             {(optional-key :category) Str,
-              (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-              (optional-key :confidentiality) Str,
-              (optional-key :confidentiality_id)
-              (enum 0 1 4 99 6 3 2 5),
-              (optional-key :policy)
-              {(optional-key :desc) Str,
-               (optional-key :group)
-               {(optional-key :desc) Str,
-                (optional-key :domain) Str,
-                (optional-key :name) Str,
-                (optional-key :privileges) [Str],
-                (optional-key :type) Str,
-                (optional-key :uid) Str},
-               (optional-key :is_applied) Bool,
-               (optional-key :name) Str,
-               (optional-key :uid) Str,
-               (optional-key :version) Str}},
-             (optional-key :feature)
-             {(optional-key :name) Str,
-              (optional-key :uid) Str,
-              (optional-key :version) Str},
-             (optional-key :lang) Str,
-             (optional-key :name) Str,
-             (optional-key :path) Str,
-             (optional-key :uid) Str,
-             (optional-key :url_string) Str,
-             (optional-key :version) Str},
-            (optional-key :severity) Str,
-            (optional-key :size) Int,
-            (optional-key :src_url) Str,
-            (optional-key :title) Str}],
-          (optional-key :kb_articles) [Str],
-          (optional-key :references) [Str]},
-         (optional-key :type) Str,
-         (optional-key :type_id) (enum 0 1 99 2),
-         (optional-key :vendor_name) Str}],
-       (optional-key :cve)
-       {:uid Str,
-        (optional-key :created_time) Int,
-        (optional-key :created_time_dt) Str,
-        (optional-key :cvss)
-        [{:base_score Num,
-          :version Str,
-          (optional-key :depth)
-          (enum "Base" "Environmental" "Temporal"),
-          (optional-key :metrics) [{:name Str, :value Str}],
-          (optional-key :overall_score) Num,
-          (optional-key :severity) Str,
-          (optional-key :vector_string) Str}],
-        (optional-key :cwe)
-        {:uid Str,
-         (optional-key :caption) Str,
-         (optional-key :src_url) Str},
-        (optional-key :cwe_uid) Str,
-        (optional-key :cwe_url) Str,
-        (optional-key :desc) Str,
-        (optional-key :epss)
-        {:score Str,
-         (optional-key :created_time) Int,
-         (optional-key :created_time_dt) Str,
-         (optional-key :percentile) Num,
-         (optional-key :version) Str},
-        (optional-key :modified_time) Int,
-        (optional-key :modified_time_dt) Str,
-        (optional-key :product)
-        {:vendor_name Str,
-         (optional-key :cpe_name) Str,
-         (optional-key :data_classification)
-         {(optional-key :category) Str,
-          (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-          (optional-key :confidentiality) Str,
-          (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-          (optional-key :policy)
-          {(optional-key :desc) Str,
-           (optional-key :group)
-           {(optional-key :desc) Str,
-            (optional-key :domain) Str,
-            (optional-key :name) Str,
-            (optional-key :privileges) [Str],
-            (optional-key :type) Str,
-            (optional-key :uid) Str},
-           (optional-key :is_applied) Bool,
-           (optional-key :name) Str,
-           (optional-key :uid) Str,
-           (optional-key :version) Str}},
-         (optional-key :feature)
-         {(optional-key :name) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str},
-         (optional-key :lang) Str,
-         (optional-key :name) Str,
-         (optional-key :path) Str,
-         (optional-key :uid) Str,
-         (optional-key :url_string) Str,
-         (optional-key :version) Str},
-        (optional-key :references) [Str],
-        (optional-key :title) Str,
-        (optional-key :type) Str},
-       (optional-key :cwe)
-       {:uid Str,
-        (optional-key :caption) Str,
-        (optional-key :src_url) Str},
-       (optional-key :desc) Str,
-       (optional-key :first_seen_time) Int,
-       (optional-key :first_seen_time_dt) Str,
-       (optional-key :fix_available) Bool,
-       (optional-key :is_exploit_available) Bool,
-       (optional-key :is_fix_available) Bool,
-       (optional-key :kb_article_list)
-       [{:uid Str,
-         (optional-key :avg_timespan)
-         {(optional-key :duration) Int,
-          (optional-key :duration_days) Int,
-          (optional-key :duration_hours) Int,
-          (optional-key :duration_mins) Int,
-          (optional-key :duration_months) Int,
-          (optional-key :duration_secs) Int,
-          (optional-key :duration_weeks) Int,
-          (optional-key :duration_years) Int,
-          (optional-key :type) Str,
-          (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-         (optional-key :bulletin) Str,
-         (optional-key :classification) Str,
-         (optional-key :created_time) Int,
-         (optional-key :created_time_dt) Str,
-         (optional-key :install_state) Str,
-         (optional-key :install_state_id) (enum 0 1 99 3 2),
-         (optional-key :is_superseded) Bool,
-         (optional-key :os)
-         {:name Str,
-          :type_id (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-          (optional-key :build) Str,
-          (optional-key :country) Str,
-          (optional-key :cpe_name) Str,
-          (optional-key :cpu_bits) Int,
-          (optional-key :edition) Str,
-          (optional-key :lang) Str,
-          (optional-key :sp_name) Str,
-          (optional-key :sp_ver) Int,
-          (optional-key :type) Str,
-          (optional-key :version) Str},
-         (optional-key :product)
-         {:vendor_name Str,
-          (optional-key :cpe_name) Str,
-          (optional-key :data_classification)
-          {(optional-key :category) Str,
-           (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-           (optional-key :confidentiality) Str,
-           (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-           (optional-key :policy)
-           {(optional-key :desc) Str,
-            (optional-key :group)
-            {(optional-key :desc) Str,
-             (optional-key :domain) Str,
-             (optional-key :name) Str,
-             (optional-key :privileges) [Str],
-             (optional-key :type) Str,
-             (optional-key :uid) Str},
-            (optional-key :is_applied) Bool,
-            (optional-key :name) Str,
-            (optional-key :uid) Str,
-            (optional-key :version) Str}},
-          (optional-key :feature)
-          {(optional-key :name) Str,
-           (optional-key :uid) Str,
-           (optional-key :version) Str},
-          (optional-key :lang) Str,
-          (optional-key :name) Str,
-          (optional-key :path) Str,
-          (optional-key :uid) Str,
-          (optional-key :url_string) Str,
-          (optional-key :version) Str},
-         (optional-key :severity) Str,
-         (optional-key :size) Int,
-         (optional-key :src_url) Str,
-         (optional-key :title) Str}],
-       (optional-key :kb_articles) [Str],
-       (optional-key :last_seen_time) Int,
-       (optional-key :last_seen_time_dt) Str,
-       (optional-key :packages)
-       [{:name Str,
-         :version Str,
-         (optional-key :architecture) Str,
-         (optional-key :cpe_name) Str,
-         (optional-key :epoch) Int,
-         (optional-key :hash)
-         {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-          :value Str,
-          (optional-key :algorithm) Str},
-         (optional-key :license) Str,
-         (optional-key :purl) Str,
-         (optional-key :release) Str,
-         (optional-key :type) Str,
-         (optional-key :type_id) (enum 0 1 99 2),
-         (optional-key :vendor_name) Str}],
-       (optional-key :references) [Str],
-       (optional-key :related_vulnerabilities) [Str],
-       (optional-key :remediation)
-       {:desc Str,
-        (optional-key :kb_article_list)
-        [{:uid Str,
-          (optional-key :avg_timespan)
-          {(optional-key :duration) Int,
-           (optional-key :duration_days) Int,
-           (optional-key :duration_hours) Int,
-           (optional-key :duration_mins) Int,
-           (optional-key :duration_months) Int,
-           (optional-key :duration_secs) Int,
-           (optional-key :duration_weeks) Int,
-           (optional-key :duration_years) Int,
-           (optional-key :type) Str,
-           (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-          (optional-key :bulletin) Str,
-          (optional-key :classification) Str,
-          (optional-key :created_time) Int,
-          (optional-key :created_time_dt) Str,
-          (optional-key :install_state) Str,
-          (optional-key :install_state_id) (enum 0 1 99 3 2),
-          (optional-key :is_superseded) Bool,
-          (optional-key :os)
-          {:name Str,
-           :type_id
-           (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-           (optional-key :build) Str,
-           (optional-key :country) Str,
-           (optional-key :cpe_name) Str,
-           (optional-key :cpu_bits) Int,
-           (optional-key :edition) Str,
-           (optional-key :lang) Str,
-           (optional-key :sp_name) Str,
-           (optional-key :sp_ver) Int,
-           (optional-key :type) Str,
-           (optional-key :version) Str},
-          (optional-key :product)
-          {:vendor_name Str,
-           (optional-key :cpe_name) Str,
-           (optional-key :data_classification)
-           {(optional-key :category) Str,
-            (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :confidentiality) Str,
-            (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :policy)
-            {(optional-key :desc) Str,
-             (optional-key :group)
-             {(optional-key :desc) Str,
-              (optional-key :domain) Str,
-              (optional-key :name) Str,
-              (optional-key :privileges) [Str],
-              (optional-key :type) Str,
-              (optional-key :uid) Str},
-             (optional-key :is_applied) Bool,
-             (optional-key :name) Str,
-             (optional-key :uid) Str,
-             (optional-key :version) Str}},
-           (optional-key :feature)
-           {(optional-key :name) Str,
-            (optional-key :uid) Str,
-            (optional-key :version) Str},
-           (optional-key :lang) Str,
-           (optional-key :name) Str,
-           (optional-key :path) Str,
-           (optional-key :uid) Str,
-           (optional-key :url_string) Str,
-           (optional-key :version) Str},
-          (optional-key :severity) Str,
-          (optional-key :size) Int,
-          (optional-key :src_url) Str,
-          (optional-key :title) Str}],
-        (optional-key :kb_articles) [Str],
-        (optional-key :references) [Str]},
-       (optional-key :severity) Str,
-       (optional-key :title) Str,
-       (optional-key :vendor_name) Str}],
-     (optional-key :whois)
-     {(optional-key :autonomous_system)
-      {(optional-key :name) Str, (optional-key :number) Int},
-      (optional-key :created_time) Int,
-      (optional-key :created_time_dt) Str,
-      (optional-key :dnssec_status) Str,
-      (optional-key :dnssec_status_id) (enum 0 1 99 2),
-      (optional-key :domain) Str,
-      (optional-key :domain_contacts)
-      [{:type_id (enum 0 1 4 99 3 2 5),
-        (optional-key :email_addr) Str,
-        (optional-key :location)
-        {(optional-key :city) Str,
-         (optional-key :continent) Str,
-         (optional-key :coordinates) [Num],
-         (optional-key :country) Str,
-         (optional-key :desc) Str,
-         (optional-key :geohash) Str,
-         (optional-key :is_on_premises) Bool,
-         (optional-key :isp) Str,
-         (optional-key :lat) Num,
-         (optional-key :long) Num,
-         (optional-key :postal_code) Str,
-         (optional-key :provider) Str,
-         (optional-key :region) Str},
-        (optional-key :name) Str,
-        (optional-key :phone_number) Str,
-        (optional-key :type) Str,
-        (optional-key :uid) Str}],
-      (optional-key :email_addr) Str,
-      (optional-key :last_seen_time) Int,
-      (optional-key :last_seen_time_dt) Str,
-      (optional-key :name_servers) [Str],
-      (optional-key :phone_number) Str,
-      (optional-key :registrar) Str,
-      (optional-key :status) Str,
-      (optional-key :subdomains) [Str],
-      (optional-key :subnet) Str}}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_osint)],
    :severity_id (enum 0 1 4 99 6 3 2 5),
    :state_id (enum 0 1 4 99 3 2),
    :time Int,
@@ -1155,237 +24,21 @@
    (optional-key :activity_name) Str,
    (optional-key :analytic)
    (recursive
-    #'ns-00/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic),
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic),
    (optional-key :api)
-   {:operation Str,
-    (optional-key :group)
-    {(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str},
-    (optional-key :request)
-    {:uid Str,
-     (optional-key :containers)
-     [{(optional-key :hash)
-       {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-        :value Str,
-        (optional-key :algorithm) Str},
-       (optional-key :image)
-       {:uid Str,
-        (optional-key :labels) [Str],
-        (optional-key :name) Str,
-        (optional-key :path) Str,
-        (optional-key :tag) Str},
-       (optional-key :name) Str,
-       (optional-key :network_driver) Str,
-       (optional-key :orchestrator) Str,
-       (optional-key :pod_uuid) Str,
-       (optional-key :runtime) Str,
-       (optional-key :size) Int,
-       (optional-key :tag) Str,
-       (optional-key :uid) Str}],
-     (optional-key :data) Any,
-     (optional-key :flags) [Str]},
-    (optional-key :response)
-    {(optional-key :code) Int,
-     (optional-key :containers)
-     [{(optional-key :hash)
-       {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-        :value Str,
-        (optional-key :algorithm) Str},
-       (optional-key :image)
-       {:uid Str,
-        (optional-key :labels) [Str],
-        (optional-key :name) Str,
-        (optional-key :path) Str,
-        (optional-key :tag) Str},
-       (optional-key :name) Str,
-       (optional-key :network_driver) Str,
-       (optional-key :orchestrator) Str,
-       (optional-key :pod_uuid) Str,
-       (optional-key :runtime) Str,
-       (optional-key :size) Int,
-       (optional-key :tag) Str,
-       (optional-key :uid) Str}],
-     (optional-key :data) Any,
-     (optional-key :error) Str,
-     (optional-key :error_message) Str,
-     (optional-key :flags) [Str],
-     (optional-key :message) Str},
-    (optional-key :service)
-    {(optional-key :labels) [Str],
-     (optional-key :name) Str,
-     (optional-key :uid) Str,
-     (optional-key :version) Str},
-    (optional-key :version) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_api),
    (optional-key :attacks)
-   [{(optional-key :sub_technique)
-     {(optional-key :name) Str,
-      (optional-key :src_url) Str,
-      (optional-key :uid) Str},
-     (optional-key :tactic)
-     {(optional-key :name) Str,
-      (optional-key :src_url) Str,
-      (optional-key :uid) Str},
-     (optional-key :tactics)
-     [{(optional-key :name) Str,
-       (optional-key :src_url) Str,
-       (optional-key :uid) Str}],
-     (optional-key :technique)
-     {(optional-key :name) Str,
-      (optional-key :src_url) Str,
-      (optional-key :uid) Str},
-     (optional-key :version) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack)],
    (optional-key :category_name) Str,
    (optional-key :cis_csc)
-   [{:control Str, (optional-key :version) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cis_csc)],
    (optional-key :class_name) Str,
    (optional-key :compliance)
-   {:standards [Str],
-    (optional-key :compliance_references)
-    [{:uid Str,
-      (optional-key :avg_timespan)
-      {(optional-key :duration) Int,
-       (optional-key :duration_days) Int,
-       (optional-key :duration_hours) Int,
-       (optional-key :duration_mins) Int,
-       (optional-key :duration_months) Int,
-       (optional-key :duration_secs) Int,
-       (optional-key :duration_weeks) Int,
-       (optional-key :duration_years) Int,
-       (optional-key :type) Str,
-       (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-      (optional-key :bulletin) Str,
-      (optional-key :classification) Str,
-      (optional-key :created_time) Int,
-      (optional-key :created_time_dt) Str,
-      (optional-key :install_state) Str,
-      (optional-key :install_state_id) (enum 0 1 99 3 2),
-      (optional-key :is_superseded) Bool,
-      (optional-key :os)
-      {:name Str,
-       :type_id (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-       (optional-key :build) Str,
-       (optional-key :country) Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :cpu_bits) Int,
-       (optional-key :edition) Str,
-       (optional-key :lang) Str,
-       (optional-key :sp_name) Str,
-       (optional-key :sp_ver) Int,
-       (optional-key :type) Str,
-       (optional-key :version) Str},
-      (optional-key :product)
-      {:vendor_name Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :data_classification)
-       {(optional-key :category) Str,
-        (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :confidentiality) Str,
-        (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :policy)
-        {(optional-key :desc) Str,
-         (optional-key :group)
-         {(optional-key :desc) Str,
-          (optional-key :domain) Str,
-          (optional-key :name) Str,
-          (optional-key :privileges) [Str],
-          (optional-key :type) Str,
-          (optional-key :uid) Str},
-         (optional-key :is_applied) Bool,
-         (optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str}},
-       (optional-key :feature)
-       {(optional-key :name) Str,
-        (optional-key :uid) Str,
-        (optional-key :version) Str},
-       (optional-key :lang) Str,
-       (optional-key :name) Str,
-       (optional-key :path) Str,
-       (optional-key :uid) Str,
-       (optional-key :url_string) Str,
-       (optional-key :version) Str},
-      (optional-key :severity) Str,
-      (optional-key :size) Int,
-      (optional-key :src_url) Str,
-      (optional-key :title) Str}],
-    (optional-key :compliance_standards)
-    [{:uid Str,
-      (optional-key :avg_timespan)
-      {(optional-key :duration) Int,
-       (optional-key :duration_days) Int,
-       (optional-key :duration_hours) Int,
-       (optional-key :duration_mins) Int,
-       (optional-key :duration_months) Int,
-       (optional-key :duration_secs) Int,
-       (optional-key :duration_weeks) Int,
-       (optional-key :duration_years) Int,
-       (optional-key :type) Str,
-       (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-      (optional-key :bulletin) Str,
-      (optional-key :classification) Str,
-      (optional-key :created_time) Int,
-      (optional-key :created_time_dt) Str,
-      (optional-key :install_state) Str,
-      (optional-key :install_state_id) (enum 0 1 99 3 2),
-      (optional-key :is_superseded) Bool,
-      (optional-key :os)
-      {:name Str,
-       :type_id (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-       (optional-key :build) Str,
-       (optional-key :country) Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :cpu_bits) Int,
-       (optional-key :edition) Str,
-       (optional-key :lang) Str,
-       (optional-key :sp_name) Str,
-       (optional-key :sp_ver) Int,
-       (optional-key :type) Str,
-       (optional-key :version) Str},
-      (optional-key :product)
-      {:vendor_name Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :data_classification)
-       {(optional-key :category) Str,
-        (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :confidentiality) Str,
-        (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :policy)
-        {(optional-key :desc) Str,
-         (optional-key :group)
-         {(optional-key :desc) Str,
-          (optional-key :domain) Str,
-          (optional-key :name) Str,
-          (optional-key :privileges) [Str],
-          (optional-key :type) Str,
-          (optional-key :uid) Str},
-         (optional-key :is_applied) Bool,
-         (optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str}},
-       (optional-key :feature)
-       {(optional-key :name) Str,
-        (optional-key :uid) Str,
-        (optional-key :version) Str},
-       (optional-key :lang) Str,
-       (optional-key :name) Str,
-       (optional-key :path) Str,
-       (optional-key :uid) Str,
-       (optional-key :url_string) Str,
-       (optional-key :version) Str},
-      (optional-key :severity) Str,
-      (optional-key :size) Int,
-      (optional-key :src_url) Str,
-      (optional-key :title) Str}],
-    (optional-key :control) Str,
-    (optional-key :requirements) [Str],
-    (optional-key :status) Str,
-    (optional-key :status_code) Str,
-    (optional-key :status_detail) Str,
-    (optional-key :status_id) (enum 0 1 99 3 2)},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_compliance),
    (optional-key :confidence) Str,
    (optional-key :confidence_id) (enum 0 1 99 3 2),
    (optional-key :confidence_score) Int,
@@ -1395,229 +48,30 @@
    (optional-key :end_time) Int,
    (optional-key :end_time_dt) Str,
    (optional-key :enrichments)
-   [{:data Any,
-     :name Str,
-     :value Str,
-     (optional-key :created_time) Int,
-     (optional-key :created_time_dt) Str,
-     (optional-key :desc) Str,
-     (optional-key :provider) Str,
-     (optional-key :reputation)
-     {:base_score Num,
-      :score_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-      (optional-key :provider) Str,
-      (optional-key :score) Str},
-     (optional-key :short_desc) Str,
-     (optional-key :src_url) Str,
-     (optional-key :type) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_enrichment)],
    (optional-key :evidence) Any,
    (optional-key :impact) Str,
    (optional-key :impact_id) (enum 0 1 4 99 3 2),
    (optional-key :impact_score) Int,
    (optional-key :kill_chain)
-   [{:phase_id (enum 0 7 1 4 99 6 3 2 5), (optional-key :phase) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase)],
    (optional-key :malware)
-   [{:classification_ids
-     [(enum
-       0
-       7
-       20
-       1
-       4
-       15
-       99
-       21
-       13
-       22
-       6
-       17
-       3
-       2
-       19
-       11
-       9
-       5
-       14
-       16
-       10
-       18
-       8)],
-     (optional-key :classifications) [Str],
-     (optional-key :cves)
-     [{:uid Str,
-       (optional-key :created_time) Int,
-       (optional-key :created_time_dt) Str,
-       (optional-key :cvss)
-       [{:base_score Num,
-         :version Str,
-         (optional-key :depth)
-         (enum "Base" "Environmental" "Temporal"),
-         (optional-key :metrics) [{:name Str, :value Str}],
-         (optional-key :overall_score) Num,
-         (optional-key :severity) Str,
-         (optional-key :vector_string) Str}],
-       (optional-key :cwe)
-       {:uid Str,
-        (optional-key :caption) Str,
-        (optional-key :src_url) Str},
-       (optional-key :cwe_uid) Str,
-       (optional-key :cwe_url) Str,
-       (optional-key :desc) Str,
-       (optional-key :epss)
-       {:score Str,
-        (optional-key :created_time) Int,
-        (optional-key :created_time_dt) Str,
-        (optional-key :percentile) Num,
-        (optional-key :version) Str},
-       (optional-key :modified_time) Int,
-       (optional-key :modified_time_dt) Str,
-       (optional-key :product)
-       {:vendor_name Str,
-        (optional-key :cpe_name) Str,
-        (optional-key :data_classification)
-        {(optional-key :category) Str,
-         (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :confidentiality) Str,
-         (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :policy)
-         {(optional-key :desc) Str,
-          (optional-key :group)
-          {(optional-key :desc) Str,
-           (optional-key :domain) Str,
-           (optional-key :name) Str,
-           (optional-key :privileges) [Str],
-           (optional-key :type) Str,
-           (optional-key :uid) Str},
-          (optional-key :is_applied) Bool,
-          (optional-key :name) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str}},
-        (optional-key :feature)
-        {(optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str},
-        (optional-key :lang) Str,
-        (optional-key :name) Str,
-        (optional-key :path) Str,
-        (optional-key :uid) Str,
-        (optional-key :url_string) Str,
-        (optional-key :version) Str},
-       (optional-key :references) [Str],
-       (optional-key :title) Str,
-       (optional-key :type) Str}],
-     (optional-key :name) Str,
-     (optional-key :path) Str,
-     (optional-key :provider) Str,
-     (optional-key :uid) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_malware)],
    (optional-key :message) Str,
    (optional-key :nist) [Str],
    (optional-key :observables)
-   [{:name Str,
-     :type_id
-     (enum
-      0
-      7
-      20
-      27
-      1
-      24
-      4
-      15
-      99
-      21
-      13
-      22
-      29
-      6
-      28
-      25
-      17
-      3
-      12
-      2
-      23
-      19
-      11
-      9
-      5
-      14
-      26
-      16
-      30
-      10
-      18
-      8),
-     (optional-key :reputation)
-     {:base_score Num,
-      :score_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-      (optional-key :provider) Str,
-      (optional-key :score) Str},
-     (optional-key :type) Str,
-     (optional-key :value) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable)],
    (optional-key :process)
    (recursive
-    #'ns-07/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process),
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process),
    (optional-key :raw_data) Str,
    (optional-key :resources)
-   [{(optional-key :agent_list)
-     [{(optional-key :name) Str,
-       (optional-key :policies)
-       [{(optional-key :desc) Str,
-         (optional-key :group)
-         {(optional-key :desc) Str,
-          (optional-key :domain) Str,
-          (optional-key :name) Str,
-          (optional-key :privileges) [Str],
-          (optional-key :type) Str,
-          (optional-key :uid) Str},
-         (optional-key :is_applied) Bool,
-         (optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str}],
-       (optional-key :type) Str,
-       (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 8),
-       (optional-key :uid) Str,
-       (optional-key :uid_alt) Str,
-       (optional-key :vendor_name) Str,
-       (optional-key :version) Str}],
-     (optional-key :cloud_partition) Str,
-     (optional-key :criticality) Str,
-     (optional-key :data) Any,
-     (optional-key :data_classification)
-     {(optional-key :category) Str,
-      (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-      (optional-key :confidentiality) Str,
-      (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-      (optional-key :policy)
-      {(optional-key :desc) Str,
-       (optional-key :group)
-       {(optional-key :desc) Str,
-        (optional-key :domain) Str,
-        (optional-key :name) Str,
-        (optional-key :privileges) [Str],
-        (optional-key :type) Str,
-        (optional-key :uid) Str},
-       (optional-key :is_applied) Bool,
-       (optional-key :name) Str,
-       (optional-key :uid) Str,
-       (optional-key :version) Str}},
-     (optional-key :group)
-     {(optional-key :desc) Str,
-      (optional-key :domain) Str,
-      (optional-key :name) Str,
-      (optional-key :privileges) [Str],
-      (optional-key :type) Str,
-      (optional-key :uid) Str},
-     (optional-key :labels) [Str],
-     (optional-key :name) Str,
-     (optional-key :namespace) Str,
-     (optional-key :owner)
-     (recursive
-      #'ns-08/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-     (optional-key :region) Str,
-     (optional-key :type) Str,
-     (optional-key :uid) Str,
-     (optional-key :version) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_resource_details)],
    (optional-key :risk_level) Str,
    (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
    (optional-key :risk_score) Int,
@@ -1632,559 +86,91 @@
    (optional-key :time_dt) Str,
    (optional-key :timezone_offset) Int,
    (optional-key :type_name) Str,
-   (optional-key :unmapped) {},
+   (optional-key :unmapped)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object),
    (optional-key :vulnerabilities)
-   [{(optional-key :affected_code)
-     [{:file
-       {:name Str,
-        :type_id (enum 0 7 1 4 99 6 3 2 5),
-        (optional-key :accessed_time) Int,
-        (optional-key :accessed_time_dt) Str,
-        (optional-key :accessor)
-        (recursive
-         #'ns-09/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-        (optional-key :attributes) Int,
-        (optional-key :company_name) Str,
-        (optional-key :confidentiality) Str,
-        (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :created_time) Int,
-        (optional-key :created_time_dt) Str,
-        (optional-key :creator)
-        (recursive
-         #'ns-10/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-        (optional-key :data_classification)
-        {(optional-key :category) Str,
-         (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :confidentiality) Str,
-         (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :policy)
-         {(optional-key :desc) Str,
-          (optional-key :group)
-          {(optional-key :desc) Str,
-           (optional-key :domain) Str,
-           (optional-key :name) Str,
-           (optional-key :privileges) [Str],
-           (optional-key :type) Str,
-           (optional-key :uid) Str},
-          (optional-key :is_applied) Bool,
-          (optional-key :name) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str}},
-        (optional-key :desc) Str,
-        (optional-key :ext) Str,
-        (optional-key :hashes)
-        [{:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-          :value Str,
-          (optional-key :algorithm) Str}],
-        (optional-key :is_system) Bool,
-        (optional-key :mime_type) Str,
-        (optional-key :modified_time) Int,
-        (optional-key :modified_time_dt) Str,
-        (optional-key :modifier)
-        (recursive
-         #'ns-11/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-        (optional-key :owner)
-        (recursive
-         #'ns-12/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-        (optional-key :parent_folder) Str,
-        (optional-key :path) Str,
-        (optional-key :product)
-        {:vendor_name Str,
-         (optional-key :cpe_name) Str,
-         (optional-key :data_classification)
-         {(optional-key :category) Str,
-          (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-          (optional-key :confidentiality) Str,
-          (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-          (optional-key :policy)
-          {(optional-key :desc) Str,
-           (optional-key :group)
-           {(optional-key :desc) Str,
-            (optional-key :domain) Str,
-            (optional-key :name) Str,
-            (optional-key :privileges) [Str],
-            (optional-key :type) Str,
-            (optional-key :uid) Str},
-           (optional-key :is_applied) Bool,
-           (optional-key :name) Str,
-           (optional-key :uid) Str,
-           (optional-key :version) Str}},
-         (optional-key :feature)
-         {(optional-key :name) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str},
-         (optional-key :lang) Str,
-         (optional-key :name) Str,
-         (optional-key :path) Str,
-         (optional-key :uid) Str,
-         (optional-key :url_string) Str,
-         (optional-key :version) Str},
-        (optional-key :security_descriptor) Str,
-        (optional-key :signature)
-        {:algorithm_id (enum 0 1 4 99 3 2),
-         (optional-key :algorithm) Str,
-         (optional-key :certificate)
-         {:fingerprints
-          [{:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-            :value Str,
-            (optional-key :algorithm) Str}],
-          :issuer Str,
-          :serial_number Str,
-          (optional-key :created_time) Int,
-          (optional-key :created_time_dt) Str,
-          (optional-key :expiration_time) Int,
-          (optional-key :expiration_time_dt) Str,
-          (optional-key :is_self_signed) Bool,
-          (optional-key :subject) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str},
-         (optional-key :created_time) Int,
-         (optional-key :created_time_dt) Str,
-         (optional-key :developer_uid) Str,
-         (optional-key :digest)
-         {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-          :value Str,
-          (optional-key :algorithm) Str},
-         (optional-key :state) Str,
-         (optional-key :state_id) (enum 0 1 4 99 3 2 5)},
-        (optional-key :size) Int,
-        (optional-key :type) Str,
-        (optional-key :uid) Str,
-        (optional-key :version) Str,
-        (optional-key :xattributes) {}},
-       (optional-key :end_line) Int,
-       (optional-key :owner)
-       (recursive
-        #'ns-13/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-       (optional-key :remediation)
-       {:desc Str,
-        (optional-key :kb_article_list)
-        [{:uid Str,
-          (optional-key :avg_timespan)
-          {(optional-key :duration) Int,
-           (optional-key :duration_days) Int,
-           (optional-key :duration_hours) Int,
-           (optional-key :duration_mins) Int,
-           (optional-key :duration_months) Int,
-           (optional-key :duration_secs) Int,
-           (optional-key :duration_weeks) Int,
-           (optional-key :duration_years) Int,
-           (optional-key :type) Str,
-           (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-          (optional-key :bulletin) Str,
-          (optional-key :classification) Str,
-          (optional-key :created_time) Int,
-          (optional-key :created_time_dt) Str,
-          (optional-key :install_state) Str,
-          (optional-key :install_state_id) (enum 0 1 99 3 2),
-          (optional-key :is_superseded) Bool,
-          (optional-key :os)
-          {:name Str,
-           :type_id
-           (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-           (optional-key :build) Str,
-           (optional-key :country) Str,
-           (optional-key :cpe_name) Str,
-           (optional-key :cpu_bits) Int,
-           (optional-key :edition) Str,
-           (optional-key :lang) Str,
-           (optional-key :sp_name) Str,
-           (optional-key :sp_ver) Int,
-           (optional-key :type) Str,
-           (optional-key :version) Str},
-          (optional-key :product)
-          {:vendor_name Str,
-           (optional-key :cpe_name) Str,
-           (optional-key :data_classification)
-           {(optional-key :category) Str,
-            (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :confidentiality) Str,
-            (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :policy)
-            {(optional-key :desc) Str,
-             (optional-key :group)
-             {(optional-key :desc) Str,
-              (optional-key :domain) Str,
-              (optional-key :name) Str,
-              (optional-key :privileges) [Str],
-              (optional-key :type) Str,
-              (optional-key :uid) Str},
-             (optional-key :is_applied) Bool,
-             (optional-key :name) Str,
-             (optional-key :uid) Str,
-             (optional-key :version) Str}},
-           (optional-key :feature)
-           {(optional-key :name) Str,
-            (optional-key :uid) Str,
-            (optional-key :version) Str},
-           (optional-key :lang) Str,
-           (optional-key :name) Str,
-           (optional-key :path) Str,
-           (optional-key :uid) Str,
-           (optional-key :url_string) Str,
-           (optional-key :version) Str},
-          (optional-key :severity) Str,
-          (optional-key :size) Int,
-          (optional-key :src_url) Str,
-          (optional-key :title) Str}],
-        (optional-key :kb_articles) [Str],
-        (optional-key :references) [Str]},
-       (optional-key :start_line) Int}],
-     (optional-key :affected_packages)
-     [{:name Str,
-       :version Str,
-       (optional-key :architecture) Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :epoch) Int,
-       (optional-key :fixed_in_version) Str,
-       (optional-key :hash)
-       {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-        :value Str,
-        (optional-key :algorithm) Str},
-       (optional-key :license) Str,
-       (optional-key :package_manager) Str,
-       (optional-key :path) Str,
-       (optional-key :purl) Str,
-       (optional-key :release) Str,
-       (optional-key :remediation)
-       {:desc Str,
-        (optional-key :kb_article_list)
-        [{:uid Str,
-          (optional-key :avg_timespan)
-          {(optional-key :duration) Int,
-           (optional-key :duration_days) Int,
-           (optional-key :duration_hours) Int,
-           (optional-key :duration_mins) Int,
-           (optional-key :duration_months) Int,
-           (optional-key :duration_secs) Int,
-           (optional-key :duration_weeks) Int,
-           (optional-key :duration_years) Int,
-           (optional-key :type) Str,
-           (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-          (optional-key :bulletin) Str,
-          (optional-key :classification) Str,
-          (optional-key :created_time) Int,
-          (optional-key :created_time_dt) Str,
-          (optional-key :install_state) Str,
-          (optional-key :install_state_id) (enum 0 1 99 3 2),
-          (optional-key :is_superseded) Bool,
-          (optional-key :os)
-          {:name Str,
-           :type_id
-           (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-           (optional-key :build) Str,
-           (optional-key :country) Str,
-           (optional-key :cpe_name) Str,
-           (optional-key :cpu_bits) Int,
-           (optional-key :edition) Str,
-           (optional-key :lang) Str,
-           (optional-key :sp_name) Str,
-           (optional-key :sp_ver) Int,
-           (optional-key :type) Str,
-           (optional-key :version) Str},
-          (optional-key :product)
-          {:vendor_name Str,
-           (optional-key :cpe_name) Str,
-           (optional-key :data_classification)
-           {(optional-key :category) Str,
-            (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :confidentiality) Str,
-            (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-            (optional-key :policy)
-            {(optional-key :desc) Str,
-             (optional-key :group)
-             {(optional-key :desc) Str,
-              (optional-key :domain) Str,
-              (optional-key :name) Str,
-              (optional-key :privileges) [Str],
-              (optional-key :type) Str,
-              (optional-key :uid) Str},
-             (optional-key :is_applied) Bool,
-             (optional-key :name) Str,
-             (optional-key :uid) Str,
-             (optional-key :version) Str}},
-           (optional-key :feature)
-           {(optional-key :name) Str,
-            (optional-key :uid) Str,
-            (optional-key :version) Str},
-           (optional-key :lang) Str,
-           (optional-key :name) Str,
-           (optional-key :path) Str,
-           (optional-key :uid) Str,
-           (optional-key :url_string) Str,
-           (optional-key :version) Str},
-          (optional-key :severity) Str,
-          (optional-key :size) Int,
-          (optional-key :src_url) Str,
-          (optional-key :title) Str}],
-        (optional-key :kb_articles) [Str],
-        (optional-key :references) [Str]},
-       (optional-key :type) Str,
-       (optional-key :type_id) (enum 0 1 99 2),
-       (optional-key :vendor_name) Str}],
-     (optional-key :cve)
-     {:uid Str,
-      (optional-key :created_time) Int,
-      (optional-key :created_time_dt) Str,
-      (optional-key :cvss)
-      [{:base_score Num,
-        :version Str,
-        (optional-key :depth) (enum "Base" "Environmental" "Temporal"),
-        (optional-key :metrics) [{:name Str, :value Str}],
-        (optional-key :overall_score) Num,
-        (optional-key :severity) Str,
-        (optional-key :vector_string) Str}],
-      (optional-key :cwe)
-      {:uid Str,
-       (optional-key :caption) Str,
-       (optional-key :src_url) Str},
-      (optional-key :cwe_uid) Str,
-      (optional-key :cwe_url) Str,
-      (optional-key :desc) Str,
-      (optional-key :epss)
-      {:score Str,
-       (optional-key :created_time) Int,
-       (optional-key :created_time_dt) Str,
-       (optional-key :percentile) Num,
-       (optional-key :version) Str},
-      (optional-key :modified_time) Int,
-      (optional-key :modified_time_dt) Str,
-      (optional-key :product)
-      {:vendor_name Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :data_classification)
-       {(optional-key :category) Str,
-        (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :confidentiality) Str,
-        (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-        (optional-key :policy)
-        {(optional-key :desc) Str,
-         (optional-key :group)
-         {(optional-key :desc) Str,
-          (optional-key :domain) Str,
-          (optional-key :name) Str,
-          (optional-key :privileges) [Str],
-          (optional-key :type) Str,
-          (optional-key :uid) Str},
-         (optional-key :is_applied) Bool,
-         (optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str}},
-       (optional-key :feature)
-       {(optional-key :name) Str,
-        (optional-key :uid) Str,
-        (optional-key :version) Str},
-       (optional-key :lang) Str,
-       (optional-key :name) Str,
-       (optional-key :path) Str,
-       (optional-key :uid) Str,
-       (optional-key :url_string) Str,
-       (optional-key :version) Str},
-      (optional-key :references) [Str],
-      (optional-key :title) Str,
-      (optional-key :type) Str},
-     (optional-key :cwe)
-     {:uid Str,
-      (optional-key :caption) Str,
-      (optional-key :src_url) Str},
-     (optional-key :desc) Str,
-     (optional-key :first_seen_time) Int,
-     (optional-key :first_seen_time_dt) Str,
-     (optional-key :fix_available) Bool,
-     (optional-key :is_exploit_available) Bool,
-     (optional-key :is_fix_available) Bool,
-     (optional-key :kb_article_list)
-     [{:uid Str,
-       (optional-key :avg_timespan)
-       {(optional-key :duration) Int,
-        (optional-key :duration_days) Int,
-        (optional-key :duration_hours) Int,
-        (optional-key :duration_mins) Int,
-        (optional-key :duration_months) Int,
-        (optional-key :duration_secs) Int,
-        (optional-key :duration_weeks) Int,
-        (optional-key :duration_years) Int,
-        (optional-key :type) Str,
-        (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-       (optional-key :bulletin) Str,
-       (optional-key :classification) Str,
-       (optional-key :created_time) Int,
-       (optional-key :created_time_dt) Str,
-       (optional-key :install_state) Str,
-       (optional-key :install_state_id) (enum 0 1 99 3 2),
-       (optional-key :is_superseded) Bool,
-       (optional-key :os)
-       {:name Str,
-        :type_id (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-        (optional-key :build) Str,
-        (optional-key :country) Str,
-        (optional-key :cpe_name) Str,
-        (optional-key :cpu_bits) Int,
-        (optional-key :edition) Str,
-        (optional-key :lang) Str,
-        (optional-key :sp_name) Str,
-        (optional-key :sp_ver) Int,
-        (optional-key :type) Str,
-        (optional-key :version) Str},
-       (optional-key :product)
-       {:vendor_name Str,
-        (optional-key :cpe_name) Str,
-        (optional-key :data_classification)
-        {(optional-key :category) Str,
-         (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :confidentiality) Str,
-         (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-         (optional-key :policy)
-         {(optional-key :desc) Str,
-          (optional-key :group)
-          {(optional-key :desc) Str,
-           (optional-key :domain) Str,
-           (optional-key :name) Str,
-           (optional-key :privileges) [Str],
-           (optional-key :type) Str,
-           (optional-key :uid) Str},
-          (optional-key :is_applied) Bool,
-          (optional-key :name) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str}},
-        (optional-key :feature)
-        {(optional-key :name) Str,
-         (optional-key :uid) Str,
-         (optional-key :version) Str},
-        (optional-key :lang) Str,
-        (optional-key :name) Str,
-        (optional-key :path) Str,
-        (optional-key :uid) Str,
-        (optional-key :url_string) Str,
-        (optional-key :version) Str},
-       (optional-key :severity) Str,
-       (optional-key :size) Int,
-       (optional-key :src_url) Str,
-       (optional-key :title) Str}],
-     (optional-key :kb_articles) [Str],
-     (optional-key :last_seen_time) Int,
-     (optional-key :last_seen_time_dt) Str,
-     (optional-key :packages)
-     [{:name Str,
-       :version Str,
-       (optional-key :architecture) Str,
-       (optional-key :cpe_name) Str,
-       (optional-key :epoch) Int,
-       (optional-key :hash)
-       {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-        :value Str,
-        (optional-key :algorithm) Str},
-       (optional-key :license) Str,
-       (optional-key :purl) Str,
-       (optional-key :release) Str,
-       (optional-key :type) Str,
-       (optional-key :type_id) (enum 0 1 99 2),
-       (optional-key :vendor_name) Str}],
-     (optional-key :references) [Str],
-     (optional-key :related_vulnerabilities) [Str],
-     (optional-key :remediation)
-     {:desc Str,
-      (optional-key :kb_article_list)
-      [{:uid Str,
-        (optional-key :avg_timespan)
-        {(optional-key :duration) Int,
-         (optional-key :duration_days) Int,
-         (optional-key :duration_hours) Int,
-         (optional-key :duration_mins) Int,
-         (optional-key :duration_months) Int,
-         (optional-key :duration_secs) Int,
-         (optional-key :duration_weeks) Int,
-         (optional-key :duration_years) Int,
-         (optional-key :type) Str,
-         (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 5 8)},
-        (optional-key :bulletin) Str,
-        (optional-key :classification) Str,
-        (optional-key :created_time) Int,
-        (optional-key :created_time_dt) Str,
-        (optional-key :install_state) Str,
-        (optional-key :install_state_id) (enum 0 1 99 3 2),
-        (optional-key :is_superseded) Bool,
-        (optional-key :os)
-        {:name Str,
-         :type_id (enum 0 101 300 99 402 401 100 301 201 302 200 400),
-         (optional-key :build) Str,
-         (optional-key :country) Str,
-         (optional-key :cpe_name) Str,
-         (optional-key :cpu_bits) Int,
-         (optional-key :edition) Str,
-         (optional-key :lang) Str,
-         (optional-key :sp_name) Str,
-         (optional-key :sp_ver) Int,
-         (optional-key :type) Str,
-         (optional-key :version) Str},
-        (optional-key :product)
-        {:vendor_name Str,
-         (optional-key :cpe_name) Str,
-         (optional-key :data_classification)
-         {(optional-key :category) Str,
-          (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-          (optional-key :confidentiality) Str,
-          (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-          (optional-key :policy)
-          {(optional-key :desc) Str,
-           (optional-key :group)
-           {(optional-key :desc) Str,
-            (optional-key :domain) Str,
-            (optional-key :name) Str,
-            (optional-key :privileges) [Str],
-            (optional-key :type) Str,
-            (optional-key :uid) Str},
-           (optional-key :is_applied) Bool,
-           (optional-key :name) Str,
-           (optional-key :uid) Str,
-           (optional-key :version) Str}},
-         (optional-key :feature)
-         {(optional-key :name) Str,
-          (optional-key :uid) Str,
-          (optional-key :version) Str},
-         (optional-key :lang) Str,
-         (optional-key :name) Str,
-         (optional-key :path) Str,
-         (optional-key :uid) Str,
-         (optional-key :url_string) Str,
-         (optional-key :version) Str},
-        (optional-key :severity) Str,
-        (optional-key :size) Int,
-        (optional-key :src_url) Str,
-        (optional-key :title) Str}],
-      (optional-key :kb_articles) [Str],
-      (optional-key :references) [Str]},
-     (optional-key :severity) Str,
-     (optional-key :title) Str,
-     (optional-key :vendor_name) Str}]})
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability)]})
 (def
  expected-transitive-defschema-vars
- '#{ns-00/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic
-    ns-01/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-02/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-03/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-04/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-05/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-06/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-07/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process
-    ns-08/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-09/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-10/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-11/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-12/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-13/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-14/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-15/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-16/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-17/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
-    ns-18/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user})
+ '#{ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_agent
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_api
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cis_csc
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cloud
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_compliance
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_dns_answer
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email_auth
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_enrichment
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_file
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_finding
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_location
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_logger
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_malware
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_metadata
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_osint
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_related_event
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_request
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_resource_details
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_response
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_service
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_session
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_sub_technique
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_technique
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability
+    ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois})
 (def
  transitive-schema-atom
  (clojure.core/atom (clojure.core/sorted-map)))
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-00/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account
+ '{(optional-key :labels) [Str],
+   (optional-key :name) Str,
+   (optional-key :type) Str,
+   (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_agent
+ '{(optional-key :name) Str,
+   (optional-key :policies)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_policy)],
+   (optional-key :type) Str,
+   (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 8),
+   (optional-key :uid) Str,
+   (optional-key :uid_alt) Str,
+   (optional-key :vendor_name) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_analytic
  '{:type_id (enum 0 7 1 4 99 6 3 2 11 9 5 10 8),
    (optional-key :category) Str,
    (optional-key :desc) Str,
@@ -2198,600 +184,548 @@
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-01/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_api
+ '{:operation Str,
+   (optional-key :group)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group),
+   (optional-key :request)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_request),
+   (optional-key :response)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_response),
+   (optional-key :service)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_service),
+   (optional-key :version) Str})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-02/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack
+ '{(optional-key :sub_technique)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_sub_technique),
+   (optional-key :tactic)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic),
+   (optional-key :tactics)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic)],
+   (optional-key :technique)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_technique),
+   (optional-key :version) Str})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-03/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system
+ '{(optional-key :name) Str, (optional-key :number) Int})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-04/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cis_csc
+ '{:control Str, (optional-key :version) Str})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-05/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cloud
+ '{:provider Str,
+   (optional-key :account)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account),
    (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization),
+   (optional-key :project_uid) Str,
+   (optional-key :region) Str,
+   (optional-key :zone) Str})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-06/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_compliance
+ '{:standards [Str],
+   (optional-key :compliance_references)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :compliance_standards)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :control) Str,
+   (optional-key :requirements) [Str],
+   (optional-key :status) Str,
+   (optional-key :status_code) Str,
+   (optional-key :status_detail) Str,
+   (optional-key :status_id) (enum 0 1 99 3 2)})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-07/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container
+ '{(optional-key :hash)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_fingerprint),
+   (optional-key :image)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_image),
+   (optional-key :name) Str,
+   (optional-key :network_driver) Str,
+   (optional-key :orchestrator) Str,
+   (optional-key :pod_uuid) Str,
+   (optional-key :runtime) Str,
+   (optional-key :size) Int,
+   (optional-key :tag) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve
+ '{:uid Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :cvss)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cvss)],
+   (optional-key :cwe)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cwe),
+   (optional-key :cwe_uid) Str,
+   (optional-key :cwe_url) Str,
+   (optional-key :desc) Str,
+   (optional-key :epss)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_epss),
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :references) [Str],
+   (optional-key :title) Str,
+   (optional-key :type) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification
+ '{(optional-key :category) Str,
+   (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
+   (optional-key :confidentiality) Str,
+   (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
+   (optional-key :policy)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_policy)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature
+ '{:algorithm_id (enum 0 1 4 99 3 2),
+   (optional-key :algorithm) Str,
+   (optional-key :certificate)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_certificate),
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :developer_uid) Str,
+   (optional-key :digest)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_fingerprint),
+   (optional-key :state) Str,
+   (optional-key :state_id) (enum 0 1 4 99 3 2 5)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_dns_answer
+ '{:rdata Str,
+   (optional-key :class) Str,
+   (optional-key :flag_ids) [(enum 0 1 4 99 6 3 2 5)],
+   (optional-key :flags) [Str],
+   (optional-key :packet_uid) Int,
+   (optional-key :ttl) Int,
+   (optional-key :type) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email
+ '{:from Str,
+   :to [Str],
+   (optional-key :cc) [Str],
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :delivered_to) Str,
+   (optional-key :message_uid) Str,
+   (optional-key :raw_header) Str,
+   (optional-key :reply_to) Str,
+   (optional-key :size) Int,
+   (optional-key :smtp_from) Str,
+   (optional-key :smtp_to) [Str],
+   (optional-key :subject) Str,
+   (optional-key :uid) Str,
+   (optional-key :x_originating_ip) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email_auth
+ '{(optional-key :dkim) Str,
+   (optional-key :dkim_domain) Str,
+   (optional-key :dkim_signature) Str,
+   (optional-key :dmarc) Str,
+   (optional-key :dmarc_override) Str,
+   (optional-key :dmarc_policy) Str,
+   (optional-key :spf) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_enrichment
+ '{:data Any,
+   :name Str,
+   :value Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :desc) Str,
+   (optional-key :provider) Str,
+   (optional-key :reputation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation),
+   (optional-key :short_desc) Str,
+   (optional-key :src_url) Str,
+   (optional-key :type) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension
+ '{:name Str, :uid Str, :version Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_file
+ '{:name Str,
+   :type_id (enum 0 7 1 4 99 6 3 2 5),
+   (optional-key :accessed_time) Int,
+   (optional-key :accessed_time_dt) Str,
+   (optional-key :accessor)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :attributes) Int,
+   (optional-key :company_name) Str,
+   (optional-key :confidentiality) Str,
+   (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :creator)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :desc) Str,
+   (optional-key :ext) Str,
+   (optional-key :hashes)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_fingerprint)],
+   (optional-key :is_system) Bool,
+   (optional-key :mime_type) Str,
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :modifier)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :owner)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :parent_folder) Str,
+   (optional-key :path) Str,
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :security_descriptor) Str,
+   (optional-key :signature)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature),
+   (optional-key :size) Int,
+   (optional-key :type) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str,
+   (optional-key :xattributes)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_finding
+ '{:title Str,
+   :uid Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :desc) Str,
+   (optional-key :first_seen_time) Int,
+   (optional-key :first_seen_time_dt) Str,
+   (optional-key :last_seen_time) Int,
+   (optional-key :last_seen_time_dt) Str,
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :product_uid) Str,
+   (optional-key :related_events)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_related_event)],
+   (optional-key :remediation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation),
+   (optional-key :src_url) Str,
+   (optional-key :supporting_data) Any,
+   (optional-key :types) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group
+ '{(optional-key :desc) Str,
+   (optional-key :domain) Str,
+   (optional-key :name) Str,
+   (optional-key :privileges) [Str],
+   (optional-key :type) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article
+ '{:uid Str,
+   (optional-key :avg_timespan)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_timespan),
+   (optional-key :bulletin) Str,
+   (optional-key :classification) Str,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :install_state) Str,
+   (optional-key :install_state_id) (enum 0 1 99 3 2),
+   (optional-key :is_superseded) Bool,
+   (optional-key :os)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_os),
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :severity) Str,
+   (optional-key :size) Int,
+   (optional-key :src_url) Str,
+   (optional-key :title) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase
+ '{:phase_id (enum 0 7 1 4 99 6 3 2 5), (optional-key :phase) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_location
+ '{(optional-key :city) Str,
+   (optional-key :continent) Str,
+   (optional-key :coordinates) [Num],
+   (optional-key :country) Str,
+   (optional-key :desc) Str,
+   (optional-key :geohash) Str,
+   (optional-key :is_on_premises) Bool,
+   (optional-key :isp) Str,
+   (optional-key :lat) Num,
+   (optional-key :long) Num,
+   (optional-key :postal_code) Str,
+   (optional-key :provider) Str,
+   (optional-key :region) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_logger
+ '{(optional-key :device)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_device),
+   (optional-key :log_level) Str,
+   (optional-key :log_name) Str,
+   (optional-key :log_provider) Str,
+   (optional-key :log_version) Str,
+   (optional-key :logged_time) Int,
+   (optional-key :logged_time_dt) Str,
+   (optional-key :name) Str,
+   (optional-key :product)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   (optional-key :transmit_time) Int,
+   (optional-key :transmit_time_dt) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_malware
+ '{:classification_ids
+   [(enum 0 7 20 1 4 15 99 21 13 22 6 17 3 2 19 11 9 5 14 16 10 18 8)],
+   (optional-key :classifications) [Str],
+   (optional-key :cves)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve)],
+   (optional-key :name) Str,
+   (optional-key :path) Str,
+   (optional-key :provider) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_metadata
+ '{:product
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product),
+   :version Str,
+   (optional-key :correlation_uid) Str,
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :event_code) Str,
+   (optional-key :extension)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension),
+   (optional-key :extensions)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_extension)],
+   (optional-key :labels) [Str],
+   (optional-key :log_level) Str,
+   (optional-key :log_name) Str,
+   (optional-key :log_provider) Str,
+   (optional-key :log_version) Str,
+   (optional-key :logged_time) Int,
+   (optional-key :logged_time_dt) Str,
+   (optional-key :loggers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_logger)],
+   (optional-key :modified_time) Int,
+   (optional-key :modified_time_dt) Str,
+   (optional-key :original_time) Str,
+   (optional-key :processed_time) Int,
+   (optional-key :processed_time_dt) Str,
+   (optional-key :profiles) [Str],
+   (optional-key :sequence) Int,
+   (optional-key :tenant_uid) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
+ '{})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable
+ '{:name Str,
+   :type_id
+   (enum
+    0
+    7
+    20
+    27
+    1
+    24
+    4
+    15
+    99
+    21
+    13
+    22
+    29
+    6
+    28
+    25
+    17
+    3
+    12
+    2
+    23
+    19
+    11
+    9
+    5
+    14
+    26
+    16
+    30
+    10
+    18
+    8),
+   (optional-key :reputation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation),
+   (optional-key :type) Str,
+   (optional-key :value) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization
+ '{(optional-key :name) Str,
+   (optional-key :ou_name) Str,
+   (optional-key :ou_uid) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_osint
+ '{:type_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
+   :value Str,
+   (optional-key :answers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_dns_answer)],
+   (optional-key :attacks)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack)],
+   (optional-key :autonomous_system)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system),
+   (optional-key :comment) Str,
+   (optional-key :confidence) Str,
+   (optional-key :confidence_id) (enum 0 1 99 3 2),
+   (optional-key :email)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email),
+   (optional-key :email_auth)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_email_auth),
+   (optional-key :kill_chain)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase)],
+   (optional-key :location)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_location),
+   (optional-key :name) Str,
+   (optional-key :signatures)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_digital_signature)],
+   (optional-key :src_url) Str,
+   (optional-key :subdomains) [Str],
+   (optional-key :tlp)
+   (enum "AMBER STRICT" "CLEAR" "AMBER" "GREEN" "RED"),
+   (optional-key :type) Str,
+   (optional-key :uid) Str,
+   (optional-key :vendor_name) Str,
+   (optional-key :vulnerabilities)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability)],
+   (optional-key :whois)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois)})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_process
  '{(optional-key :auid) Int,
    (optional-key :cmd_line) Str,
    (optional-key :container)
-   {(optional-key :hash)
-    {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-     :value Str,
-     (optional-key :algorithm) Str},
-    (optional-key :image)
-    {:uid Str,
-     (optional-key :labels) [Str],
-     (optional-key :name) Str,
-     (optional-key :path) Str,
-     (optional-key :tag) Str},
-    (optional-key :name) Str,
-    (optional-key :network_driver) Str,
-    (optional-key :orchestrator) Str,
-    (optional-key :pod_uuid) Str,
-    (optional-key :runtime) Str,
-    (optional-key :size) Int,
-    (optional-key :tag) Str,
-    (optional-key :uid) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container),
    (optional-key :created_time) Int,
    (optional-key :created_time_dt) Str,
    (optional-key :egid) Int,
    (optional-key :euid) Int,
    (optional-key :file)
-   {:name Str,
-    :type_id (enum 0 7 1 4 99 6 3 2 5),
-    (optional-key :accessed_time) Int,
-    (optional-key :accessed_time_dt) Str,
-    (optional-key :accessor)
-    (recursive
-     #'ns-1/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :attributes) Int,
-    (optional-key :company_name) Str,
-    (optional-key :confidentiality) Str,
-    (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :creator)
-    (recursive
-     #'ns-2/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :data_classification)
-    {(optional-key :category) Str,
-     (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-     (optional-key :confidentiality) Str,
-     (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-     (optional-key :policy)
-     {(optional-key :desc) Str,
-      (optional-key :group)
-      {(optional-key :desc) Str,
-       (optional-key :domain) Str,
-       (optional-key :name) Str,
-       (optional-key :privileges) [Str],
-       (optional-key :type) Str,
-       (optional-key :uid) Str},
-      (optional-key :is_applied) Bool,
-      (optional-key :name) Str,
-      (optional-key :uid) Str,
-      (optional-key :version) Str}},
-    (optional-key :desc) Str,
-    (optional-key :ext) Str,
-    (optional-key :hashes)
-    [{:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-      :value Str,
-      (optional-key :algorithm) Str}],
-    (optional-key :is_system) Bool,
-    (optional-key :mime_type) Str,
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :modifier)
-    (recursive
-     #'ns-3/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :owner)
-    (recursive
-     #'ns-4/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :parent_folder) Str,
-    (optional-key :path) Str,
-    (optional-key :product)
-    {:vendor_name Str,
-     (optional-key :cpe_name) Str,
-     (optional-key :data_classification)
-     {(optional-key :category) Str,
-      (optional-key :category_id) (enum 0 1 4 99 6 3 2 5),
-      (optional-key :confidentiality) Str,
-      (optional-key :confidentiality_id) (enum 0 1 4 99 6 3 2 5),
-      (optional-key :policy)
-      {(optional-key :desc) Str,
-       (optional-key :group)
-       {(optional-key :desc) Str,
-        (optional-key :domain) Str,
-        (optional-key :name) Str,
-        (optional-key :privileges) [Str],
-        (optional-key :type) Str,
-        (optional-key :uid) Str},
-       (optional-key :is_applied) Bool,
-       (optional-key :name) Str,
-       (optional-key :uid) Str,
-       (optional-key :version) Str}},
-     (optional-key :feature)
-     {(optional-key :name) Str,
-      (optional-key :uid) Str,
-      (optional-key :version) Str},
-     (optional-key :lang) Str,
-     (optional-key :name) Str,
-     (optional-key :path) Str,
-     (optional-key :uid) Str,
-     (optional-key :url_string) Str,
-     (optional-key :version) Str},
-    (optional-key :security_descriptor) Str,
-    (optional-key :signature)
-    {:algorithm_id (enum 0 1 4 99 3 2),
-     (optional-key :algorithm) Str,
-     (optional-key :certificate)
-     {:fingerprints
-      [{:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-        :value Str,
-        (optional-key :algorithm) Str}],
-      :issuer Str,
-      :serial_number Str,
-      (optional-key :created_time) Int,
-      (optional-key :created_time_dt) Str,
-      (optional-key :expiration_time) Int,
-      (optional-key :expiration_time_dt) Str,
-      (optional-key :is_self_signed) Bool,
-      (optional-key :subject) Str,
-      (optional-key :uid) Str,
-      (optional-key :version) Str},
-     (optional-key :created_time) Int,
-     (optional-key :created_time_dt) Str,
-     (optional-key :developer_uid) Str,
-     (optional-key :digest)
-     {:algorithm_id (enum 0 7 1 4 99 6 3 2 5),
-      :value Str,
-      (optional-key :algorithm) Str},
-     (optional-key :state) Str,
-     (optional-key :state_id) (enum 0 1 4 99 3 2 5)},
-    (optional-key :size) Int,
-    (optional-key :type) Str,
-    (optional-key :uid) Str,
-    (optional-key :version) Str,
-    (optional-key :xattributes) {}},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_file),
    (optional-key :group)
-   {(optional-key :desc) Str,
-    (optional-key :domain) Str,
-    (optional-key :name) Str,
-    (optional-key :privileges) [Str],
-    (optional-key :type) Str,
-    (optional-key :uid) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group),
    (optional-key :integrity) Str,
    (optional-key :integrity_id) (enum 0 1 4 99 6 3 2 5),
    (optional-key :lineage) [Str],
@@ -2804,96 +738,190 @@
    (optional-key :pid) Int,
    (optional-key :sandbox) Str,
    (optional-key :session)
-   {(optional-key :count) Int,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :credential_uid) Str,
-    (optional-key :expiration_reason) Str,
-    (optional-key :expiration_time) Int,
-    (optional-key :expiration_time_dt) Str,
-    (optional-key :is_mfa) Bool,
-    (optional-key :is_remote) Bool,
-    (optional-key :is_vpn) Bool,
-    (optional-key :issuer) Str,
-    (optional-key :terminal) Str,
-    (optional-key :uid) Str,
-    (optional-key :uid_alt) Str,
-    (optional-key :uuid) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_session),
    (optional-key :terminated_time) Int,
    (optional-key :terminated_time_dt) Str,
    (optional-key :tid) Int,
    (optional-key :uid) Str,
    (optional-key :user)
    (recursive
-    #'ns-5/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-   (optional-key :xattributes) {}})
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :xattributes)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object)})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-08/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_product
+ '{:vendor_name Str,
+   (optional-key :cpe_name) Str,
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :feature)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_feature),
+   (optional-key :lang) Str,
+   (optional-key :name) Str,
+   (optional-key :path) Str,
+   (optional-key :uid) Str,
+   (optional-key :url_string) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_related_event
+ '{:uid Str,
+   (optional-key :attacks)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_attack)],
+   (optional-key :kill_chain)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kill_chain_phase)],
+   (optional-key :observables)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_observable)],
+   (optional-key :product_uid) Str,
+   (optional-key :type) Str,
+   (optional-key :type_name) Str,
+   (optional-key :type_uid) Int})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation
+ '{:desc Str,
+   (optional-key :kb_article_list)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :kb_articles) [Str],
+   (optional-key :references) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_reputation
+ '{:base_score Num,
+   :score_id (enum 0 7 1 4 99 6 3 2 9 5 10 8),
+   (optional-key :provider) Str,
+   (optional-key :score) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_request
+ '{:uid Str,
+   (optional-key :containers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container)],
+   (optional-key :data) Any,
+   (optional-key :flags) [Str]})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_resource_details
+ '{(optional-key :agent_list)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_agent)],
+   (optional-key :cloud_partition) Str,
+   (optional-key :criticality) Str,
+   (optional-key :data) Any,
+   (optional-key :data_classification)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_data_classification),
+   (optional-key :group)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group),
+   (optional-key :labels) [Str],
+   (optional-key :name) Str,
+   (optional-key :namespace) Str,
+   (optional-key :owner)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
+   (optional-key :region) Str,
+   (optional-key :type) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_response
+ '{(optional-key :code) Int,
+   (optional-key :containers)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_container)],
+   (optional-key :data) Any,
+   (optional-key :error) Str,
+   (optional-key :error_message) Str,
+   (optional-key :flags) [Str],
+   (optional-key :message) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_service
+ '{(optional-key :labels) [Str],
+   (optional-key :name) Str,
+   (optional-key :uid) Str,
+   (optional-key :version) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_session
+ '{(optional-key :count) Int,
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :credential_uid) Str,
+   (optional-key :expiration_reason) Str,
+   (optional-key :expiration_time) Int,
+   (optional-key :expiration_time_dt) Str,
+   (optional-key :is_mfa) Bool,
+   (optional-key :is_remote) Bool,
+   (optional-key :is_vpn) Bool,
+   (optional-key :issuer) Str,
+   (optional-key :terminal) Str,
+   (optional-key :uid) Str,
+   (optional-key :uid_alt) Str,
+   (optional-key :uuid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_sub_technique
+ '{(optional-key :name) Str,
+   (optional-key :src_url) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_tactic
+ '{(optional-key :name) Str,
+   (optional-key :src_url) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_technique
+ '{(optional-key :name) Str,
+   (optional-key :src_url) Str,
+   (optional-key :uid) Str})
+(clojure.core/swap!
+ transitive-schema-atom
+ clojure.core/assoc
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
  '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_account),
    (optional-key :credential_uid) Str,
    (optional-key :domain) Str,
    (optional-key :email_addr) Str,
    (optional-key :full_name) Str,
    (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_group)],
    (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_ldap_person),
    (optional-key :name) Str,
    (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_organization),
    (optional-key :risk_level) Str,
    (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
    (optional-key :risk_score) Int,
@@ -2904,741 +932,64 @@
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-09/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_vulnerability
+ '{(optional-key :affected_code)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_code)],
+   (optional-key :affected_packages)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_affected_package)],
+   (optional-key :cve)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cve),
+   (optional-key :cwe)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cwe),
+   (optional-key :desc) Str,
+   (optional-key :first_seen_time) Int,
+   (optional-key :first_seen_time_dt) Str,
+   (optional-key :fix_available) Bool,
+   (optional-key :is_exploit_available) Bool,
+   (optional-key :is_fix_available) Bool,
+   (optional-key :kb_article_list)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_kb_article)],
+   (optional-key :kb_articles) [Str],
+   (optional-key :last_seen_time) Int,
+   (optional-key :last_seen_time_dt) Str,
+   (optional-key :packages)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_package)],
+   (optional-key :references) [Str],
+   (optional-key :related_vulnerabilities) [Str],
+   (optional-key :remediation)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_remediation),
+   (optional-key :severity) Str,
+   (optional-key :title) Str,
+   (optional-key :vendor_name) Str})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
- 'ns-10/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
+ 'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_whois
+ '{(optional-key :autonomous_system)
+   (recursive
+    #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_autonomous_system),
+   (optional-key :created_time) Int,
+   (optional-key :created_time_dt) Str,
+   (optional-key :dnssec_status) Str,
+   (optional-key :dnssec_status_id) (enum 0 1 99 2),
    (optional-key :domain) Str,
+   (optional-key :domain_contacts)
+   [(recursive
+     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_domain_contact)],
    (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-11/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-12/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-13/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-14/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-15/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-16/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-17/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
-(clojure.core/swap!
- transitive-schema-atom
- clojure.core/assoc
- 'ns-18/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user
- '{(optional-key :account)
-   {(optional-key :labels) [Str],
-    (optional-key :name) Str,
-    (optional-key :type) Str,
-    (optional-key :type_id) (enum 0 7 1 4 99 6 3 2 9 5 10 8),
-    (optional-key :uid) Str},
-   (optional-key :credential_uid) Str,
-   (optional-key :domain) Str,
-   (optional-key :email_addr) Str,
-   (optional-key :full_name) Str,
-   (optional-key :groups)
-   [{(optional-key :desc) Str,
-     (optional-key :domain) Str,
-     (optional-key :name) Str,
-     (optional-key :privileges) [Str],
-     (optional-key :type) Str,
-     (optional-key :uid) Str}],
-   (optional-key :ldap_person)
-   {(optional-key :cost_center) Str,
-    (optional-key :created_time) Int,
-    (optional-key :created_time_dt) Str,
-    (optional-key :deleted_time) Int,
-    (optional-key :deleted_time_dt) Str,
-    (optional-key :email_addrs) [Str],
-    (optional-key :employee_uid) Str,
-    (optional-key :given_name) Str,
-    (optional-key :hire_time) Int,
-    (optional-key :hire_time_dt) Str,
-    (optional-key :job_title) Str,
-    (optional-key :labels) [Str],
-    (optional-key :last_login_time) Int,
-    (optional-key :last_login_time_dt) Str,
-    (optional-key :ldap_cn) Str,
-    (optional-key :ldap_dn) Str,
-    (optional-key :leave_time) Int,
-    (optional-key :leave_time_dt) Str,
-    (optional-key :location)
-    {(optional-key :city) Str,
-     (optional-key :continent) Str,
-     (optional-key :coordinates) [Num],
-     (optional-key :country) Str,
-     (optional-key :desc) Str,
-     (optional-key :geohash) Str,
-     (optional-key :is_on_premises) Bool,
-     (optional-key :isp) Str,
-     (optional-key :lat) Num,
-     (optional-key :long) Num,
-     (optional-key :postal_code) Str,
-     (optional-key :provider) Str,
-     (optional-key :region) Str},
-    (optional-key :manager)
-    (recursive
-     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_user),
-    (optional-key :modified_time) Int,
-    (optional-key :modified_time_dt) Str,
-    (optional-key :office_location) Str,
-    (optional-key :surname) Str},
-   (optional-key :name) Str,
-   (optional-key :org)
-   {(optional-key :name) Str,
-    (optional-key :ou_name) Str,
-    (optional-key :ou_uid) Str,
-    (optional-key :uid) Str},
-   (optional-key :risk_level) Str,
-   (optional-key :risk_level_id) (enum 0 1 4 99 3 2),
-   (optional-key :risk_score) Int,
-   (optional-key :type) Str,
-   (optional-key :type_id) (enum 0 1 99 3 2),
-   (optional-key :uid) Str,
-   (optional-key :uid_alt) Str})
+   (optional-key :last_seen_time) Int,
+   (optional-key :last_seen_time_dt) Str,
+   (optional-key :name_servers) [Str],
+   (optional-key :phone_number) Str,
+   (optional-key :registrar) Str,
+   (optional-key :status) Str,
+   (optional-key :subdomains) [Str],
+   (optional-key :subnet) Str})
 (def expected-transitive-schema-explains @transitive-schema-atom)
