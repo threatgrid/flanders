@@ -33,9 +33,9 @@
          '{:x (cond-pre Int Str), :y Int})))
 
 (comment
-  (generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
-                                    'flanders.json-schema.test-helpers-schema-security-finding
-                                    @SchemaSecurityFinding)
+  (th/generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
+                                       'flanders.json-schema.test-helpers-schema-security-finding
+                                       @SchemaSecurityFinding)
   )
 
 (deftest ocsf-test
