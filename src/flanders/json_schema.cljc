@@ -70,9 +70,63 @@
 (def ^:private applicator-properties ["if" "then" "else" "oneOf" "anyOf" "allOf" "not"])
 
 (defn- check-unsupported-keys! [v opts]
-  (doseq [k ["minimum" "maximum" "definitions"
-             "if" "then" "else" "oneOf" "not" "patternProperties"
-             "dependentSchemas" "propertyNames"]]
+  (doseq [k ["$anchor"
+             "$comment"
+             ;"$defs"
+             "$dynamicAnchor"
+             "$dynamicRef"
+             ;"$id"
+             ;"$ref"
+             ;"$schema"
+             "$vocabulary"
+             ;"additionalProperties"
+             ;"allOf"
+             ;"anyOf"
+             ;"const"
+             "contains"
+             "contentEncoding"
+             "contentMediaType"
+             "contentSchema"
+             "default"
+             "dependentRequired"
+             "dependentSchemas"
+             "deprecated"
+             ;"description"
+             "else"
+             ;"enum"
+             "examples"
+             "exclusiveMaximum"
+             "exclusiveMinimum"
+             ;"format"
+             "if"
+             ;"items"
+             "maxContains"
+             "maximum"
+             "maxItems"
+             "maxLength"
+             "maxProperties"
+             "minContains"
+             "minimum"
+             "minItems"
+             "minLength"
+             "minProperties"
+             "multipleOf"
+             "not"
+             "oneOf"
+             "pattern"
+             "patternProperties"
+             "prefixItems"
+             ;"properties"
+             "propertyNames"
+             "readOnly"
+             ;"required"
+             "then"
+             "title"
+             ;"type"
+             "unevaluatedItems"
+             "unevaluatedProperties"
+             "uniqueItems"
+             "writeOnly"]]
     (when (contains? v k)
       (unsupported-schema! k v opts))))
 
@@ -147,8 +201,7 @@
                                 (f/enum (into [] (map-indexed #(-normalize %2 (conj-path opts (str %)))) enum))
                                 (f/str)))
                    "null" (unsupported-schema! "Flanders cannot check for nil" v opts)
-                   "array" (let [{:strs [items uniqueItems]} v]
-                             (assert (nil? uniqueItems))
+                   "array" (let [{:strs [items]} v]
                              (f/seq-of (->flanders items (conj-path opts "items"))))
                    "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                   required (not-empty (into #{} (map keyword) (get v "required")))

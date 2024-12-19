@@ -173,6 +173,7 @@
                                               {:file "JSON-Schema-Test-Suite/tests/draft7/type.json"}
                                               ;{:file "JSON-Schema-Test-Suite/tests/draft7/ref.json"}
                                               {:file "JSON-Schema-Test-Suite/tests/draft7/oneOf.json"}
+                                              {:file "JSON-Schema-Test-Suite/tests/draft7/contains.json"}
                                               ]})
 
 (defn ->printable [data]
