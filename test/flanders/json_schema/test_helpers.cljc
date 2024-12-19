@@ -134,7 +134,7 @@
 
 (def example-security-finding
   {:severity_id 0,
-   :category_uid 10,
+   :category_uid 2,
    :status_id 0,
    :data_sources ["string"],
    :api {:operation "foo"} ,
@@ -158,7 +158,7 @@
    :time_dt "string",
    :duration 10,
    :state "string",
-   :class_uid 10,
+   :class_uid 2001,
    :kill_chain [],
    :end_time 10,
    :category_name "string",

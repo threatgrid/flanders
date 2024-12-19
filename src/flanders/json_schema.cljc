@@ -128,8 +128,7 @@
              "uniqueItems"
              "writeOnly"]]
     (when (contains? v k)
-      (unsupported-schema! k v opts))))
-
+      (unsupported-schema! (str "Unsupported JSON Schema keyword: " k) v opts))))
 
 (defn- parse-map [v opts]
   (let [{:strs [description title example $schema $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary] :as v} (normalize-map v opts)
@@ -192,8 +191,8 @@
                                  (= #{true false} enum) (f/bool)
                                  (= #{true} enum) (f/bool :equals true)
                                  (= #{false} enum) (f/bool :equals false)
-                                 :else (unsupported-schema! (str "Unsupported boolean enum: " (pr-str (get v "enum")))
-                                                            v opts))
+                                 :else (throw (ex-info (str "Unsupported boolean enum: " (pr-str (get v "enum")))
+                                                       {})))
                                (f/bool))
                    "string" (let [{fmt "format" :strs [enum]} v]
                               (assert (nil? fmt) (pr-str fmt))

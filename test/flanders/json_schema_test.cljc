@@ -75,7 +75,7 @@
                    (th/unqualify-vars (th/collect-transitive-recursive-vars-from-schema @SchemaSecurityFinding)))))))
   (testing "schema ops"
     (is (some? (s/check @SchemaSecurityFinding {})))
-    (is (s/validate @SchemaSecurityFinding th/example-security-finding)))
+    (is (nil? (s/check @SchemaSecurityFinding th/example-security-finding))))
   (testing "malli ops"
     (is (= (edn/read-string (slurp "test-resources/expected-example-SecurityFinding.edn"))
            @example-SecurityFinding))
