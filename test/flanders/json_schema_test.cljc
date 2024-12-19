@@ -20,12 +20,13 @@
 
 ;; examples
 
+(defn infer-any [v _opts] (assoc v "type" ::sut/any))
 (def security-finding-json (delay (json/decode (slurp (io/resource "security-finding.json")))))
-(def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json {::sut/->infer-type (fn [v _opts] (assoc v "type" ::sut/any))})))
+(def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json {::sut/->infer-type infer-any})))
 (def example-SecurityFinding (delay (fe/->example-tree @FlandersSecurityFinding)))
-(def SchemaSecurityFinding (delay (->schema @security-finding-json)))
-(def MalliSecurityFinding (delay (->malli @security-finding-json)))
-(def MalliSecurityFinding-no-example (delay (->malli @security-finding-json {:flanders.malli/no-example true})))
+(def SchemaSecurityFinding (delay (->schema @security-finding-json {::sut/->infer-type infer-any})))
+(def MalliSecurityFinding (delay (->malli @security-finding-json {::sut/->infer-type infer-any})))
+(def MalliSecurityFinding-no-example (delay (->malli @security-finding-json {:flanders.malli/no-example true ::sut/->infer-type infer-any})))
 
 ;; tests
 

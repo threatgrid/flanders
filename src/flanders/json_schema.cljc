@@ -200,7 +200,7 @@
                                  ;; fields e.g., {"minimum": 1, "required": ["a"]} => [:or [:int {:min 1}] [:map [:a :any]]]
                                  :else (or (when ->infer-type
                                              (->infer-type v opts))
-                                           (unsupported-schema! "cannot infer type, please set ::->default-type" v opts))))
+                                           (unsupported-schema! "cannot infer type" v opts))))
         _ (check-unsupported-keys! v opts)
         opts (update opts ::dialect #(or $schema %))
         _ (assert (nil? $anchor)) ;; TODO
