@@ -164,10 +164,12 @@
   (is (m/validate (->malli refs-json-schema-example) [])))
 
 (def short->dialect
-  {"draft7" "http://json-schema.org/draft-07/schema#"})
+  {"draft7" "http://json-schema.org/draft-07/schema#"
+   "draft2020-12" "https://json-schema.org/draft/2020-12/schema"})
 
 (def dialect->dir
-  {"draft7" "JSON-Schema-Test-Suite/tests/draft7"})
+  {"draft7" "JSON-Schema-Test-Suite/tests/draft7"
+   "draft2020-12" "JSON-Schema-Test-Suite/tests/draft2020-12"})
 
 ;; note: this test suite rarely declares "type", which results in very broad schemas that flanders can't represent.
 ;; https://github.com/json-schema/json-schema/issues/172
@@ -221,7 +223,54 @@
                       "ignores non-arrays" :skip
                       "ignores other non-objects" :skip}}
     "type.json" {}
-    "uniqueItems.json" {}}})
+    "uniqueItems.json" {}}
+   "draft2020-12"
+   {"additionalProperties.json" {}
+    "allOf.json" {}
+    "anchor.json" {}
+    "anyOf.json" {}
+    "boolean_schema.json" {}
+    "const.json" {}
+    "contains.json" {}
+    "content.json" {}
+    "default.json" {}
+    "defs.json" {}
+    "dependentRequired.json" {}
+    "dependentSchemas.json" {}
+    "dynamicRef.json" :skip
+    "enum.json" {}
+    "exclusiveMaximum.json" {}
+    "exclusiveMinimum.json" {}
+    "format.json" {}
+    "if-then-else.json" {}
+    "infinite-loop-detection.json" {}
+    "items.json" {}
+    "maxContains.json" {}
+    "maxItems.json" {}
+    "maxLength.json" {}
+    "maxProperties.json" {}
+    "maximum.json" {}
+    "minContains.json" {}
+    "minItems.json" {}
+    "minLength.json" {}
+    "minProperties.json" {}
+    "minimum.json" {}
+    "multipleOf.json" {}
+    "not.json" {}
+    "oneOf.json" {}
+    "pattern.json" {}
+    "patternProperties.json" {}
+    "prefixItems.json" {}
+    "properties.json" {}
+    "propertyNames.json" {}
+    "ref.json" :skip
+    "refRemote.json" :skip
+    "required.json" {}
+    "type.json" {}
+    "unevaluatedItems.json" :skip
+    "unevaluatedProperties.json" :skip
+    "uniqueItems.json" {}
+    "vocabulary.json" {}}})
 
 (defn ->printable [data]
   (walk/postwalk
@@ -274,6 +323,7 @@
                                 ;; https://github.com/json-schema/json-schema/issues/172
                                 ;; most of these tests rely on omitting "type" for very broad schemas we don't support
                                 (str/includes? test-description "ignores")
+                                (str/includes? test-description "JavaScript pseudo-array")
                                 (and (map? schema)
                                      (when-some [[_ const] (find schema "const")]
                                        (or (not (integer? const))
@@ -298,7 +348,7 @@
                     ;; print testing string on error
                     true))
             (swap! ntested inc)))))
-    (is (= 602 @ntested))))
+    (is (= 1292 @ntested))))
 
 (deftest const-test
   (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
