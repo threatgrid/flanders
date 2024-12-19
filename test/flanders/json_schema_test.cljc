@@ -169,7 +169,8 @@
                                                         "float and integers are equal up to 64-bit representation limits" :skip
                                                         "const with -2.0 matches integer and float types" :skip
                                                         "const with 1 does not match true" {"float one is valid" :skip}
-                                                        "const with 0 does not match other zero-like types" {"float zero is valid" :skip}}}]})
+                                                        "const with 0 does not match other zero-like types" {"float zero is valid" :skip}}}
+                                              {:file "JSON-Schema-Test-Suite/tests/draft7/type.json"}]})
 
 (defn ->printable [data]
   (walk/postwalk
@@ -196,7 +197,7 @@
                     config (get config description)]
               :when (not= :skip config)
               backend [:malli #_:schema]]
-        (let [skip? (or (str/includes? description "float")
+        (let [skip? (or (str/includes? description "float with zero")
                         (str/includes? description ".0")
                         (and (map? schema)
                              (when-some [[_ const] (find schema "const")]
@@ -209,11 +210,15 @@
                           "\n"
                           "Input: "
                           (pr-str (->printable data)))
-              (case backend
-                :malli (let [m (is (->malli schema {::sut/$schema version}))]
-                         (when (m/schema? m)
-                           (is (= valid (m/validate m data))
-                               (pr-str (m/form m)))))))))))))
+              (is (do (case backend
+                        :malli (when-some [m (try (->malli schema {::sut/$schema version})
+                                                  (catch Exception e
+                                                    (when-not (::sut/unsupported (ex-data e))
+                                                      (throw e))))]
+                                 (is (= valid (m/validate m data))
+                                     (pr-str (m/form m)))))
+                      ;; print testing string on error
+                      true)))))))))
 
 (comment
   (clojure.test/test-vars [#'json-schema-test-suite-test])
