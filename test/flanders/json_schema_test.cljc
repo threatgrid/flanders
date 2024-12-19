@@ -1,21 +1,10 @@
 (ns flanders.json-schema-test
-  (:require [cheshire.core :as json]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.pprint :as pp]
-            [clojure.set :as set]
-            [clojure.string :as str]
-            [clojure.test :refer [deftest is testing]]
-            [clojure.walk :as walk]
+  (:require [clojure.test :refer [deftest is testing]]
             [flanders.core :as f]
-            [flanders.example :as fe]
             [flanders.json-schema :as sut]
             [flanders.json-schema.test-helpers :as th :refer [->malli ->schema]]
             [malli.core :as m]
-            [malli.generator :as mg]
             [schema.core :as s]))
-
-;; tests
 
 (deftest ->flanders-test
   (is (= (m/form (->malli th/union-example {:flanders.malli/no-example true}))

@@ -1,22 +1,15 @@
 (ns flanders.json-schema.ocsf-schema-test
-  (:require [clojure.test :refer [deftest is testing]]
-            [clojure.set :as set]
-            [clojure.string :as str]
-            [clojure.walk :as walk]
+  (:require [cheshire.core :as json]
             [clojure.edn :as edn]
-            [cheshire.core :as json]
-            [clojure.pprint :as pp]
             [clojure.java.io :as io]
+            [clojure.test :refer [deftest is testing]]
             [flanders.example :as fe]
-            [flanders.core :as f]
             [flanders.json-schema :as sut]
             [flanders.json-schema.test-helpers :as th :refer [->malli ->schema]]
             [malli.core :as m]
             [malli.generator :as mg]
             [schema.core :as s]
             flanders.json-schema.test-helpers-schema-security-finding))
-
-(set! *warn-on-reflection* true)
 
 ;; examples
 
