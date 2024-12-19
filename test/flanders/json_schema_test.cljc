@@ -21,7 +21,7 @@
 ;; examples
 
 (def security-finding-json (delay (json/decode (slurp (io/resource "security-finding.json")))))
-(def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json nil)))
+(def FlandersSecurityFinding (delay (sut/->flanders @security-finding-json {::sut/->infer-type (fn [v _opts] (assoc v "type" ::sut/any))})))
 (def example-SecurityFinding (delay (fe/->example-tree @FlandersSecurityFinding)))
 (def SchemaSecurityFinding (delay (->schema @security-finding-json)))
 (def MalliSecurityFinding (delay (->malli @security-finding-json)))

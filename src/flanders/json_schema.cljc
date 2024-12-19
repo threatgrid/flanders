@@ -180,7 +180,7 @@
     (when (contains? v k)
       (unsupported-schema! (str "Unsupported JSON Schema keyword: " k) v opts))))
 
-(defn- parse-map [v opts]
+(defn- parse-map [v {::keys [->infer-type] :as opts}]
   (let [{:strs [description title example $schema $ref $anchor definitions $defs $dynamicAnchor $dynamicRef $id $vocabulary] :as v} (normalize-map v opts)
         {:strs [type] :as v} (if (contains? v "type")
                                v
@@ -198,7 +198,9 @@
                                  ;; we assume a concrete type below to simplify the code. we might
                                  ;; be able to expand the schema to multiple types and distribute the relevant
                                  ;; fields e.g., {"minimum": 1, "required": ["a"]} => [:or [:int {:min 1}] [:map [:a :any]]]
-                                 :else (unsupported-schema! "cannot infer type" v opts)))
+                                 :else (or (when ->infer-type
+                                             (->infer-type v opts))
+                                           (unsupported-schema! "cannot infer type, please set ::->default-type" v opts))))
         _ (check-unsupported-keys! v opts)
         opts (update opts ::dialect #(or $schema %))
         _ (assert (nil? $anchor)) ;; TODO
@@ -243,7 +245,11 @@
                        (if (not-any? (fn [p] (every? p enum)) [integer? number? keyword? string?])
                          (unsupported-schema! "complex enum" v opts)
                          (f/enum enum)))))
-                 (case (some-> type (-normalize (conj-path opts "type")))
+                 (case (when type
+                         (if (qualified-keyword? type)
+                           type
+                           (-normalize type (conj-path opts "type"))))
+                   ::any f/any
                    ;; https://json-schema.org/understanding-json-schema/reference/numeric
                    ;; TODO all json-schema numbers assume 1.0 and 1 are identical.
                    "integer" (if-some [enum (seq (get v "enum"))]
