@@ -74,7 +74,7 @@
                           (conj (->malli type))
                           (cond->>
                             entry->map-schema
-                            (conj [:map nil])))
+                            (conj [:map (when (:close? entry->map-schema) {:closed true})])))
         :default-key (if entry->map-schema
                        [:map-of props (:schema default-or-specific-key) (->malli type)]
                        (-> [::m/default]
@@ -87,13 +87,17 @@
   MapType
   (->malli' [{:keys [entries key?] :as dll} {::keys [->malli] :as opts}]
     (let [entries (vec entries)
-          default-entry (peek entries) ;; if the final entry simply opens the map, we can drop it since :map defaults to open
+          ;; if the final entry simply opens the map, we can drop it since :map defaults to open
+          default-entry (peek entries)
           opening-default-entry? (= (f/entry f/any f/any :required false) default-entry)
           entries (cond-> entries
                     opening-default-entry? pop)
           close? (not opening-default-entry?)
-          s (if (= 1 (count entries))
-              (-> (m/schema (->malli (first entries) (assoc opts ::entry->map-schema true)) opts)
+          s (if (and (= 1 (count entries))
+                     default-entry)
+              ;; avoid ::m/default when possible. affects key keywordizing during coercion (used as a fallback
+              ;; instead of keywordizing a key to match a known entry)
+              (-> (m/schema (->malli (first entries) (assoc opts ::entry->map-schema {:close? close?})) opts)
                   (describe dll opts))
               (-> (case (count entries)
                     ;; :merge has problems with 1 and 0 children https://github.com/metosin/malli/pull/1147

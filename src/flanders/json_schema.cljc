@@ -78,7 +78,7 @@
                ;"$schema"
                "additionalItems"
                ;"additionalProperties"
-               ;"allOf"
+               "allOf"
                ;"anyOf"
                ;"const"
                "contains"
@@ -130,7 +130,7 @@
                ;"$schema"
                "$vocabulary"
                ;"additionalProperties"
-               ;"allOf"
+               "allOf"
                ;"anyOf"
                ;"const"
                "contains"
@@ -190,6 +190,7 @@
                                ;; for example {"required": ["a"]} is [:or [:not map?] [:map [:a :any]]] in malli.
                                ;; we filter out examples that require negation in the json schema test suite.
                                (cond
+                                 (some #(contains? v %) applicator-properties) v
                                  ;; assumes we don't have any other fields like "minimum"
                                  (some #(contains? v %) object-properties) (assoc v "type" "object")
                                  (some #(contains? v %) array-properties) (assoc v "type" "array")
@@ -232,15 +233,6 @@
                                                               (assoc "type" type))))
                                                      (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))))
                                             disjuncts)))
-                 (when-some [[_ conjuncts] (find v "allOf")]
-                   (assert (sequential? conjuncts))
-                   (let [skip? (if (= 1 (count conjuncts))
-                                 (let [s (first conjuncts)]
-                                   ;; additionalProperties does not look in applicators
-                                   (contains? v "additionalProperties"))
-                                 (unsupported-schema! "Only a single allOf schema supported" v opts))]
-                     (when-not skip?
-                       (->flanders (first conjuncts) (conj-path opts "allOf" "0")))))
                  (when-some [[_ const] (find v "const")]
                    (f/enum [const]))
                  (when (not type)

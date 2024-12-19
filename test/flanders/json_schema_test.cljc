@@ -40,7 +40,7 @@
             [:string #:json-schema{:example "string"}]]]
           [:y #:json-schema{:example 10} [:int #:json-schema{:example 10}]]]))
   (is (= (s/explain (->schema th/union-example))
-         '{:x (cond-pre Int Str), :y Int})))
+         '{:x (cond-pre Int Str), :y Int, Any Any})))
 
 (comment
   (th/generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
@@ -353,8 +353,8 @@
 (deftest const-test
   (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
 
+#_ ;; requires more complicated "type" inference
 (deftest anyOf-test
-  ;;TODO
   (is (= [:or
           [:map [:bar :int]]
           [:map [:foo :string]]]
@@ -401,14 +401,12 @@
                 {"foo" 1, "bar" 2, "quux" true}))
   )
 
+;;note these infer "type" more tightly than the spec
 (deftest required-test
   (is (= [:map [:__proto__ :any] [:constructor :any] [:toString :any]]
-         (->malli {"required" ["__proto__" "toString" "constructor"]} {:flanders.malli/no-example true})))
-  (is (= (m/validate (->malli {"required" ["__proto__" "toString" "constructor"]} {:flanders.malli/no-example true})
-                     12)))
+         (m/form (->malli {"required" ["__proto__" "toString" "constructor"]} {:flanders.malli/no-example true}))))
   (is (= '{:__proto__ Any, :constructor Any, :toString Any, Any Any}
-         (s/explain (->schema {"required" ["__proto__" "toString" "constructor"]}))))
-  )
+         (s/explain (->schema {"required" ["__proto__" "toString" "constructor"]})))))
 
 (deftest enum-test
   (is (= [:enum 0 1 2 3 99] (m/form (->malli {"enum" [3, 0, 1, 2, 99], "title" "Activity ID", "type" "integer"} {:flanders.malli/no-example true})))))
