@@ -86,7 +86,12 @@
 
   MapType
   (->malli' [{:keys [entries key?] :as dll} {::keys [->malli] :as opts}]
-    (let [s (if (= 1 (count entries))
+    (let [default-entry (peek entries) ;; if the final entry simply opens the map, we can drop it since :map defaults to open
+          opening-default-entry? (= (f/entry f/any f/any :required false) default-entry)
+          entries (cond-> entries
+                    opening-default-entry? pop)
+          close? (not opening-default-entry?)
+          s (if (= 1 (count entries))
               (-> (m/schema (->malli (first entries) (assoc opts ::entry->map-schema true)) opts)
                   (describe dll opts))
               (-> (case (count entries)
@@ -95,7 +100,7 @@
                     (into [:merge] (map (fn [e] [:map (->malli e)])) entries))
                   (m/schema opts)
                   m/deref ;; eliminate :merge
-                  (m/-update-properties assoc :closed true)
+                  (cond-> close? (m/-update-properties assoc :closed true))
                   (describe dll opts)))]
       (if key?
         {:op :default-key :schema s}

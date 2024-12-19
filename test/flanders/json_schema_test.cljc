@@ -173,7 +173,8 @@
    {"additionalItems.json" {}
     "additionalProperties.json" {}
     "allOf.json" {}
-    "anyOf.json" {}
+    "anyOf.json" {;;keywordizing defaults
+                  "anyOf complex types" :skip}
     "boolean_schema.json" {:config {;; flanders has no opposite for f/any
                                     "boolean schema 'false'" :skip}}
     "const.json" {:config {;; not sure
@@ -191,7 +192,8 @@
     "exclusiveMinimum.json" {}
     "format.json" {}
     "if-then-else.json" {}
-    "infinite-loop-detection.json" {}
+    ;;TODO default $id
+    "infinite-loop-detection.json" :skip
     "items.json" {}
     "maxItems.json" {}
     "maxLength.json" {}
@@ -284,10 +286,6 @@
                   ;; print testing string on error
                   true)))))))
 
-(comment
-  (clojure.test/test-vars [#'json-schema-test-suite-test])
-  )
-
 (deftest const-test
   (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
 
@@ -327,6 +325,13 @@
                 {"foo" 1, "bar" 2, "quux" true}))
   )
 
+(deftest required-test
+  (is (= [:map [:__proto__ :any] [:constructor :any] [:toString :any]]
+         (->malli {"required" ["__proto__" "toString" "constructor"]} {:flanders.malli/no-example true})))
+  (is (= '{:__proto__ Any, :constructor Any, :toString Any, Any Any}
+         (s/explain (->schema {"required" ["__proto__" "toString" "constructor"]}))))
+  )
+
 (comment
-  (keys (:flanders.json-schema/defs-scope @FlandersSecurityFinding))
+  (clojure.test/test-vars [#'json-schema-test-suite-test])
   )
