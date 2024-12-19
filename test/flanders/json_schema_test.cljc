@@ -341,14 +341,14 @@
                                                 (catch Exception e
                                                   (when-not (::sut/unsupported (ex-data e))
                                                     (throw e))))]
+                               (swap! ntested inc)
                                (is (= valid (try (m/coerce m data)
                                                  true
                                                  (catch Exception _ false)))
                                    (pr-str (m/form m)))))
                     ;; print testing string on error
-                    true))
-            (swap! ntested inc)))))
-    (is (= 1292 @ntested))))
+                    true))))))
+    (is (= 152 @ntested))))
 
 (deftest const-test
   (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
