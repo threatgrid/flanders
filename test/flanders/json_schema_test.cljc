@@ -30,15 +30,11 @@
 ;; tests
 
 (deftest ->flanders-test
-  (is (= (m/form (->malli th/union-example))
+  (is (= (m/form (->malli th/union-example {:flanders.malli/no-example true}))
          [:map
-          {:closed true, :json-schema/example {:x 10, :y 10}}
           [:x
-           #:json-schema{:example 10}
-           [:or
-            [:int #:json-schema{:example 10}]
-            [:string #:json-schema{:example "string"}]]]
-          [:y #:json-schema{:example 10} [:int #:json-schema{:example 10}]]]))
+           [:or :int :string]]
+          [:y :int]]))
   (is (= (s/explain (->schema th/union-example))
          '{:x (cond-pre Int Str), :y Int, Any Any})))
 
