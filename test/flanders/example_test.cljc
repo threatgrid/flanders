@@ -1,8 +1,12 @@
 (ns flanders.example-test
   (:require [clojure.test :refer [deftest is testing]]
+            [flanders.core :as f]
             [flanders.example :as fe]
             [flanders.examples :as fes]
             [flanders.core :as f]))
+
+(deftest enum-test
+  (is (= 0 (-> (f/enum [3, 0, 1, 2, 99]) fe/->example-tree))))
 
 (deftest ref-test
   (is (= 10 (-> fes/RefExample fe/->example-tree)))

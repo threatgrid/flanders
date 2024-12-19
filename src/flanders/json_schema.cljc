@@ -269,15 +269,17 @@
                                (unsupported-schema! "items vector" v opts))
                              (f/seq-of (->flanders items (conj-path opts "items"))))
                    "object" (let [required (not-empty (into #{} (map keyword) (get v "required")))
-                                  properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v]))
-                                                              (into (zipmap required (repeat true))
-                                                                    (get v "properties"))))
+                                  properties (not-empty (-> (sorted-map)
+                                                            (into (map (fn [k] [k true]))
+                                                                  required)
+                                                            (into (map (fn [[k v]] [(keyword k) v]))
+                                                                  (get v "properties"))))
                                   fixed (mapv (fn [[k s]]
                                                 (f/entry k (->flanders s (conj-path opts (-normalize k opts))) :required? (contains? required k)))
                                               properties)
                                   default (if-some [[k additionalProperties] (find v "additionalProperties")]
                                             (case additionalProperties
-                                              ;; we don't support translating false, but it corresponds to a closed map which is flanders' default.
+                                              ;; ->flanders doesn't support translating false, but it corresponds to a closed map which is flanders' default.
                                               false nil
                                               (if (and (seq fixed) (not (boolean? additionalProperties)))
                                                 ;; TODO because we keywordize map schema keys, string keys on maps are not handled by the fixed
