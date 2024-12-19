@@ -170,7 +170,10 @@
                                                         "const with -2.0 matches integer and float types" :skip
                                                         "const with 1 does not match true" {"float one is valid" :skip}
                                                         "const with 0 does not match other zero-like types" {"float zero is valid" :skip}}}
-                                              {:file "JSON-Schema-Test-Suite/tests/draft7/type.json"}]})
+                                              {:file "JSON-Schema-Test-Suite/tests/draft7/type.json"}
+                                              ;{:file "JSON-Schema-Test-Suite/tests/draft7/ref.json"}
+                                              {:file "JSON-Schema-Test-Suite/tests/draft7/oneOf.json"}
+                                              ]})
 
 (defn ->printable [data]
   (walk/postwalk

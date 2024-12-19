@@ -63,14 +63,26 @@
                   {::unsupported true
                    :v v :opts (select-keys opts [::path ::base-id])})))
 
+(declare ->flanders)
+
+(defn- check-unsupported-keys! [v opts]
+  (doseq [k ["minimum" "maximum" "definitions"]]
+    (when (contains? v k)
+      (unsupported-schema! k v opts))))
+
+(def ^:private object-properties ["properties" "patternProperties" "additionalProperties" "dependentSchemas" "propertyNames"])
+(def ^:private array-properties ["prefixItems" "contains" "items"])
+
 (defn- parse-map [v opts]
-  (let [{:strs [description title example
-                $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary $schema
-                type] :as v}
-        (normalize-map v opts)
-        opts (update opts ::$schema #(or $schema %))
-        ;_ (assert (= "http://json-schema.org/draft-07/schema#" (::$schema opts))
-        ;          (pr-str (::$schema opts)))
+  (let [{:strs [description title example $schema $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary] :as v} (normalize-map v opts)
+        {:strs [type] :as v} (if (contains? v "type")
+                               v
+                               (cond
+                                 (some #(contains? v %) object-properties) (assoc v "type" "object")
+                                 (some #(contains? v %) array-properties) (assoc v "type" "array")
+                                 :else v))
+        _ (check-unsupported-keys! v opts)
+        opts (update opts ::dialect #(or $schema %))
         _ (assert (nil? $anchor)) ;; TODO
         _ (assert (nil? $dynamicAnchor)) ;; TODO
         _ (assert (nil? $dynamicRef)) ;; TODO
@@ -93,8 +105,15 @@
                      (assoc (f/ref this-id)
                             ;;TODO rename or remove, for debugging purposes (e.g., defalias strings)
                             :v v)))
-                 (when-some [disjuncts (get v "anyOf")]
-                   (f/either :choices (into [] (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))) disjuncts)))
+                 (when-some [disjuncts (get v "oneOf")]
+                   (f/either :choices (into [] (comp (map (fn [d]
+                                                            (cond-> d
+                                                              (and (map? d)
+                                                                   (not (contains? v "type"))
+                                                                   type)
+                                                              (assoc "type" type))))
+                                                     (map-indexed #(->flanders %2 (conj-path opts "oneOf" (str %1)))))
+                                            disjuncts)))
                  (when-some [conjuncts (get v "allOf")]
                    (when-not (= 1 (count conjuncts))
                      (unsupported-schema! "Only a single allOf schema supported" v opts))
@@ -127,7 +146,9 @@
                    "array" (let [{:strs [items uniqueItems]} v]
                              (assert (nil? uniqueItems))
                              (f/seq-of (->flanders items (conj-path opts "items"))))
-                   "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
+                   "object" (let [_ (when (contains? v "patternProperties")
+                                      (unsupported-schema! "patternProperties" v opts))
+                                  properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                   required (not-empty (into #{} (map keyword) (get v "required")))
                                   additionalProperties (get v "additionalProperties")]
                               (assert ((some-fn nil? boolean?) additionalProperties))
@@ -159,15 +180,17 @@
 
 (defn ->flanders
   "Converts parsed JSON Schema to Flanders."
-  ([v] (->flanders v {::$schema "http://json-schema.org/draft-07/schema#"}))
+  ([v] (->flanders v nil))
   ([v opts]
-   (cond
-     (boolean? v) (if v
-                    f/any
-                    (unsupported-schema! "no opposite of f/any" v opts))
-     (nil? v) (unsupported-schema! "nil is not checkable in flanders" v opts)
-     (map? v) (let [v (normalize-map v opts)]
-                (if (sequential? (get v "type"))
-                  (f/either :choices (mapv #(parse-map (assoc v "type" %) opts) (get v "type")))
-                  (parse-map v opts)))
-     :else (unknown-schema! v opts))))
+   (let [opts (-> opts
+                  (update ::dialect #(or % "http://json-schema.org/draft-07/schema#")))]
+     (cond
+       (boolean? v) (if v
+                      f/any
+                      (unsupported-schema! "no opposite of f/any" v opts))
+       (nil? v) (unsupported-schema! "nil is not checkable in flanders" v opts)
+       (map? v) (let [v (normalize-map v opts)]
+                  (if (sequential? (get v "type"))
+                    (f/either :choices (mapv #(parse-map (assoc v "type" %) opts) (get v "type")))
+                    (parse-map v opts)))
+       :else (unknown-schema! v opts)))))
