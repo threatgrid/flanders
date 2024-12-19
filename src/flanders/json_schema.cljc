@@ -59,7 +59,7 @@
   (throw (ex-info (format "Unknown JSON Schema at path %s: %s" (pr-str path) (pr-str v)) {:v v :opts (select-keys opts [::path ::base-id])})))
 
 (defn unsupported-schema! [reason v {::keys [path] :as opts}]
-  (throw (ex-info (format "Unsupported JSON Schema at path %s: %s (%s)" (pr-str path) (pr-str v) reason)
+  (throw (ex-info (format "Unsupported JSON Schema: %s" reason)
                   {::unsupported true
                    :v v :opts (select-keys opts [::path ::base-id])})))
 
@@ -121,7 +121,7 @@
              "readOnly"
              ;"required"
              "then"
-             "title"
+             ;"title"
              ;"type"
              "unevaluatedItems"
              "unevaluatedProperties"
@@ -230,6 +230,7 @@
       ;;TODO recursive examples involving refs (currently :ref example is nil)
       ;example (assoc :example example)
       ;default (assoc :default default)
+      ;; TODO utilize
       ;title (assoc :title title)
       )))
 

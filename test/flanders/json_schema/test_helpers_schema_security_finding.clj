@@ -3,8 +3,8 @@
 (def
  expected-schema-explain
  '{:activity_id (enum 0 1 99 3 2),
-   :category_uid Int,
-   :class_uid Int,
+   :category_uid (enum 2),
+   :class_uid (enum 2001),
    :cloud
    (recursive
     #'ns-0/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_cloud),
