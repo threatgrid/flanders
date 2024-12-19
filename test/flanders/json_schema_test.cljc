@@ -1,5 +1,6 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.set :as set]
             [clojure.string :as str]
             [clojure.walk :as walk]
             [clojure.edn :as edn]
@@ -173,10 +174,8 @@
    {"additionalItems.json" {}
     "additionalProperties.json" {}
     "allOf.json" {}
-    "anyOf.json" {;;keywordizing defaults
-                  "anyOf complex types" :skip}
-    "boolean_schema.json" {:config {;; flanders has no opposite for f/any
-                                    "boolean schema 'false'" :skip}}
+    "anyOf.json" {}
+    "boolean_schema.json" {}
     "const.json" {:config {;; not sure
                            "float and integers are equal up to 64-bit representation limits" :skip
                            "const with -2.0 matches integer and float types" :skip
@@ -186,8 +185,7 @@
     "default.json" {}
     "definitions.json" {}
     "dependencies.json" {}
-    "enum.json" {;;keywordize issues
-                 "enums in properties" :skip}
+    "enum.json" {}
     "exclusiveMaximum.json" {}
     "exclusiveMinimum.json" {}
     "format.json" {}
@@ -251,7 +249,9 @@
     (testing (str short-dialect "\n" short-file "\n" "Test suite: " suite-description "\n")
       (doseq [{test-description "description" :strs [data valid]} tests
               backend [:malli #_:schema]
-              :let [test-description (str/trim test-description)
+              :let [;; we generate schemas with keyword keys so we need to coerce input
+                    data (walk/keywordize-keys data)
+                    test-description (str/trim test-description)
                     config (get test-description->config test-description)
                     skip? (or (= :skip config)
                               (str/includes? test-description "float")
@@ -288,6 +288,15 @@
 
 (deftest const-test
   (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
+
+(deftest anyOf-test
+  ;;TODO
+  (is (m/form (->malli {"anyOf" [{"properties" {"bar" {"type" "integer"}}, "required" ["bar"]} {"properties" {"foo" {"type" "string"}}, "required" ["foo"]}]}
+                       {:flanders.malli/no-example true})))
+  ;;FIXME should be s/either or s/conditional, cond-pre disjuncts must have distinct preconditions
+  (is (= '(cond-pre {:bar Int, Any Any} {:foo Str, Any Any})
+         (s/explain (->schema {"anyOf" [{"properties" {"bar" {"type" "integer"}}, "required" ["bar"]} {"properties" {"foo" {"type" "string"}}, "required" ["foo"]}]}))))
+  )
 
 (deftest additionalProperties-test
   (testing "true => open"
@@ -330,6 +339,8 @@
          (->malli {"required" ["__proto__" "toString" "constructor"]} {:flanders.malli/no-example true})))
   (is (= '{:__proto__ Any, :constructor Any, :toString Any, Any Any}
          (s/explain (->schema {"required" ["__proto__" "toString" "constructor"]}))))
+  (m/coerce [:map [:__proto__ :any] [:constructor :any] [:toString :any]]
+            {"__proto__" 12, "toString" {"length" "foo"}, "constructor" 37})
   )
 
 (comment
