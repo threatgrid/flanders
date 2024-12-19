@@ -218,7 +218,9 @@
                                                   (catch Exception e
                                                     (when-not (::sut/unsupported (ex-data e))
                                                       (throw e))))]
-                                 (is (= valid (m/validate m data))
+                                 (is (= valid (try (m/coerce m data)
+                                                   true
+                                                   (catch Exception _ false)))
                                      (pr-str (m/form m)))))
                       ;; print testing string on error
                       true)))))))))

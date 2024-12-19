@@ -65,13 +65,17 @@
 
 (declare ->flanders)
 
+(def ^:private object-properties ["properties" "patternProperties" "additionalProperties"])
+(def ^:private array-properties ["prefixItems" "contains" "items"])
+(def ^:private applicator-properties ["if" "then" "else" "oneOf" "anyOf" "allOf" "not"])
+
 (defn- check-unsupported-keys! [v opts]
-  (doseq [k ["minimum" "maximum" "definitions"]]
+  (doseq [k ["minimum" "maximum" "definitions"
+             "if" "then" "else" "oneOf" "not" "patternProperties"
+             "dependentSchemas" "propertyNames"]]
     (when (contains? v k)
       (unsupported-schema! k v opts))))
 
-(def ^:private object-properties ["properties" "patternProperties" "additionalProperties" "dependentSchemas" "propertyNames"])
-(def ^:private array-properties ["prefixItems" "contains" "items"])
 
 (defn- parse-map [v opts]
   (let [{:strs [description title example $schema $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary] :as v} (normalize-map v opts)
@@ -105,14 +109,14 @@
                      (assoc (f/ref this-id)
                             ;;TODO rename or remove, for debugging purposes (e.g., defalias strings)
                             :v v)))
-                 (when-some [disjuncts (get v "oneOf")]
+                 (when-some [disjuncts (get v "anyOf")]
                    (f/either :choices (into [] (comp (map (fn [d]
                                                             (cond-> d
                                                               (and (map? d)
                                                                    (not (contains? v "type"))
                                                                    type)
                                                               (assoc "type" type))))
-                                                     (map-indexed #(->flanders %2 (conj-path opts "oneOf" (str %1)))))
+                                                     (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))))
                                             disjuncts)))
                  (when-some [conjuncts (get v "allOf")]
                    (when-not (= 1 (count conjuncts))
@@ -146,9 +150,7 @@
                    "array" (let [{:strs [items uniqueItems]} v]
                              (assert (nil? uniqueItems))
                              (f/seq-of (->flanders items (conj-path opts "items"))))
-                   "object" (let [_ (when (contains? v "patternProperties")
-                                      (unsupported-schema! "patternProperties" v opts))
-                                  properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
+                   "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                   required (not-empty (into #{} (map keyword) (get v "required")))
                                   additionalProperties (get v "additionalProperties")]
                               (assert ((some-fn nil? boolean?) additionalProperties))
