@@ -1314,14 +1314,14 @@
    [:ref
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/attack"]]]
  [:category_name {:optional true} :string]
- [:category_uid :int]
+ [:category_uid [:enum 2]]
  [:cis_csc
   {:optional true}
   [:sequential
    [:ref
     "https://schema.ocsf.io/schema/classes/security_finding/$defs/cis_csc"]]]
  [:class_name {:optional true} :string]
- [:class_uid :int]
+ [:class_uid [:enum 2001]]
  [:cloud
   [:ref
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/cloud"]]

@@ -19305,10 +19305,10 @@
      :technique {:name "string", :src_url "string", :uid "string"},
      :version "string"}],
    :category_name "string",
-   :category_uid 10,
+   :category_uid 2,
    :cis_csc [{:control "string", :version "string"}],
    :class_name "string",
-   :class_uid 10,
+   :class_uid 2001,
    :cloud
    {:account
     {:labels ["string"],
@@ -22583,8 +22583,8 @@
   {:optional true, :json-schema/example "string"}
   [:string {:json-schema/example "string"}]]
  [:category_uid
-  {:json-schema/example 10}
-  [:int {:json-schema/example 10}]]
+  {:json-schema/example 2}
+  [:enum {:json-schema/example 2} 2]]
  [:cis_csc
   {:optional true,
    :json-schema/example [{:control "string", :version "string"}]}
@@ -22596,8 +22596,8 @@
   {:optional true, :json-schema/example "string"}
   [:string {:json-schema/example "string"}]]
  [:class_uid
-  {:json-schema/example 10}
-  [:int {:json-schema/example 10}]]
+  {:json-schema/example 2001}
+  [:enum {:json-schema/example 2001} 2001]]
  [:cloud
   {:json-schema/example
    {:account
