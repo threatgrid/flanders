@@ -48,11 +48,12 @@
         s)))
 
   MapEntry
-  (->malli' [{:keys [key type required? key?] :as entry} {::keys [->malli] :as opts}]
+  (->malli' [{:keys [key type required? key?] :as entry} {::keys [->malli entry->map-schema] :as opts}]
     (assert (not key?))
     (assert (some? type) (str "Type nil for MapEntry with key " key))
     (assert (some? key) (str "Key nil for MapEntry with type " type))
-    (let [optional? (and (not required?)
+    (let [opts (dissoc opts ::entry->map-schema)
+          optional? (and (not required?)
                          (not (:open? key))
                          (seq (:values key)))
           description (some :description [key entry])
@@ -70,25 +71,32 @@
       (case (:op default-or-specific-key)
         :specific-key (-> [(:schema default-or-specific-key)]
                           (cond-> props (conj props))
-                          (conj (->malli type)))
-        :default-key (-> [::m/default]
-                         (cond-> props (conj props))
-                         (conj
-                           [:map-of
-                            (:schema default-or-specific-key)
-                            (->malli type)])))))
+                          (conj (->malli type))
+                          (cond->>
+                            entry->map-schema
+                            (into [:map])))
+        :default-key (if entry->map-schema
+                       [:map-of props (:schema default-or-specific-key) (->malli type)]
+                       (-> [::m/default]
+                           (cond-> props (conj props))
+                           (conj
+                             [:map-of
+                              (:schema default-or-specific-key)
+                              (->malli type)]))))))
 
   MapType
   (->malli' [{:keys [entries key?] :as dll} {::keys [->malli] :as opts}]
-    (let [s (-> (case (count entries)
-                  ;; :merge has problems with 1 and 0 children https://github.com/metosin/malli/pull/1147
-                  0 [:merge (m/schema :map opts)]
-                  1 [:merge (m/schema [:map (->malli (first entries))] opts)]
-                  (into [:merge] (map (fn [e] [:map (->malli e)])) entries))
-                (m/schema opts)
-                m/deref ;; eliminate :merge
-                (m/-update-properties assoc :closed true)
-                (describe dll opts))]
+    (let [s (if (= 1 (count entries))
+              (-> (m/schema (->malli (first entries) (assoc opts ::entry->map-schema true)) opts)
+                  (describe dll opts))
+              (-> (case (count entries)
+                    ;; :merge has problems with 1 and 0 children https://github.com/metosin/malli/pull/1147
+                    0 [:merge (m/schema :map opts)]
+                    (into [:merge] (map (fn [e] [:map (->malli e)])) entries))
+                  (m/schema opts)
+                  m/deref ;; eliminate :merge
+                  (m/-update-properties assoc :closed true)
+                  (describe dll opts)))]
       (if key?
         {:op :default-key :schema s}
         s)))

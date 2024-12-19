@@ -9,13 +9,23 @@
             [clojure.java.io :as io]
             [schema.core :as s]))
 
+(defn with-default-dialect [opts]
+  (update opts ::fjs/dialect #(or % "http://json-schema.org/draft-07/schema#")))
+
 (defn ->malli
   ([v] (->malli v nil))
-  ([v opts] (malli/->malli (fjs/->flanders v opts) opts)))
+  ([v opts]
+   (let [opts (with-default-dialect opts)]
+     (malli/->malli (fjs/->flanders v opts)
+                    opts))))
 
 (defn ->schema
   ([v] (->schema v nil))
-  ([v opts] (#?(:clj schema/->schema+clean :default schema/->schema) (fjs/->flanders v nil) nil)))
+  ([v opts]
+   (let [opts (with-default-dialect opts)]
+     (#?(:clj schema/->schema+clean :default schema/->schema)
+              (fjs/->flanders v opts)
+              opts))))
 
 (defn unqualify-vars [vs]
   (let [gs (group-by namespace (sort (map symbol vs)))

@@ -70,68 +70,118 @@
 (def ^:private applicator-properties ["if" "then" "else" "oneOf" "anyOf" "allOf" "not"])
 
 (defn- check-unsupported-keys! [v opts]
-  (doseq [k ["$anchor"
-             "$comment"
-             ;"$defs"
-             "$dynamicAnchor"
-             "$dynamicRef"
-             ;"$id"
-             ;"$ref"
-             ;"$schema"
-             "$vocabulary"
-             ;"additionalProperties"
-             ;"allOf"
-             ;"anyOf"
-             ;"const"
-             "contains"
-             "contentEncoding"
-             "contentMediaType"
-             "contentSchema"
-             "default"
-             "dependentRequired"
-             "dependentSchemas"
-             "deprecated"
-             ;"description"
-             "else"
-             ;"enum"
-             "examples"
-             "exclusiveMaximum"
-             "exclusiveMinimum"
-             ;"format"
-             "if"
-             ;"items"
-             "maxContains"
-             "maximum"
-             "maxItems"
-             "maxLength"
-             "maxProperties"
-             "minContains"
-             "minimum"
-             "minItems"
-             "minLength"
-             "minProperties"
-             "multipleOf"
-             "not"
-             "oneOf"
-             "pattern"
-             "patternProperties"
-             "prefixItems"
-             ;"properties"
-             "propertyNames"
-             "readOnly"
-             ;"required"
-             "then"
-             ;"title"
-             ;"type"
-             "unevaluatedItems"
-             "unevaluatedProperties"
-             "uniqueItems"
-             "writeOnly"]]
+  (doseq [k (case (::dialect opts)
+              "http://json-schema.org/draft-07/schema#"
+              ["$comment"
+               ;"$id"
+               ;"$ref"
+               ;"$schema"
+               "additionalItems"
+               ;"additionalProperties"
+               ;"allOf"
+               ;"anyOf"
+               ;"const"
+               "contains"
+               "contentEncoding"
+               "contentMediaType"
+               "default"
+               ;"definitions" ;; also support $defs but not both
+               "dependencies"
+               ;"description"
+               "else"
+               ;"enum"
+               "examples"
+               "exclusiveMaximum"
+               "exclusiveMinimum"
+               ;"format"
+               "if"
+               ;"items"
+               "maximum"
+               "maxItems"
+               "maxLength"
+               "maxProperties"
+               "minimum"
+               "minItems"
+               "minLength"
+               "minProperties"
+               "multipleOf"
+               "not"
+               "oneOf"
+               "pattern"
+               "patternProperties"
+               ;"properties"
+               "propertyNames"
+               "readOnly"
+               ;"required"
+               "then"
+               ;"title"
+               ;"type"
+               "uniqueItems"
+               "writeOnly"]
+
+              "https://json-schema.org/draft/2020-12/schema"
+              ["$anchor"
+               "$comment"
+               ;"$defs" ;; also support $defs but not both
+               "$dynamicAnchor"
+               "$dynamicRef"
+               ;"$id"
+               ;"$ref"
+               ;"$schema"
+               "$vocabulary"
+               ;"additionalProperties"
+               ;"allOf"
+               ;"anyOf"
+               ;"const"
+               "contains"
+               "contentEncoding"
+               "contentMediaType"
+               "contentSchema"
+               "default"
+               "dependentRequired"
+               "dependentSchemas"
+               "deprecated"
+               ;"description"
+               "else"
+               ;"enum"
+               "examples"
+               "exclusiveMaximum"
+               "exclusiveMinimum"
+               ;"format"
+               "if"
+               ;"items"
+               "maxContains"
+               "maximum"
+               "maxItems"
+               "maxLength"
+               "maxProperties"
+               "minContains"
+               "minimum"
+               "minItems"
+               "minLength"
+               "minProperties"
+               "multipleOf"
+               "not"
+               "oneOf"
+               "pattern"
+               "patternProperties"
+               "prefixItems"
+               ;"properties"
+               "propertyNames"
+               "readOnly"
+               ;"required"
+               "then"
+               ;"title"
+               ;"type"
+               "unevaluatedItems"
+               "unevaluatedProperties"
+               "uniqueItems"
+               "writeOnly"])]
     (when (contains? v k)
       (unsupported-schema! (str "Unsupported JSON Schema keyword: " k) v opts))))
 
 (defn- parse-map [v opts]
-  (let [{:strs [description title example $schema $ref $anchor $defs $dynamicAnchor $dynamicRef $id $vocabulary] :as v} (normalize-map v opts)
+  (let [{:strs [description title example $schema $ref $anchor definitions $defs $dynamicAnchor $dynamicRef $id $vocabulary] :as v} (normalize-map v opts)
         {:strs [type] :as v} (if (contains? v "type")
                                v
                                (cond
@@ -151,6 +201,8 @@
                                       (or $id parent-id
                                           ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
                                           #_(throw (ex-info "Must supply $id" {})))))
+        _ (assert (not (and $defs definitions)))
+        $defs (or $defs definitions)
         $defs (some-> $defs (normalize-map opts) not-empty)
         local-defs (not-empty
                      (into {} (map (fn [[k v]]
@@ -182,6 +234,13 @@
                        (->flanders (first conjuncts) (conj-path opts "allOf" "0")))))
                  (when-some [[_ const] (find v "const")]
                    (f/enum [const]))
+                 (when (not type)
+                   (when-some [enum (seq (get v "enum"))]
+                     (let [enum (cond->> enum
+                                  (every? (some-fn ident? string?) enum) (into [] (map-indexed #(-normalize %2 (conj-path opts (str %))))))]
+                       (if (not-any? (fn [p] (every? p enum)) [integer? number? keyword? string?])
+                         (unsupported-schema! "complex enum" v opts)
+                         (f/enum enum)))))
                  (case (some-> type (-normalize (conj-path opts "type")))
                    ;; https://json-schema.org/understanding-json-schema/reference/numeric
                    ;; TODO all json-schema numbers assume 1.0 and 1 are identical.
@@ -206,6 +265,8 @@
                                 (f/str)))
                    "null" (unsupported-schema! "Flanders cannot check for nil" v opts)
                    "array" (let [{:strs [items]} v]
+                             (when (sequential? items)
+                               (unsupported-schema! "items vector" v opts))
                              (f/seq-of (->flanders items (conj-path opts "items"))))
                    "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                   required (not-empty (into #{} (map keyword) (get v "required")))
@@ -213,19 +274,21 @@
                                                 (f/entry k (->flanders s (conj-path opts (-normalize k opts))) :required? (contains? required k)))
                                               properties)
                                   default (if-some [[k additionalProperties] (find v "additionalProperties")]
-                                            ;; we don't support translating false, but it corresponds to a closed map which is flanders' default.
-                                            (when-not (false? additionalProperties)
-                                              [(f/entry f/any (->flanders additionalProperties (conj-path opts (-normalize k opts)))
-                                                        :required false)])
+                                            (case additionalProperties
+                                              ;; we don't support translating false, but it corresponds to a closed map which is flanders' default.
+                                              false nil
+                                              (if (and (seq fixed) (not (boolean? additionalProperties)))
+                                                ;; TODO because we keywordize map schema keys, string keys on maps are not handled by the fixed
+                                                ;; fields. see additionalProperties-test
+                                                (unsupported-schema! "additionalProperties must be true or false" v opts)
+                                                [(f/entry f/any (->flanders additionalProperties (conj-path opts (-normalize k opts)))
+                                                          :required false)]))
                                             ;; JSON Schema maps are open by default
                                             [(f/entry f/any f/any :required false)])]
                               (f/map (into fixed default)))
                    ;; https://github.com/json-schema/json-schema/issues/172
                    nil f/any
                    (unknown-schema! v opts))
-                 (when-some [enum (seq (get v "enum"))]
-                   (f/enum (cond->> enum
-                             (some (some-fn ident? string?) enum) (into [] (map #(-normalize %2 (conj-path opts (str %))))))))
                  (unknown-schema! v opts))]
     (cond-> (assoc base ::base-id (::base-id opts))
       ;; TODO unit test
