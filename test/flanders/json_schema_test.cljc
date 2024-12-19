@@ -15,6 +15,8 @@
             [schema.core :as s]
             flanders.json-schema.test-helpers-schema-security-finding))
 
+(set! *warn-on-reflection* true)
+
 ;; examples
 
 (def security-finding-json (delay (json/decode (slurp (io/resource "security-finding.json")))))
@@ -160,21 +162,56 @@
          (m/form (->malli refs-json-schema-example))))
   (is (m/validate (->malli refs-json-schema-example) [])))
 
+(def short->dialect
+  {"draft7" "http://json-schema.org/draft-07/schema#"})
+
+(def dialect->dir
+  {"draft7" "JSON-Schema-Test-Suite/tests/draft7"})
+
 (def json-schema-test-suite
-  {"http://json-schema.org/draft-07/schema#" [{:file "JSON-Schema-Test-Suite/tests/draft7/boolean_schema.json"
-                                               :config {;; flanders has no opposite for f/any
-                                                        "boolean schema 'false'" :skip}}
-                                              {:file "JSON-Schema-Test-Suite/tests/draft7/const.json"
-                                               :config {;; not sure
-                                                        "float and integers are equal up to 64-bit representation limits" :skip
-                                                        "const with -2.0 matches integer and float types" :skip
-                                                        "const with 1 does not match true" {"float one is valid" :skip}
-                                                        "const with 0 does not match other zero-like types" {"float zero is valid" :skip}}}
-                                              {:file "JSON-Schema-Test-Suite/tests/draft7/type.json"}
-                                              ;{:file "JSON-Schema-Test-Suite/tests/draft7/ref.json"}
-                                              {:file "JSON-Schema-Test-Suite/tests/draft7/oneOf.json"}
-                                              {:file "JSON-Schema-Test-Suite/tests/draft7/contains.json"}
-                                              ]})
+  {"draft7"
+   {"additionalItems.json" {}
+    "additionalProperties.json" {}
+    "allOf.json" {}
+    "anyOf.json" {}
+    "boolean_schema.json" {:config {;; flanders has no opposite for f/any
+                                    "boolean schema 'false'" :skip}}
+    "const.json" {:config {;; not sure
+                           "float and integers are equal up to 64-bit representation limits" :skip
+                           "const with -2.0 matches integer and float types" :skip
+                           "const with 1 does not match true" {"float one is valid" :skip}
+                           "const with 0 does not match other zero-like types" {"float zero is valid" :skip}}}
+    "contains.json" {}
+    "default.json" {}
+    "definitions.json" {}
+    "dependencies.json" {}
+    "enum.json" {}
+    "exclusiveMaximum.json" {}
+    "exclusiveMinimum.json" {}
+    "format.json" {}
+    "if-then-else.json" {}
+    "infinite-loop-detection.json" {}
+    "items.json" {}
+    "maxItems.json" {}
+    "maxLength.json" {}
+    "maxProperties.json" {}
+    "maximum.json" {}
+    "minItems.json" {}
+    "minLength.json" {}
+    "minProperties.json" {}
+    "minimum.json" {}
+    "multipleOf.json" {}
+    "not.json" {}
+    "oneOf.json" {}
+    "pattern.json" {}
+    "patternProperties.json" {}
+    "properties.json" {}
+    "propertyNames.json" {}
+    "ref.json" {}
+    "refRemote.json" {}
+    "required.json" {}
+    "type.json" {}
+    "uniqueItems.json" {}}})
 
 (defn ->printable [data]
   (walk/postwalk
@@ -186,15 +223,20 @@
     data))
 
 (deftest json-schema-test-suite-test
-  (doseq [[version files] json-schema-test-suite
-          {:keys [file config]} files
-          :let [suite (json/decode (slurp file))
+  (doseq [[short-dialect short-file->config] json-schema-test-suite
+          [short-file config] short-file->config
+          :let [dialect (or (short->dialect short-dialect)
+                            (throw (ex-info (str "Unknown short dialect: " (pr-str short-dialect)) {})))
+                dir (or (dialect->dir short-dialect)
+                        (throw (ex-info (str "Unknown dialect dir: " (pr-str short-dialect)) {})))
+                file (io/file dir short-file)
+                suite (json/decode (slurp file))
                 _ (assert (seq suite))]
           {:strs [description schema tests]} suite
           :let [description (str/trim description)
                 config (get config description)]
           :when (not= :skip config)]
-    (testing (str version "\n" file "\n" "Test suite: " description "\n")
+    (testing (str short-dialect "\n" short-file "\n" "Test suite: " description "\n")
       (assert (seq tests))
       (doseq [{:strs [description data valid]} tests
               :let [description (str/trim description)
@@ -215,7 +257,8 @@
                           "Input: "
                           (pr-str (->printable data)))
               (is (do (case backend
-                        :malli (when-some [m (try (->malli schema {::sut/$schema version})
+                        :malli (when-some [m (try (->malli schema {:flanders.malli/no-example true
+                                                                   ::sut/dialect dialect})
                                                   (catch Exception e
                                                     (when-not (::sut/unsupported (ex-data e))
                                                       (throw e))))]
@@ -231,7 +274,27 @@
   )
 
 (deftest const-test
-  (m/validate (->malli {"const" 9007199254740992}) 9007199254740992))
+  (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
+
+(deftest additionalProperties-test
+  (testing "true => open"
+    ;;TODO :map
+    (is (= [:map {:closed true} [:malli.core/default [:map-of :any :any]]]
+           (m/form (->malli {"additionalProperties" true} {:flanders.malli/no-example true}))))
+    (is (= '{Any Any}
+           (s/explain (->schema {"additionalProperties" true})))))
+  (testing "false => closed"
+    (is (= [:map {:closed true}]
+           (m/form (->malli {"additionalProperties" false} {:flanders.malli/no-example true}))))
+    (is (= {}
+           (s/explain (->schema {"additionalProperties" false})))))
+  (testing "additionalProperties ignores applicators"
+    ;;TODO [:map-of :boolean :any]
+    (is (= [:map {:closed true} [:malli.core/default [:map-of :any :boolean]]]
+           (m/form (->malli {"allOf" [{"properties" {"foo" {}}}], "additionalProperties" {"type" "boolean"}}
+                            {:flanders.malli/no-example true}))))
+    (is (= '{Bool Any}
+           (s/explain (->schema {"allOf" [{"properties" {"foo" {}}}], "additionalProperties" {"type" "boolean"}}))))))
 
 (comment
   (keys (:flanders.json-schema/defs-scope @FlandersSecurityFinding))

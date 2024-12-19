@@ -12,7 +12,10 @@
 (defn ->malli
   ([v] (->malli v nil))
   ([v opts] (malli/->malli (fjs/->flanders v opts) opts)))
-(defn ->schema [v] (#?(:clj schema/->schema+clean :default schema/->schema) (fjs/->flanders v nil) nil))
+
+(defn ->schema
+  ([v] (->schema v nil))
+  ([v opts] (#?(:clj schema/->schema+clean :default schema/->schema) (fjs/->flanders v nil) nil)))
 
 (defn unqualify-vars [vs]
   (let [gs (group-by namespace (sort (map symbol vs)))

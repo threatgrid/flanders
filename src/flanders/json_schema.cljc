@@ -65,7 +65,7 @@
 
 (declare ->flanders)
 
-(def ^:private object-properties ["properties" "patternProperties" "additionalProperties"])
+(def ^:private object-properties ["properties" "patternProperties" "additionalProperties" "required"])
 (def ^:private array-properties ["prefixItems" "contains" "items"])
 (def ^:private applicator-properties ["if" "then" "else" "oneOf" "anyOf" "allOf" "not"])
 
@@ -171,10 +171,15 @@
                                                               (assoc "type" type))))
                                                      (map-indexed #(->flanders %2 (conj-path opts "anyOf" (str %1)))))
                                             disjuncts)))
-                 (when-some [conjuncts (get v "allOf")]
-                   (when-not (= 1 (count conjuncts))
-                     (unsupported-schema! "Only a single allOf schema supported" v opts))
-                   (->flanders (first conjuncts) (conj-path opts "allOf" "0")))
+                 (when-some [[_ conjuncts] (find v "allOf")]
+                   (assert (sequential? conjuncts))
+                   (let [skip? (if (= 1 (count conjuncts))
+                                 (let [s (first conjuncts)]
+                                   ;; additionalProperties does not look in applicators
+                                   (contains? v "additionalProperties"))
+                                 (unsupported-schema! "Only a single allOf schema supported" v opts))]
+                     (when-not skip?
+                       (->flanders (first conjuncts) (conj-path opts "allOf" "0")))))
                  (when-some [[_ const] (find v "const")]
                    (f/enum [const]))
                  (case (some-> type (-normalize (conj-path opts "type")))
@@ -204,17 +209,17 @@
                              (f/seq-of (->flanders items (conj-path opts "items"))))
                    "object" (let [properties (not-empty (into (sorted-map) (map (fn [[k v]] [(keyword k) v])) (get v "properties")))
                                   required (not-empty (into #{} (map keyword) (get v "required")))
-                                  additionalProperties (get v "additionalProperties")]
-                              (assert ((some-fn nil? boolean?) additionalProperties))
-                              (when (and additionalProperties (or properties required)) ;;TODO
-                                (unsupported-schema! "Cannot combine properties and additionalProperties" v opts))
-                              (if properties
-                                (f/map (mapv (fn [[k s]]
-                                               (f/entry k (->flanders s (conj-path opts (-normalize k opts))) :required? (contains? required k)))
-                                             properties))
-                                (if additionalProperties
-                                  (f/map-of {})
-                                  (unsupported-schema! "TODO closed map" v opts))))
+                                  fixed (mapv (fn [[k s]]
+                                                (f/entry k (->flanders s (conj-path opts (-normalize k opts))) :required? (contains? required k)))
+                                              properties)
+                                  default (if-some [[k additionalProperties] (find v "additionalProperties")]
+                                            ;; we don't support translating false, but it corresponds to a closed map which is flanders' default.
+                                            (when-not (false? additionalProperties)
+                                              [(f/entry f/any (->flanders additionalProperties (conj-path opts (-normalize k opts)))
+                                                        :required false)])
+                                            ;; JSON Schema maps are open by default
+                                            [(f/entry f/any f/any :required false)])]
+                              (f/map (into fixed default)))
                    ;; https://github.com/json-schema/json-schema/issues/172
                    nil f/any
                    (unknown-schema! v opts))
