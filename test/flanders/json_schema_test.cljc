@@ -349,7 +349,6 @@
 (deftest const-test
   (is (m/validate (->malli {"type" "integer" "const" 9007199254740992}) 9007199254740992)))
 
-#_ ;; requires more complicated "type" inference
 (deftest anyOf-test
   (is (= [:or
           [:map [:bar :int]]
@@ -358,8 +357,7 @@
                           {:flanders.malli/no-example true}))))
   ;;FIXME should be s/either or s/conditional, cond-pre disjuncts must have distinct preconditions
   (is (= '(cond-pre {:bar Int, Any Any} {:foo Str, Any Any})
-         (s/explain (->schema {"anyOf" [{"properties" {"bar" {"type" "integer"}}, "required" ["bar"]} {"properties" {"foo" {"type" "string"}}, "required" ["foo"]}]}))))
-  )
+         (s/explain (->schema {"anyOf" [{"properties" {"bar" {"type" "integer"}}, "required" ["bar"]} {"properties" {"foo" {"type" "string"}}, "required" ["foo"]}]})))))
 
 (deftest additionalProperties-test
   (testing "true => open"

@@ -190,6 +190,7 @@
                                ;; for example {"required": ["a"]} is [:or [:not map?] [:map [:a :any]]] in malli.
                                ;; we filter out examples that require negation in the json schema test suite.
                                (cond
+                                 $ref v
                                  (some #(contains? v %) applicator-properties) v
                                  ;; assumes we don't have any other fields like "minimum"
                                  (some #(contains? v %) object-properties) (assoc v "type" "object")
