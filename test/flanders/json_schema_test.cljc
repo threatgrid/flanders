@@ -343,6 +343,9 @@
             {"__proto__" 12, "toString" {"length" "foo"}, "constructor" 37})
   )
 
+(deftest enum-test
+  (is (= [:enum 0 1 2 3 99] (m/form (->malli {"enum" [3, 0, 1, 2, 99], "title" "Activity ID", "type" "integer"} {:flanders.malli/no-example true})))))
+
 (comment
   (clojure.test/test-vars [#'json-schema-test-suite-test])
   )
