@@ -42,67 +42,57 @@
   (testing "str"
     (is (= :string (->malli-frm (f/str))))
     (is (= [:enum "a"] (->malli-frm (f/str :equals "a"))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :string :any]]]
-           (->malli-frm (f/map [(f/entry (f/str) f/any)]))))
+    (is (= [:map-of :string :any] (->malli-frm (f/map [(f/entry (f/str) f/any)]))))
     (is (= [:map {:closed true} ["b" :any]]
            (->malli-frm (f/map [(f/entry (f/str :equals "b") f/any)])))))
   (testing "int"
     (is (= :int (->malli-frm (f/int))))
     (is (= [:enum 1] (->malli-frm (f/int :equals 1))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :int :any]]]
-           (->malli-frm (f/map [(f/entry (f/int) f/any)]))))
+    (is (= [:map-of :int :any] (->malli-frm (f/map [(f/entry (f/int) f/any)]))))
     (is (= [:map {:closed true} [1 :any]]
            (->malli-frm (f/map [(f/entry (f/int :equals 1) f/any)])))))
   (testing "num"
     (is (= 'number? (->malli-frm (f/num))))
     (is (= [:enum 1] (->malli-frm (f/num :equals 1))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of 'number? :any]]]
-           (->malli-frm (f/map [(f/entry (f/num) f/any)]))))
+    (is (= [:map-of 'number? :any] (->malli-frm (f/map [(f/entry (f/num) f/any)]))))
     (is (= [:map {:closed true} [1 :any]]
            (->malli-frm (f/map [(f/entry (f/num :equals 1) f/any)])))))
   (testing "keyword"
     (is (= :keyword (->malli-frm (f/keyword))))
     (is (= [:enum :a] (->malli-frm (f/keyword :equals :a))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :keyword :any]]]
-           (->malli-frm (f/map [(f/entry (f/keyword) f/any)]))))
+    (is (= [:map-of :keyword :any] (->malli-frm (f/map [(f/entry (f/keyword) f/any)]))))
     (is (= [:map {:closed true} [:a :any]]
            (->malli-frm (f/map [(f/entry (f/keyword :equals :a) f/any)])))))
   (testing "inst"
     (is (= 'inst? (->malli-frm (f/inst))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of 'inst? :any]]]
-           (->malli-frm (f/map [(f/entry (f/inst) f/any)])))))
+    (is (= [:map-of 'inst? :any] (->malli-frm (f/map [(f/entry (f/inst) f/any)])))))
   (testing "bool"
     (is (= :boolean (->malli-frm (f/bool))))
     (is (= [:= false] (->malli-frm (f/bool :equals false))))
     (is (= [:= true] (->malli-frm (f/bool :equals true))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :boolean :any]]]
-           (->malli-frm (f/map [(f/entry (f/bool) f/any)]))))
+    (is (= [:map-of :boolean :any] (->malli-frm (f/map [(f/entry (f/bool) f/any)]))))
     (is (= [:map {:closed true} [true :any]]
            (->malli-frm (f/map [(f/entry (f/bool :equals true) f/any)]))))
     (is (= [:map {:closed true} [false :any]]
            (->malli-frm (f/map [(f/entry (f/bool :equals false) f/any)])))))
   (testing "anything"
     (is (= :any (->malli-frm (f/anything))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :any :any]]]
-           (->malli-frm (f/map [(f/entry (f/anything) f/any)])))))
+    (is (= [:map-of :any :any] (->malli-frm (f/map [(f/entry (f/anything) f/any)])))))
   (testing "set-of"
     (is (= [:set :boolean]
            (->malli-frm (f/set-of (f/bool)))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of [:set :boolean] :any]]]
-           (->malli-frm (f/map [(f/entry (f/set-of (f/bool)) f/any)])))))
+    (is (= [:map-of [:set :boolean] :any] (->malli-frm (f/map [(f/entry (f/set-of (f/bool)) f/any)])))))
   (testing "seq-of"
     (is (= [:sequential :boolean] (->malli-frm (f/seq-of (f/bool)))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of [:sequential :boolean] :any]]]
-           (->malli-frm (f/map [(f/entry (f/seq-of (f/bool)) f/any)])))))
+    (is (= [:map-of [:sequential :boolean] :any] (->malli-frm (f/map [(f/entry (f/seq-of (f/bool)) f/any)])))))
   (testing "either"
     (is (= [:or :boolean :string]
            (->malli-frm (f/either :choices [(f/bool) (f/str)]))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of [:or :boolean :string] :any]]]
-           (->malli-frm (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)])))))
+    (is (= [:map-of [:or :boolean :string] :any] (->malli-frm (f/map [(f/entry (f/either :choices [(f/bool) (f/str)]) f/any)])))))
   (testing "sig"
     (is (= [:=> [:cat :int] :int]
            (->malli-frm (f/sig :parameters [(f/int)] :return (f/int)))))
-    (is (= [:map {:closed true} [:malli.core/default [:map-of [:=> [:cat :int] :int] :any]]]
+    (is (= [:map-of [:=> [:cat :int] :int] :any]
            (->malli-frm (f/map [(f/entry (f/sig :parameters [(f/int)] :return (f/int)) f/any)]))))))
 
 (deftest test-valid-schema
@@ -177,14 +167,14 @@
   (let [expected-schema
         [:map {:closed true}
          [:foo {:optional true} :string]
-         [:relation_info [:map {:closed true} [:malli.core/default [:map-of :keyword :any]]]]]]
+         [:relation_info [:map-of :keyword :any]]]]
     (is (= expected-schema
            (->malli-frm OptionalKeywordMapEntryExample))))
   (is (m/validate
         (fm/->malli OptionalKeywordMapEntryExample)
         {:foo "a"
          :relation_info {:asdf nil :blah "anything"}}))
-  (is (= [{:path [:relation_info :malli.core/default 0]
+  (is (= [{:path [:relation_info 0]
            :in [:relation_info "not-a-kw"]
            :schema :keyword
            :value "not-a-kw"}]

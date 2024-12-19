@@ -74,7 +74,7 @@
                           (conj (->malli type))
                           (cond->>
                             entry->map-schema
-                            (into [:map])))
+                            (conj [:map {:closed true}])))
         :default-key (if entry->map-schema
                        [:map-of props (:schema default-or-specific-key) (->malli type)]
                        (-> [::m/default]
