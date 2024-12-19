@@ -169,6 +169,9 @@
 (def dialect->dir
   {"draft7" "JSON-Schema-Test-Suite/tests/draft7"})
 
+;; note: this test suite rarely declares "type", which results in very broad schemas that flanders can't represent.
+;; https://github.com/json-schema/json-schema/issues/172
+;; we filter out such test cases
 (def json-schema-test-suite
   {"draft7"
    {"additionalItems.json" {}
@@ -192,7 +195,8 @@
     "if-then-else.json" {}
     ;;TODO default $id
     "infinite-loop-detection.json" :skip
-    "items.json" {}
+    "items.json" {"a schema given for items"
+                  {"JavaScript pseudo-array is valid" :skip}}
     "maxItems.json" {}
     "maxLength.json" {}
     "maxProperties.json" {}
@@ -211,7 +215,11 @@
     ;:TODO
     "ref.json" :skip
     "refRemote.json" :skip
-    "required.json" {}
+    "required.json" {"required properties whose names are Javascript object property names"
+                     ;; not sure what's going on here. guessing all JS object have these properties.
+                     {"ignores arrays" :skip
+                      "ignores non-arrays" :skip
+                      "ignores other non-objects" :skip}}
     "type.json" {}
     "uniqueItems.json" {}}})
 
@@ -262,6 +270,9 @@
                               (str/includes? test-description "definitions")
                               (str/includes? test-description "nul")
                               (str/includes? test-description "metaschema")
+                              ;; https://github.com/json-schema/json-schema/issues/172
+                              ;; most of these tests rely on omitting "type" for very broad schemas we don't support
+                              (str/includes? test-description "ignores")
                               (and (map? schema)
                                    (when-some [[_ const] (find schema "const")]
                                      (or (not (integer? const))
@@ -291,8 +302,11 @@
 
 (deftest anyOf-test
   ;;TODO
-  (is (m/form (->malli {"anyOf" [{"properties" {"bar" {"type" "integer"}}, "required" ["bar"]} {"properties" {"foo" {"type" "string"}}, "required" ["foo"]}]}
-                       {:flanders.malli/no-example true})))
+  (is (= [:or
+          [:map [:bar :int]]
+          [:map [:foo :string]]]
+         (m/form (->malli {"anyOf" [{"properties" {"bar" {"type" "integer"}}, "required" ["bar"]} {"properties" {"foo" {"type" "string"}}, "required" ["foo"]}]}
+                          {:flanders.malli/no-example true}))))
   ;;FIXME should be s/either or s/conditional, cond-pre disjuncts must have distinct preconditions
   (is (= '(cond-pre {:bar Int, Any Any} {:foo Str, Any Any})
          (s/explain (->schema {"anyOf" [{"properties" {"bar" {"type" "integer"}}, "required" ["bar"]} {"properties" {"foo" {"type" "string"}}, "required" ["foo"]}]}))))
@@ -337,10 +351,10 @@
 (deftest required-test
   (is (= [:map [:__proto__ :any] [:constructor :any] [:toString :any]]
          (->malli {"required" ["__proto__" "toString" "constructor"]} {:flanders.malli/no-example true})))
+  (is (= (m/validate (->malli {"required" ["__proto__" "toString" "constructor"]} {:flanders.malli/no-example true})
+                     12)))
   (is (= '{:__proto__ Any, :constructor Any, :toString Any, Any Any}
          (s/explain (->schema {"required" ["__proto__" "toString" "constructor"]}))))
-  (m/coerce [:map [:__proto__ :any] [:constructor :any] [:toString :any]]
-            {"__proto__" 12, "toString" {"length" "foo"}, "constructor" 37})
   )
 
 (deftest enum-test

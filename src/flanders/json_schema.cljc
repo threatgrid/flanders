@@ -184,10 +184,19 @@
   (let [{:strs [description title example $schema $ref $anchor definitions $defs $dynamicAnchor $dynamicRef $id $vocabulary] :as v} (normalize-map v opts)
         {:strs [type] :as v} (if (contains? v "type")
                                v
+                               ;; infer type
+                               ;;Note this is against the spec https://github.com/json-schema/json-schema/issues/172
+                               ;; but flanders isn't expressive enough to encode such schemas.
+                               ;; for example {"required": ["a"]} is [:or [:not map?] [:map [:a :any]]] in malli.
+                               ;; we filter out examples that require negation in the json schema test suite.
                                (cond
+                                 ;; assumes we don't have any other fields like "minimum"
                                  (some #(contains? v %) object-properties) (assoc v "type" "object")
                                  (some #(contains? v %) array-properties) (assoc v "type" "array")
-                                 :else v))
+                                 ;; we assume a concrete type below to simplify the code. we might
+                                 ;; be able to expand the schema to multiple types and distribute the relevant
+                                 ;; fields e.g., {"minimum": 1, "required": ["a"]} => [:or [:int {:min 1}] [:map [:a :any]]]
+                                 :else (unsupported-schema! "cannot infer type" v opts)))
         _ (check-unsupported-keys! v opts)
         opts (update opts ::dialect #(or $schema %))
         _ (assert (nil? $anchor)) ;; TODO
@@ -290,8 +299,6 @@
                                             ;; JSON Schema maps are open by default
                                             [(f/entry f/any f/any :required false)])]
                               (f/map (into fixed default)))
-                   ;; https://github.com/json-schema/json-schema/issues/172
-                   nil f/any
                    (unknown-schema! v opts))
                  (unknown-schema! v opts))]
     (cond-> (assoc base ::base-id (::base-id opts))
