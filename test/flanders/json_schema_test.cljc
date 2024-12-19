@@ -40,25 +40,26 @@
          '{:x (cond-pre Int Str), :y Int, Any Any})))
 
 (comment
-  (th/generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
-                                       'flanders.json-schema.test-helpers-schema-security-finding
-                                       @SchemaSecurityFinding)
-  (spit "test-resources/expected-example-SecurityFinding.edn" (with-out-str
-                                                                (println ";;Generated and tested by flanders.json-schema-test")
-                                                                (println ";;The expected result of flanders.example on OCSF security_finding class")
-                                                                (th/pprint-reproducibly @example-SecurityFinding)))
+  (do
+    (th/generate-expected-schema-results "test/flanders/json_schema/test_helpers_schema_security_finding.clj"
+                                         'flanders.json-schema.test-helpers-schema-security-finding
+                                         @SchemaSecurityFinding)
+    (spit "test-resources/expected-example-SecurityFinding.edn" (with-out-str
+                                                                  (println ";;Generated and tested by flanders.json-schema-test")
+                                                                  (println ";;The expected result of flanders.example on OCSF security_finding class")
+                                                                  (th/pprint-reproducibly @example-SecurityFinding)))
 
-  (spit "test-resources/expected-malli-SecurityFinding.edn"
-        (with-out-str
-          (println ";;Generated and tested by flanders.json-schema-test")
-          (println ";;The expected result of converting OCSF security_finding class with examples")
-          (th/pprint-reproducibly (m/form @MalliSecurityFinding))))
+    (spit "test-resources/expected-malli-SecurityFinding.edn"
+          (with-out-str
+            (println ";;Generated and tested by flanders.json-schema-test")
+            (println ";;The expected result of converting OCSF security_finding class with examples")
+            (th/pprint-reproducibly (m/form @MalliSecurityFinding))))
 
-  (spit "test-resources/expected-malli-SecurityFinding-no-example.edn"
-        (with-out-str
-          (println ";;Generated and tested by flanders.json-schema-test")
-          (println ";;The expected result of converting OCSF security_finding class without attaching examples")
-          (th/pprint-reproducibly (m/form @MalliSecurityFinding-no-example))))
+    (spit "test-resources/expected-malli-SecurityFinding-no-example.edn"
+          (with-out-str
+            (println ";;Generated and tested by flanders.json-schema-test")
+            (println ";;The expected result of converting OCSF security_finding class without attaching examples")
+            (th/pprint-reproducibly (m/form @MalliSecurityFinding-no-example)))))
   )
 
 (deftest ocsf-test
@@ -345,7 +346,7 @@
                                    (pr-str (m/form m)))))
                     ;; print testing string on error
                     true))))))
-    (is (= 152 @ntested))))
+    (is (= 160 @ntested))))
 
 (deftest const-test
   (is (m/validate (->malli {"type" "integer" "const" 9007199254740992}) 9007199254740992)))
