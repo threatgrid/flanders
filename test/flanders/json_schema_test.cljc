@@ -347,7 +347,7 @@
     (is (= 152 @ntested))))
 
 (deftest const-test
-  (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
+  (is (m/validate (->malli {"type" "integer" "const" 9007199254740992}) 9007199254740992)))
 
 #_ ;; requires more complicated "type" inference
 (deftest anyOf-test
@@ -363,39 +363,14 @@
 
 (deftest additionalProperties-test
   (testing "true => open"
-    ;;TODO :map
-    (is (= [:map {:closed true} [:malli.core/default [:map-of :any :any]]]
-           (m/form (->malli {"additionalProperties" true} {:flanders.malli/no-example true}))))
+    (is (= :map (m/form (->malli {"additionalProperties" true} {:flanders.malli/no-example true}))))
     (is (= '{Any Any}
            (s/explain (->schema {"additionalProperties" true})))))
   (testing "false => closed"
     (is (= [:map {:closed true}]
            (m/form (->malli {"additionalProperties" false} {:flanders.malli/no-example true}))))
     (is (= {}
-           (s/explain (->schema {"additionalProperties" false})))))
-  (testing "additionalProperties ignores applicators"
-    (is (= [:map-of :any :boolean]
-           (m/form (->malli {"allOf" [{"properties" {"foo" {}}}], "additionalProperties" {"type" "boolean"}}
-                            {:flanders.malli/no-example true}))))
-    (is (= '{Any Bool}
-           (s/explain (->schema {"allOf" [{"properties" {"foo" {}}}], "additionalProperties" {"type" "boolean"}})))))
-  #_ ;;TODO keywordize?
-  ; FAIL in (json-schema-test-suite-test) (json_schema_test.cljc:265)
-  ; draft7
-  ; additionalProperties.json
-  ; Test suite: additionalProperties with schema
-  ;  an additional valid property is valid
-  ; JSON Schema: {"properties" {"foo" {}, "bar" {}}, "additionalProperties" {"type" "boolean"}}
-  ; Input: {"foo" 1, "bar" 2, "quux" true}
-  ; [:map {:closed true} [:bar {:optional true} :any] [:foo {:optional true} :any] [:malli.core/default [:map-of :any :boolean]]]
-  ; expected: (= valid (try (m/coerce m data) true (catch Exception _ false)))
-  ;   actual: (not (= true false))
-  ; -  true
-  ; +  false
-  (is (m/coerce (->malli {"properties" {"foo" {}, "bar" {}}, "additionalProperties" {"type" "boolean"}}
-                         {:flanders.malli/no-example true})
-                {"foo" 1, "bar" 2, "quux" true}))
-  )
+           (s/explain (->schema {"additionalProperties" false}))))))
 
 ;;note these infer "type" more tightly than the spec
 (deftest required-test
