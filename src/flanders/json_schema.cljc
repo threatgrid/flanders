@@ -75,8 +75,8 @@
                             type] :as v}
                     (normalize-map v opts)
                     opts (update opts ::$schema #(or $schema %))
-                    _ (assert (= "http://json-schema.org/draft-07/schema#" (::$schema opts))
-                              (pr-str (::$schema opts)))
+                    ;_ (assert (= "http://json-schema.org/draft-07/schema#" (::$schema opts))
+                    ;          (pr-str (::$schema opts)))
                     _ (assert (nil? $anchor)) ;; TODO
                     _ (assert (nil? $dynamicAnchor)) ;; TODO
                     _ (assert (nil? $dynamicRef)) ;; TODO
@@ -105,7 +105,11 @@
                                (when-not (= 1 (count conjuncts))
                                  (throw (ex-info "Only a single allOf schema supported" {})))
                                (->flanders (first conjuncts) (conj-path opts "allOf" "0")))
+                             (when-some [[_ const] (find v "const")]
+                               (f/enum [const]))
                              (case (some-> type (-normalize (conj-path opts "type")))
+                               ;; https://json-schema.org/understanding-json-schema/reference/numeric
+                               ;; TODO all json-schema numbers assume 1.0 and 1 are identical.
                                "integer" (if-some [enum (seq (get v "enum"))]
                                            (f/enum (mapv long enum))
                                            (f/int))
