@@ -812,7 +812,7 @@
     [:type_id [:enum 0 1 2 3 4 99]]
     [:uid {:optional true} :string]],
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/object"
-   [:map {:closed true}],
+   :map,
    "https://schema.ocsf.io/schema/classes/security_finding/$defs/observable"
    [:map
     {:closed true}

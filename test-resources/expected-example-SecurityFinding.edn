@@ -1251,7 +1251,7 @@
         :type_id 0,
         :uid "string",
         :version "string",
-        :xattributes {}},
+        :xattributes {"anything" "anything"}},
        :owner
        {:account
         {:labels ["string"],
@@ -2117,7 +2117,7 @@
    :type_id 0,
    :uid "string",
    :version "string",
-   :xattributes {}},
+   :xattributes {"anything" "anything"}},
   :group
   {:desc "string",
    :domain "string",
@@ -2221,7 +2221,7 @@
    :type_id 0,
    :uid "string",
    :uid_alt "string"},
-  :xattributes {}},
+  :xattributes {"anything" "anything"}},
  :raw_data "string",
  :resources
  [{:agent_list
@@ -2366,7 +2366,7 @@
  :timezone_offset 10,
  :type_name "string",
  :type_uid 10,
- :unmapped {},
+ :unmapped {"anything" "anything"},
  :vulnerabilities
  [{:affected_code
    [{:end_line 10,
@@ -2736,7 +2736,7 @@
       :type_id 0,
       :uid "string",
       :version "string",
-      :xattributes {}},
+      :xattributes {"anything" "anything"}},
      :owner
      {:account
       {:labels ["string"],

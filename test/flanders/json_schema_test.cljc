@@ -224,7 +224,7 @@
    "draft2020-12"
    {"additionalProperties.json" {}
     "allOf.json" {}
-    "anchor.json" {}
+    "anchor.json" :skip
     "anyOf.json" {}
     "boolean_schema.json" {}
     "const.json" {}

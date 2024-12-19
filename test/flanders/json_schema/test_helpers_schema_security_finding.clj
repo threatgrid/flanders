@@ -734,7 +734,7 @@
  transitive-schema-atom
  clojure.core/assoc
  'ns-000/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
- '{})
+ '{Any Any})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
@@ -3113,7 +3113,7 @@
  transitive-schema-atom
  clojure.core/assoc
  'ns-160/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
- '{})
+ '{Any Any})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
@@ -4591,7 +4591,7 @@
  transitive-schema-atom
  clojure.core/assoc
  'ns-262/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
- '{})
+ '{Any Any})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
@@ -5299,7 +5299,7 @@
  transitive-schema-atom
  clojure.core/assoc
  'ns-306/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
- '{})
+ '{Any Any})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
@@ -5437,7 +5437,7 @@
  transitive-schema-atom
  clojure.core/assoc
  'ns-315/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
- '{})
+ '{Any Any})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
@@ -5565,7 +5565,7 @@
  transitive-schema-atom
  clojure.core/assoc
  'ns-323/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
- '{})
+ '{Any Any})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
@@ -6384,7 +6384,7 @@
  transitive-schema-atom
  clojure.core/assoc
  'ns-376/https_COLON__SLASH__SLASH_schema_DOT_ocsf_DOT_io_SLASH_schema_SLASH_classes_SLASH_security_finding_SLASH_$defs_SLASH_object
- '{})
+ '{Any Any})
 (clojure.core/swap!
  transitive-schema-atom
  clojure.core/assoc
