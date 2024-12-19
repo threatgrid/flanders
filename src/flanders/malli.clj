@@ -86,7 +86,8 @@
 
   MapType
   (->malli' [{:keys [entries key?] :as dll} {::keys [->malli] :as opts}]
-    (let [default-entry (peek entries) ;; if the final entry simply opens the map, we can drop it since :map defaults to open
+    (let [entries (vec entries)
+          default-entry (peek entries) ;; if the final entry simply opens the map, we can drop it since :map defaults to open
           opening-default-entry? (= (f/entry f/any f/any :required false) default-entry)
           entries (cond-> entries
                     opening-default-entry? pop)
