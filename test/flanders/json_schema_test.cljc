@@ -233,69 +233,72 @@
     data))
 
 (deftest json-schema-test-suite-test
-  (doseq [[short-dialect short-file->config] json-schema-test-suite
-          [short-file suite-description->test-description->config] short-file->config
-          :when (not= :skip suite-description->test-description->config)
-          :let [dialect (or (short->dialect short-dialect)
-                            (throw (ex-info (str "Unknown short dialect: " (pr-str short-dialect)) {})))
-                dir (or (dialect->dir short-dialect)
-                        (throw (ex-info (str "Unknown dialect dir: " (pr-str short-dialect)) {})))
-                file (io/file dir short-file)
-                suite (json/decode (slurp file))
-                _ (assert (seq suite))]
-          {suite-description "description" :strs [schema tests]} suite
-          :let [_ (assert (seq tests))
-                test-description->config (get suite-description->test-description->config suite-description)
-                suite-description (str/trim suite-description)
-                skip? (or (= :skip test-description->config)
-                          (str/includes? suite-description "$ref")
-                          (str/includes? suite-description "$id")
-                          (str/includes? suite-description "$defs")
-                          (str/includes? suite-description "nul")
-                          (str/includes? suite-description "metaschema"))]
-          :when (not skip?)]
-    (testing (str short-dialect "\n" short-file "\n" "Test suite: " suite-description "\n")
-      (doseq [{test-description "description" :strs [data valid]} tests
-              backend [:malli #_:schema]
-              :let [;; we generate schemas with keyword keys so we need to coerce input
-                    data (walk/keywordize-keys data)
-                    test-description (str/trim test-description)
-                    config (get test-description->config test-description)
-                    skip? (or (= :skip config)
-                              (str/includes? test-description "float")
-                              (str/includes? test-description ".0")
-                              (str/includes? test-description "$ref")
-                              (str/includes? test-description "$id")
-                              (str/includes? test-description "$defs")
-                              (str/includes? test-description "definitions")
-                              (str/includes? test-description "nul")
-                              (str/includes? test-description "metaschema")
-                              ;; https://github.com/json-schema/json-schema/issues/172
-                              ;; most of these tests rely on omitting "type" for very broad schemas we don't support
-                              (str/includes? test-description "ignores")
-                              (and (map? schema)
-                                   (when-some [[_ const] (find schema "const")]
-                                     (or (not (integer? const))
-                                         (not (string? const))))))]
-              :when (not skip?)]
-        (testing (str test-description "\n"
-                      "JSON Schema: "
-                      (pr-str (->printable schema))
-                      "\n"
-                      "Input: "
-                      (pr-str (->printable data)))
-          (is (do (case backend
-                    :malli (when-some [m (try (->malli schema {:flanders.malli/no-example true
-                                                               ::sut/dialect dialect})
-                                              (catch Exception e
-                                                (when-not (::sut/unsupported (ex-data e))
-                                                  (throw e))))]
-                             (is (= valid (try (m/coerce m data)
-                                               true
-                                               (catch Exception _ false)))
-                                 (pr-str (m/form m)))))
-                  ;; print testing string on error
-                  true)))))))
+  (let [ntested (atom 0)]
+    (doseq [[short-dialect short-file->config] json-schema-test-suite
+            [short-file suite-description->test-description->config] short-file->config
+            :when (not= :skip suite-description->test-description->config)
+            :let [dialect (or (short->dialect short-dialect)
+                              (throw (ex-info (str "Unknown short dialect: " (pr-str short-dialect)) {})))
+                  dir (or (dialect->dir short-dialect)
+                          (throw (ex-info (str "Unknown dialect dir: " (pr-str short-dialect)) {})))
+                  file (io/file dir short-file)
+                  suite (json/decode (slurp file))
+                  _ (assert (seq suite))]
+            {suite-description "description" :strs [schema tests]} suite
+            :let [_ (assert (seq tests))
+                  test-description->config (get suite-description->test-description->config suite-description)
+                  suite-description (str/trim suite-description)
+                  skip? (or (= :skip test-description->config)
+                            (str/includes? suite-description "$ref")
+                            (str/includes? suite-description "$id")
+                            (str/includes? suite-description "$defs")
+                            (str/includes? suite-description "nul")
+                            (str/includes? suite-description "metaschema"))]
+            :when (not skip?)]
+      (testing (str short-dialect "\n" short-file "\n" "Test suite: " suite-description "\n")
+        (doseq [{test-description "description" :strs [data valid]} tests
+                backend [:malli #_:schema]
+                :let [;; we generate schemas with keyword keys so we need to coerce input
+                      data (walk/keywordize-keys data)
+                      test-description (str/trim test-description)
+                      config (get test-description->config test-description)
+                      skip? (or (= :skip config)
+                                (str/includes? test-description "float")
+                                (str/includes? test-description ".0")
+                                (str/includes? test-description "$ref")
+                                (str/includes? test-description "$id")
+                                (str/includes? test-description "$defs")
+                                (str/includes? test-description "definitions")
+                                (str/includes? test-description "nul")
+                                (str/includes? test-description "metaschema")
+                                ;; https://github.com/json-schema/json-schema/issues/172
+                                ;; most of these tests rely on omitting "type" for very broad schemas we don't support
+                                (str/includes? test-description "ignores")
+                                (and (map? schema)
+                                     (when-some [[_ const] (find schema "const")]
+                                       (or (not (integer? const))
+                                           (not (string? const))))))]
+                :when (not skip?)]
+          (testing (str test-description "\n"
+                        "JSON Schema: "
+                        (pr-str (->printable schema))
+                        "\n"
+                        "Input: "
+                        (pr-str (->printable data)))
+            (is (do (case backend
+                      :malli (when-some [m (try (->malli schema {:flanders.malli/no-example true
+                                                                 ::sut/dialect dialect})
+                                                (catch Exception e
+                                                  (when-not (::sut/unsupported (ex-data e))
+                                                    (throw e))))]
+                               (is (= valid (try (m/coerce m data)
+                                                 true
+                                                 (catch Exception _ false)))
+                                   (pr-str (m/form m)))))
+                    ;; print testing string on error
+                    true))
+            (swap! ntested inc)))))
+    (is (= 602 @ntested))))
 
 (deftest const-test
   (is (m/validate (->malli {"const" 9007199254740992}) 9007199254740992)))
