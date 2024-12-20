@@ -1,14 +1,14 @@
 (ns flanders.ocsf
   (:require [flanders.core :as f]))
 
-;; caption => title
+;; :caption => title
 ;; all maps are closed
-(defn parse-attribute [[k {:keys [description requirement enum type is_array observable caption]}
+;; :observable => seems to be a class id
+(defn parse-attribute [[k {:keys [description requirement enum type is_array caption]}
                         :as e]
                        opts]
   (assert (nil? enum))
   (assert (nil? is_array))
-  (assert (nil? observable) (pr-str e))
   (f/entry k (-> (case type
                    "string_t" (f/str)
                    "integer_t" (f/int)
