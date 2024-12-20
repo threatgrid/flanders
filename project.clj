@@ -26,5 +26,6 @@
               :dependencies [[org.clojure/test.check "1.1.1"]
                              [cheshire "5.13.0"]
                              [clj-http "3.13.0"]
+                             [potemkin "0.4.7"]
                              [metosin/malli "0.17.0"]]
               :resource-paths ["test-resources"]}})

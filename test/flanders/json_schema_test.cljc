@@ -1,10 +1,56 @@
 (ns flanders.json-schema-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clojure.walk :as walk]
+            [clojure.java.io :as io]
+            [clj-http.client :as client]
             [flanders.core :as f]
             [flanders.json-schema :as sut]
             [flanders.json-schema.test-helpers :as th :refer [->malli ->schema]]
+            [cheshire.core :as json]
             [malli.core :as m]
             [schema.core :as s]))
+
+(defn sort-recursive [v]
+  (walk/postwalk
+    (fn [v]
+      (cond->> v
+        (map? v) (into (sorted-map))))
+    v))
+
+(defn gen-ocsf-json-schema-1-3-0 []
+  (let [export-schema (json/decode (slurp (io/resource "flanders/ocsf-1.3.0-export.json")))
+        export-json-schema {"objects" (into {} (map (fn [name]
+                                                      (when (Thread/interrupted) (throw (InterruptedException.)))
+                                                      [name (let [url (str "https://schema.ocsf.io/api/objects/" name)]
+                                                              (prn url)
+                                                              (try (-> url client/get :body json/decode)
+                                                                   (catch Exception e
+                                                                     (prn url)
+                                                                     (throw e))))]))
+                                            (keys (get export-schema "objects")))
+                            "base_event" (let [url "https://schema.ocsf.io/api/base_event"]
+                                           (prn url)
+                                           (try (-> url client/get :body json/decode)
+                                                (catch Exception e
+                                                  (prn url)
+                                                  (throw e))))
+                            "classes" (into {} (map (fn [name]
+                                                      (when (Thread/interrupted) (throw (InterruptedException.)))
+                                                      [name (let [url (str "https://schema.ocsf.io/api/classes/" name)]
+                                                              (prn url)
+                                                              (try (-> url client/get :body json/decode)
+                                                                   (catch Exception e
+                                                                     (prn url)
+                                                                     (throw e))))]))
+                                            (keys (get export-schema "classes")))}]
+    (spit "test-resources/flanders/ocsf-1.3.0-json-schema-export.json"
+          (-> export-json-schema
+              sort-recursive
+              (json/encode {:pretty true})))))
+
+(comment
+  (gen-ocsf-json-schema-1-3-0)
+  )
 
 (deftest ->flanders-test
   (is (= (m/form (->malli th/union-example {:flanders.malli/no-example true}))
