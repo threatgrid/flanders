@@ -8,6 +8,7 @@
                  [org.clojure/core.match "1.0.0"]
                  [prismatic/schema "1.2.0"]
                  [cheshire "5.9.0"]
+                 [clj-http "3.13.0"]
                  [metosin/ring-swagger "1.0.0"]
                  [metosin/schema-tools "0.12.3"]]
   :global-vars {*warn-on-reflection* true}
@@ -23,7 +24,7 @@
   :resource-paths ["resources"]
   :profiles {:dev
              {:dependencies [[org.clojure/test.check "1.1.1"]
-                             [clj-http "3.13.0"]
+                             
                              [potemkin "0.4.7"]
                              [metosin/malli "0.17.0"]]
               :resource-paths ["test-resources"]}})

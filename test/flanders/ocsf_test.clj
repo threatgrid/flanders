@@ -84,7 +84,7 @@
       (is (= nexpected (count objects)))
       (doseq [[name obj] objects]
         (testing name
-          (let [f (ocsf/->flanders obj)
+          (let [f (ocsf/oscf-schema->flanders obj)
                 m (malli/->malli f)
                 s (schema/->schema f)
                 good-examples (map walk/keywordize-keys (get examples name))]
@@ -99,13 +99,13 @@
     (is (= 22 (count types)))
     (doseq [[name obj] types]
       (testing name
-        (is (malli/->malli (ocsf/->flanders obj)))
-        (is (schema/->schema (ocsf/->flanders obj))))))
+        (is (malli/->malli (ocsf/oscf-schema->flanders obj)))
+        (is (schema/->schema (ocsf/oscf-schema->flanders obj))))))
   (testing "base_event"
     (let [base-event (get @ocsf-1-3-0-export "base_event")
           examples (get @ocsf-1-3-0-sample "base_event")
-          _m (is (malli/->malli (ocsf/->flanders base-event)))
-          _s (is (schema/->schema (ocsf/->flanders base-event)))
+          _m (is (malli/->malli (ocsf/oscf-schema->flanders base-event)))
+          _s (is (schema/->schema (ocsf/oscf-schema->flanders base-event)))
           good-examples (map walk/keywordize-keys examples)]
       (is (= nsamples (count good-examples)))
       #_ ;;TODO examples for base event seem to be an open map?
@@ -115,3 +115,5 @@
         (is (nil? (s/check s good-example)))
         (is (m/explain m bad-example))
         (is (s/check s bad-example))))))
+
+
