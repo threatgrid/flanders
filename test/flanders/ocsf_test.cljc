@@ -58,17 +58,18 @@
                                                                             (throw e))))))
                                                              (range nsamples)))]))
                                 (keys (get export-schema "classes")))}]
-    (try (spit "resources/ocsf-1.3.0-export.json"
+    (try (spit "resources/flanders/ocsf-1.3.0-export.json"
                (-> export-schema
                    sort-recursive
                    (json/encode {:pretty true})))
          (finally
-           (spit "test-resources/ocsf-1.3.0-sample.json"
+           (spit "test-resources/flanders/ocsf-1.3.0-sample.json"
                  (-> sample
                      sort-recursive
                      (json/encode {:pretty true})))))))
 
 (comment
+  ;;regenerate
   (gen-ocsf-1-3-0)
   )
 
@@ -176,22 +177,10 @@
             :json-schema/description
             "Describes details about the resource/resouces that are the subject of the compliance check."}
            [:any {:json-schema/example "anything"}]]]
-         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/events/findings/compliance_finding.json"))))))))
-#_
-  (is (= nil
-         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/dictionary.json"))))))))
-)
+         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/events/findings/compliance_finding.json")))))))))
 
-(def ocsf-1-3-0-export
-  (delay (json/decode (slurp (io/resource "ocsf-1.3.0-export.json")))))
-(def ocsf-1-3-0-sample
-  (delay (json/decode (slurp (io/resource "ocsf-1.3.0-sample.json")))))
-
-(comment
-  (keys @ocsf-1-3-0-export)
-  (get @ocsf-1-3-0-export "base_event")
-  (get @ocsf-1-3-0-export "dictionary_attributes")
-  )
+(def ocsf-1-3-0-export (delay (json/decode (slurp (io/resource "ocsf-1.3.0-export.json")))))
+(def ocsf-1-3-0-sample (delay (json/decode (slurp (io/resource "ocsf-1.3.0-sample.json")))))
 
 (deftest ocsf-1-3-0-export-test
   (is (= "1.3.0" (get @ocsf-1-3-0-export "version")))
@@ -218,5 +207,16 @@
         (is (malli/->malli (ocsf/->flanders obj)))
         (is (schema/->schema (ocsf/->flanders obj))))))
   (testing "base_event"
-    (is (malli/->malli (ocsf/->flanders (get @ocsf-1-3-0-export "base_event"))))
-    (is (schema/->schema (ocsf/->flanders (get @ocsf-1-3-0-export "base_event"))))))
+    (let [base-event (get @ocsf-1-3-0-export "base_event")
+          examples (get @ocsf-1-3-0-sample "base_event")
+          m (is (malli/->malli (ocsf/->flanders base-event)))
+          s (is (schema/->schema (ocsf/->flanders base-event)))
+          good-examples (map walk/keywordize-keys examples)]
+      (is (= nsamples (count good-examples)))
+      #_ ;;TODO examples for base event seem to be an open map?
+      (doseq [good-example good-examples
+              :let [bad-example (assoc good-example ::junk "foo")]]
+        (is (nil? (m/explain m good-example)))
+        (is (nil? (s/check s good-example)))
+        (is (m/explain m bad-example))
+        (is (s/check s bad-example))))))
