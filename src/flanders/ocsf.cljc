@@ -15,6 +15,19 @@
                    "long_t" (f/int)
                    "float_t" (f/num)
                    "boolean_t" (f/bool)
+                   ("timestamp_t"
+                     "datetime_t"
+                     "hostname_t"
+                     "ip_t"
+                     "subnet_t"
+                     "mac_t"
+                     "email_t"
+                     "port_t"
+                     "long_t"
+                     "boolean_t"
+                     "float_t"
+                     "file_name_t"
+                     "path_t") (assert nil (pr-str type))
                    nil f/any)
                  (assoc :description (or description caption)))
            :required? (case requirement "required" true ("recommended" "optional") false)))
