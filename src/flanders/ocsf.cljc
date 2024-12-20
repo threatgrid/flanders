@@ -3,22 +3,24 @@
 
 ;; caption => title
 ;; all maps are closed
-(defn parse-attribute [[k {:keys [description requirement enum type is_array]}]]
-  (let [optional? (not= requirement "required")
-        type (case type
-               "string_t" (assert nil)
-               "timestamp_t" (assert nil)
-               "integer_t" (assert nil)
-               "long_t" (assert nil)
-               "float_t" (assert nil)
-               "boolean_t" (assert nil)
-               )]
-    (f/entry k (->)))
-  )
+(defn parse-attribute [[k {:keys [description requirement enum type is_array observable caption]}
+                        :as e]
+                       opts]
+  (assert (nil? enum))
+  (assert (nil? is_array))
+  (assert (nil? observable) (pr-str e))
+  (f/entry k (-> (case type
+                   "string_t" (f/str)
+                   "integer_t" (f/int)
+                   "long_t" (f/int)
+                   "float_t" (f/num)
+                   "boolean_t" (f/bool)
+                   nil f/any)
+                 (assoc :description (or description caption)))
+           :required? (case requirement "required" true ("recommended" "optional") false)))
 
 (defn ->flanders
   "Converts parsed (keywordized) OCSF schemas to Flanders."
   ([v] (->flanders v nil))
   ([{:keys [attributes] :as v} opts]
-   (f/map (mapv ))
-   ))
+   (f/map (mapv #(parse-attribute % opts) attributes))))
