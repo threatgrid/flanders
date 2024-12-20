@@ -21,14 +21,14 @@
   (let [export-schema (json/decode (slurp (io/resource "flanders/ocsf-1.3.0-export.json")))
         export-json-schema {"objects" (into {} (map (fn [name]
                                                       (when (Thread/interrupted) (throw (InterruptedException.)))
-                                                      [name (let [url (str "https://schema.ocsf.io/api/objects/" name)]
+                                                      [name (let [url (str "https://schema.ocsf.io/schema/objects/" name)]
                                                               (prn url)
                                                               (try (-> url client/get :body json/decode)
                                                                    (catch Exception e
                                                                      (prn url)
                                                                      (throw e))))]))
                                             (keys (get export-schema "objects")))
-                            "base_event" (let [url "https://schema.ocsf.io/api/base_event"]
+                            "base_event" (let [url "https://schema.ocsf.io/schema/classes/base_event"]
                                            (prn url)
                                            (try (-> url client/get :body json/decode)
                                                 (catch Exception e
@@ -36,7 +36,7 @@
                                                   (throw e))))
                             "classes" (into {} (map (fn [name]
                                                       (when (Thread/interrupted) (throw (InterruptedException.)))
-                                                      [name (let [url (str "https://schema.ocsf.io/api/classes/" name)]
+                                                      [name (let [url (str "https://schema.ocsf.io/schema/classes/" name)]
                                                               (prn url)
                                                               (try (-> url client/get :body json/decode)
                                                                    (catch Exception e
