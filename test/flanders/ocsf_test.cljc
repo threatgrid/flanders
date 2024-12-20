@@ -84,7 +84,7 @@
             :json-schema/description
             "The Common Vulnerabilities and Exposures unique number assigned to a specific computer vulnerability. A CVE Identifier begins with 4 digits representing the year followed by a sequence of digits that acts as a unique identifier. For example: <code>CVE-2021-12345</code>."}
            [:any {:json-schema/example "anything"}]]]
-         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/objects/cve.json")) keyword))))))
+         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/objects/cve.json"))))))))
   (is (= [:map
           {:closed true,
            :json-schema/example
@@ -110,4 +110,8 @@
             :json-schema/description
             "Describes details about the resource/resouces that are the subject of the compliance check."}
            [:any {:json-schema/example "anything"}]]]
-         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/events/findings/compliance_finding.json")) keyword)))))))
+         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/events/findings/compliance_finding.json"))))))))
+#_
+  (is (= nil
+         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/dictionary.json"))))))))
+)
