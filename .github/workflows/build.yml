@@ -14,17 +14,20 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-20.04
+    timeout-minutes: 5
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@3.7
         with:
           lein: 2.9.8
       - name: Cache project dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/.m2/repository
@@ -40,16 +43,19 @@ jobs:
           set -x
           case "${GITHUB_EVENT_NAME}" in
             #scheduled)
-            #  echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
+            #  echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
             # ;;
             *)
-              echo '::set-output name=matrix::{"jdk":["8","11","17","21"],"cmd":["test"]}}'
+              echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
               ;;
           esac
   lint:
     runs-on: ubuntu-20.04
+    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install Java
         uses: actions/setup-java@v3
@@ -70,9 +76,12 @@ jobs:
     strategy:
       matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     runs-on: ubuntu-20.04
+    timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: Cache project dependencies
         uses: actions/cache@v3
         with:
@@ -98,6 +107,7 @@ jobs:
           CMD: ${{ matrix.cmd }}
   all-pr-checks:
     runs-on: ubuntu-20.04
+    timeout-minutes: 5
     needs: [test, lint]
     steps:
       - run: echo "All tests pass!"
