@@ -20,7 +20,7 @@
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
                   ["vcs" "push"]]
-
+  :resource-paths ["resources"]
   :profiles {:dev
              {:jvm-opts ["-Dflanders-dev-time=true"]
               :dependencies [[org.clojure/test.check "1.1.1"]
