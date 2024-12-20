@@ -28,4 +28,31 @@
           [:product {:json-schema/example "anything", :optional true} [:any #:json-schema{:example "anything", :description "The product where the vulnerability was discovered."}]]
           [:modified_time {:json-schema/example "anything", :optional true} [:any #:json-schema{:example "anything", :description "The Record Modified Date identifies when the CVE record was last updated."}]]
           [:cwe_uid {:json-schema/example "anything", :optional true} [:any #:json-schema{:example "anything"}]]]
-   (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/objects/cve.json")) keyword)))))))
+         (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/objects/cve.json")) keyword))))))
+  (is (= [:map
+          {:closed true,
+           :json-schema/example
+           {:compliance "anything",
+            :remediation "anything",
+            :resource "anything",
+            :resources "anything"}}
+          [:compliance
+           {:json-schema/example "anything"}
+           [:any {:json-schema/example "anything"}]]
+          [:remediation
+           {:json-schema/example "anything", :optional true}
+           [:any {:json-schema/example "anything"}]]
+          [:resource
+           {:json-schema/example "anything", :optional true}
+           [:any
+            {:json-schema/example "anything",
+             :json-schema/description
+             "Describes details about the resource that is the subject of the compliance check."}]]
+          [:resources
+           {:json-schema/example "anything", :optional true}
+           [:any
+            {:json-schema/example "anything",
+             :json-schema/description
+             "Describes details about the resource/resouces that are the subject of the compliance check."}]]]
+        (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/events/findings/compliance_finding.json")) keyword))))))
+)
