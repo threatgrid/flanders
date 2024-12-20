@@ -41,22 +41,23 @@
             "file_name_t" (f/str)
             "process_name_t" (f/str)
             "username_t" (f/str)
-            "timestamp_t" f/str
-            "user" f/str
-            "account" f/str
-            "actor" f/str
-            "affected_code" f/str
-            "url_t" f/str
-            "datetime_t" f/str
+            "timestamp_t" (f/int)
+            "user" (f/str)
+            "account" (f/str)
+            "actor" (f/str)
+            "affected_code" (f/str)
+            "url_t" (f/str)
+            "datetime_t" (f/str)
             "object_t" (f/map [(f/entry f/any f/any :required? false)])
-            "hostname_t" f/str
-            "ip_t" f/str
-            "mac_t" f/str
-            "subnet_t" f/str
-            "email_t" f/str
+            "hostname_t" (f/str)
+            "ip_t" (f/str)
+            "mac_t" (f/str)
+            "subnet_t" (f/str)
+            "email_t" (f/str)
             ("json_t" nil) f/any
 
             (do (swap! unhandled conj type) (assert nil)))
+        _ (assert (not (fn? f)))
         f (if enum
             (cond
               (instance? IntegerType f) (assoc f :values (mapv Long/parseLong (keys enum)))

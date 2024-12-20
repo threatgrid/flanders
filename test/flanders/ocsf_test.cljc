@@ -1,20 +1,75 @@
 (ns flanders.ocsf-test
   (:require [clojure.test :refer [deftest is testing]]
+            [clj-http.client :as client]
             [clojure.java.io :as io]
             [cheshire.core :as json]
             [flanders.malli :as malli]
+            [schema.core :as s]
+            [flanders.schema :as schema]
             [flanders.ocsf :as ocsf]
-            
+            [clojure.walk :as walk]
             [malli.core :as m]))
 
-(comment
+(defn sort-recursive [v]
+  (walk/postwalk
+    (fn [v]
+      (cond->> v
+        (map? v) (into (sorted-map))))
+    v))
+
+(def nsamples 10)
+
+(defn gen-ocsf-1-3-0 []
   ;"https://schema.ocsf.io/api/1.3.0/classes/http_activity"
-  (spit "test-resources/ocsf-1.3.0-export.json"
-        (-> (:body ((requiring-resolve 'clj-http.client/get)
-                    "https://schema.ocsf.io/export/schema"
-                    ))
-            (json/decode)
-            (json/encode {:pretty true})))
+  (let [export-schema (-> "https://schema.ocsf.io/export/schema" client/get :body json/decode)
+        _ (assert (map? export-schema))
+        sample {"objects" (into {} (map (fn [name]
+                                          (when (Thread/interrupted) (throw (InterruptedException.)))
+                                          [name (doall
+                                                  (pmap (fn [_]
+                                                          (do (when (Thread/interrupted) (throw (InterruptedException.)))
+                                                              (let [url (str "https://schema.ocsf.io/sample/objects/" name)]
+                                                                (prn url)
+                                                                (try (-> url client/get :body json/decode)
+                                                                     (catch Exception e
+                                                                       (prn url)
+                                                                       (throw e))))))
+                                                        (range nsamples)))]))
+                                (keys (get export-schema "objects")))
+                "base_event" (doall
+                               (pmap (fn [_]
+                                       (when (Thread/interrupted) (throw (InterruptedException.)))
+                                       (let [url "https://schema.ocsf.io/sample/base_event"]
+                                         (prn url)
+                                         (try (-> url client/get :body json/decode)
+                                              (catch Exception e
+                                                (prn url)
+                                                (throw e)))))
+                                     (range nsamples)))
+                "classes" (into {} (map (fn [name]
+                                          (when (Thread/interrupted) (throw (InterruptedException.)))
+                                          [name (doall (pmap (fn [_]
+                                                               (do (when (Thread/interrupted) (throw (InterruptedException.)))
+                                                                   (let [url (str "https://schema.ocsf.io/sample/classes/" name)]
+                                                                     (prn url)
+                                                                     (try (-> url client/get :body json/decode)
+                                                                          (catch Exception e
+                                                                            (prn url)
+                                                                            (throw e))))))
+                                                             (range nsamples)))]))
+                                (keys (get export-schema "classes")))}]
+    (try (spit "resources/ocsf-1.3.0-export.json"
+               (-> export-schema
+                   sort-recursive
+                   (json/encode {:pretty true})))
+         (finally
+           (spit "test-resources/ocsf-1.3.0-sample.json"
+                 (-> sample
+                     sort-recursive
+                     (json/encode {:pretty true})))))))
+
+(comment
+  (gen-ocsf-1-3-0)
   )
 
 (deftest flanders-test
@@ -129,11 +184,39 @@
 
 (def ocsf-1-3-0-export
   (delay (json/decode (slurp (io/resource "ocsf-1.3.0-export.json")))))
+(def ocsf-1-3-0-sample
+  (delay (json/decode (slurp (io/resource "ocsf-1.3.0-sample.json")))))
+
+(comment
+  (keys @ocsf-1-3-0-export)
+  (get @ocsf-1-3-0-export "base_event")
+  (get @ocsf-1-3-0-export "dictionary_attributes")
+  )
 
 (deftest ocsf-1-3-0-export-test
   (is (= "1.3.0" (get @ocsf-1-3-0-export "version")))
-  (doseq [[name obj] (get @ocsf-1-3-0-export "objects")]
-    (testing name
-      (is (ocsf/->flanders obj)
-          (pr-str obj))))
-  )
+  (doseq [[k nexpected] {"objects" 121 "classes" 72}]
+    (let [objects (get @ocsf-1-3-0-export k)
+          examples (get @ocsf-1-3-0-sample k)]
+      (is (= nexpected (count objects)))
+      (doseq [[name obj] objects]
+        (testing name
+          (let [m (is (malli/->malli (ocsf/->flanders obj)))
+                s (is (schema/->schema (ocsf/->flanders obj)))
+                good-examples (map walk/keywordize-keys (get examples name))]
+            (is (= nsamples (count good-examples)))
+            (doseq [good-example good-examples
+                    :let [bad-example (assoc good-example ::junk "foo")]]
+              (is (nil? (m/explain m good-example)))
+              (is (nil? (s/check s good-example)))
+              (is (m/explain m bad-example))
+              (is (s/check s bad-example))))))))
+  (let [types (get @ocsf-1-3-0-export "types")]
+    (is (= 22 (count types)))
+    (doseq [[name obj] types]
+      (testing name
+        (is (malli/->malli (ocsf/->flanders obj)))
+        (is (schema/->schema (ocsf/->flanders obj))))))
+  (testing "base_event"
+    (is (malli/->malli (ocsf/->flanders (get @ocsf-1-3-0-export "base_event"))))
+    (is (schema/->schema (ocsf/->flanders (get @ocsf-1-3-0-export "base_event"))))))
