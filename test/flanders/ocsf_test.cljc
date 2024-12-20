@@ -4,7 +4,18 @@
             [cheshire.core :as json]
             [flanders.malli :as malli]
             [flanders.ocsf :as ocsf]
+            
             [malli.core :as m]))
+
+(comment
+  ;"https://schema.ocsf.io/api/1.3.0/classes/http_activity"
+  (spit "test-resources/ocsf-1.3.0-export.json"
+        (-> (:body ((requiring-resolve 'clj-http.client/get)
+                    "https://schema.ocsf.io/export/schema"
+                    ))
+            (json/decode)
+            (json/encode {:pretty true})))
+  )
 
 (deftest flanders-test
   (is (= [:map
@@ -115,3 +126,14 @@
   (is (= nil
          (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/dictionary.json"))))))))
 )
+
+(def ocsf-1-3-0-export
+  (delay (json/decode (slurp (io/resource "ocsf-1.3.0-export.json")))))
+
+(deftest ocsf-1-3-0-export-test
+  (is (= "1.3.0" (get @ocsf-1-3-0-export "version")))
+  (doseq [[name obj] (get @ocsf-1-3-0-export "objects")]
+    (testing name
+      (is (ocsf/->flanders obj)
+          (pr-str obj))))
+  )
