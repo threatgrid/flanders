@@ -212,6 +212,7 @@
                                       (when (and parent-id $id)
                                         (unsupported-schema! "Nested $id not yet supported" v opts))
                                       (or $id parent-id
+                                          (str "unique-base-id-" (random-uuid))
                                           ;; TODO Establishing a Base URI https://www.rfc-editor.org/rfc/rfc3986.html#section-5.1
                                           #_(throw (ex-info "Must supply $id" {})))))
         _ (assert (not (and $defs definitions)))

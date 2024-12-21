@@ -94,7 +94,7 @@
                     opening-default-entry? pop)
           close? (not opening-default-entry?)
           s (if (and (= 1 (count entries))
-                     default-entry)
+                     opening-default-entry?)
               ;; avoid ::m/default when possible. affects key keywordizing during coercion (used as a fallback
               ;; instead of keywordizing a key to match a known entry)
               (-> (m/schema (->malli (first entries) (assoc opts ::entry->map-schema {:close? close?})) opts)
@@ -102,7 +102,7 @@
               (-> (case (count entries)
                     ;; :merge has problems with 1 and 0 children https://github.com/metosin/malli/pull/1147
                     0 [:merge (m/schema :map opts)]
-                    (into [:merge] (map (fn [e] [:map (->malli e)])) entries))
+                    (into [:merge] (map (fn [e] (m/schema [:map (->malli e)] opts))) entries))
                   (m/schema opts)
                   m/deref ;; eliminate :merge
                   (cond-> close? (m/-update-properties assoc :closed true))

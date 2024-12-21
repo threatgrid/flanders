@@ -52,6 +52,25 @@
   (gen-ocsf-json-schema-1-3-0)
   )
 
+(defonce example-json-schemas
+  (delay (let [{:strs [objects base_event classes]} (json/decode (slurp (io/resource "flanders/ocsf-1.3.0-json-schema-export.json")))]
+           (zipmap (range) (cons base_event (mapcat vals [objects classes]))))))
+
+(comment
+  (->malli (get @example-json-schemas 65)
+           {:flanders.malli/no-example true
+            ::sut/->infer-type (fn [s _opts] (assoc s "type" ::sut/any))})
+  )
+
+(deftest test-ocs-json-schemas
+  (doseq [[i {:strs [$id] :as s}] @example-json-schemas]
+    (try (->malli s {:flanders.malli/no-example true
+                     ::sut/->infer-type (fn [s _opts] (assoc s "type" ::sut/any))}))))
+
+(comment
+  (test-ocs-json-schemas)
+  )
+
 (deftest ->flanders-test
   (is (= (m/form (->malli th/union-example {:flanders.malli/no-example true}))
          [:map
