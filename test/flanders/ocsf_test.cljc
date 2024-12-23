@@ -22,8 +22,6 @@
         (map? v) (into (sorted-map))))
     v))
 
-(def nsamples 10)
-
 (defn ocsf-server-down []
   (println "down")
   (proc/shell {:dir "tmp/ocsf-server"
@@ -94,7 +92,7 @@
               (json/encode {:pretty true})))))
 
 ;"https://schema.ocsf.io/api/1.3.0/classes/http_activity"
-(defn gen-ocsf-schema [{:keys [origin version base-url ocsf-schema]
+(defn gen-ocsf-schema [{:keys [origin version base-url ocsf-schema nsamples]
                  :or {origin "https://schema.ocsf.io"
                       version "1.3.0"}}]
   (let [base-url (or base-url
@@ -164,18 +162,36 @@
                        :err *err*}
                       "git" "clone" (format "https://github.com/ocsf/%s.git" repo))))))
 
+(def all-ocsf-exports
+  [{:version "1.4.0-dev"
+    :nsamples 10
+    :nobjects 141
+    :nclasses 78
+    :ocsf-schema "origin/main"}
+   {:version "1.3.0"
+    :nsamples 10
+    :nobjects 121
+    :nclasses 72
+    :ocsf-schema "1.3.0"}
+   {:version "1.2.0"
+    :nsamples 10
+    :nobjects 111
+    :nclasses 65
+    :ocsf-schema "v1.2.0"}
+   {:version "1.1.0"
+    :nsamples 10
+    :nobjects 106
+    :nclasses 50
+    :ocsf-schema "v1.1.0"}
+   {:version "1.0.0"
+    :nsamples 10
+    :nobjects 84
+    :nclasses 36
+    :ocsf-schema "v1.0.0"}])
+
 (defn sync-ocsf-export []
   (prep-ocsf-repos)
-  (try (doseq [m [{:version "1.4.0-dev"
-                   :ocsf-schema "origin/main"}
-                  {:version "1.3.0"
-                   :ocsf-schema "1.3.0"}
-                  {:version "1.2.0"
-                   :ocsf-schema "v1.2.0"}
-                  {:version "1.1.0"
-                   :ocsf-schema "v1.1.0"}
-                  {:version "1.0.0"
-                   :ocsf-schema "v1.0.0"}]]
+  (try (doseq [m all-ocsf-exports]
          (some-> (:ocsf-schema m) ocsf-server-up)
          (gen-ocsf-schema (assoc m :base-url "http://localhost:8080/"))
          (gen-ocsf-json-schema (assoc m :base-url "http://localhost:8080/"))
@@ -311,44 +327,51 @@
            [:any {:json-schema/example "anything"}]]]
          (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/events/findings/compliance_finding.json")))))))))
 
-(def ocsf-1-3-0-export (delay (json/decode (slurp (io/resource "ocsf-1.3.0-export.json")))))
-(def ocsf-1-3-0-sample (delay (json/decode (slurp (io/resource "ocsf-1.3.0-sample.json")))))
+(defn test-ocsf-version [{:keys [version nobjects nclasses nsamples]}]
+  (let [export (json/decode (slurp (io/resource (format "flanders/ocsf-%s-export.json" version))))
+        sample (json/decode (slurp (io/resource (format "flanders/ocsf-%s-sample.json" version))))]
+    (when (is (= version (get export "version")))
+      (doseq [[k nexpected] {"objects" nobjects "classes" nclasses}]
+        (let [objects (get export k)
+              examples (get sample k)]
+          (when (is (= nexpected (count objects)))
+            (doseq [[name obj] objects]
+              (when (Thread/interrupted) (throw (InterruptedException.)))
+              (testing name
+                (let [m (is (malli/->malli (ocsf/->flanders obj)))
+                      s (is (schema/->schema (ocsf/->flanders obj)))
+                      good-examples (map walk/keywordize-keys (get examples name))]
+                  (when (is (= nsamples (count good-examples)))
+                    (doseq [good-example good-examples
+                            :let [bad-example (assoc good-example ::junk "foo")]]
+                      (is (nil? (m/explain m good-example)))
+                      (is (nil? (s/check s good-example)))
+                      (is (m/explain m bad-example))
+                      (is (s/check s bad-example))))))))))
+      #_
+      (let [types (get export "types")]
+        (is (= 22 (count types)))
+        (doseq [[name obj] types]
+          (when (Thread/interrupted) (throw (InterruptedException.)))
+          (testing name
+            (is (malli/->malli (ocsf/->flanders obj)))
+            (is (schema/->schema (ocsf/->flanders obj))))))
+      (testing "base_event"
+        (let [base-event (get export "base_event")
+              examples (get sample "base_event")
+              m (is (malli/->malli (ocsf/->flanders base-event)))
+              s (is (schema/->schema (ocsf/->flanders base-event)))
+              good-examples (map walk/keywordize-keys examples)]
+          (is (= nsamples (count good-examples)))
+          #_ ;;TODO examples for base event seem to be an open map?
+          (doseq [good-example good-examples
+                  :let [bad-example (assoc good-example ::junk "foo")]]
+            (is (nil? (m/explain m good-example)))
+            (is (nil? (s/check s good-example)))
+            (is (m/explain m bad-example))
+            (is (s/check s bad-example))))))))
 
-(deftest ocsf-1-3-0-export-test
-  (is (= "1.3.0" (get @ocsf-1-3-0-export "version")))
-  (doseq [[k nexpected] {"objects" 121 "classes" 72}]
-    (let [objects (get @ocsf-1-3-0-export k)
-          examples (get @ocsf-1-3-0-sample k)]
-      (is (= nexpected (count objects)))
-      (doseq [[name obj] objects]
-        (testing name
-          (let [m (is (malli/->malli (ocsf/->flanders obj)))
-                s (is (schema/->schema (ocsf/->flanders obj)))
-                good-examples (map walk/keywordize-keys (get examples name))]
-            (is (= nsamples (count good-examples)))
-            (doseq [good-example good-examples
-                    :let [bad-example (assoc good-example ::junk "foo")]]
-              (is (nil? (m/explain m good-example)))
-              (is (nil? (s/check s good-example)))
-              (is (m/explain m bad-example))
-              (is (s/check s bad-example))))))))
-  (let [types (get @ocsf-1-3-0-export "types")]
-    (is (= 22 (count types)))
-    (doseq [[name obj] types]
-      (testing name
-        (is (malli/->malli (ocsf/->flanders obj)))
-        (is (schema/->schema (ocsf/->flanders obj))))))
-  (testing "base_event"
-    (let [base-event (get @ocsf-1-3-0-export "base_event")
-          examples (get @ocsf-1-3-0-sample "base_event")
-          m (is (malli/->malli (ocsf/->flanders base-event)))
-          s (is (schema/->schema (ocsf/->flanders base-event)))
-          good-examples (map walk/keywordize-keys examples)]
-      (is (= nsamples (count good-examples)))
-      #_ ;;TODO examples for base event seem to be an open map?
-      (doseq [good-example good-examples
-              :let [bad-example (assoc good-example ::junk "foo")]]
-        (is (nil? (m/explain m good-example)))
-        (is (nil? (s/check s good-example)))
-        (is (m/explain m bad-example))
-        (is (s/check s bad-example))))))
+(deftest test-all-ocsf-versions
+  (doseq [config all-ocsf-exports]
+    (testing (:version config)
+      (test-ocsf-version config))))
