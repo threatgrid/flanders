@@ -343,11 +343,21 @@
                       good-examples (map walk/keywordize-keys (get examples name))]
                   (when (is (= nsamples (count good-examples)))
                     (doseq [good-example good-examples
-                            :let [bad-example (assoc good-example ::junk "foo")]]
-                      (is (nil? (m/explain m good-example)))
-                      (is (nil? (s/check s good-example)))
-                      (is (m/explain m bad-example))
-                      (is (s/check s bad-example))))))))))
+                            :let [good-example (if (and (= version "1.1.0")
+                                                        (= k "classes")
+                                                        (= name "incident_finding"))
+                                                 ;; fix https://github.com/ocsf/ocsf-server/issues/123
+                                                 (reduce (fn [good-example field]
+                                                           (if (string? (get good-example field))
+                                                             (update good-example field count)
+                                                             good-example))
+                                                         good-example [:priority :distributor])
+                                                 good-example)
+                                  bad-example (assoc good-example ::junk "foo")]]
+                      (is (nil? (m/explain m good-example)) (pr-str good-example))
+                      (is (nil? (s/check s good-example)) (pr-str good-example))
+                      (is (m/explain m bad-example) (pr-str bad-example))
+                      (is (s/check s bad-example) (pr-str bad-example))))))))))
       #_
       (let [types (get export "types")]
         (is (= 22 (count types)))
