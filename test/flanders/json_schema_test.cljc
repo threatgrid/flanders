@@ -7,6 +7,8 @@
             [flanders.json-schema :as sut]
             [flanders.json-schema.test-helpers :as th :refer [->malli ->schema]]
             [cheshire.core :as json]
+            [flanders.malli :as malli]
+            [flanders.schema :as schema]
             [malli.core :as m]
             [schema.core :as s]))
 
@@ -52,8 +54,10 @@
   (gen-ocsf-json-schema-1-3-0)
   )
 
-(defonce example-json-schemas
-  (delay (let [{:strs [objects base_event classes]} (json/decode (slurp (io/resource "flanders/ocsf-1.3.0-json-schema-export.json")))]
+(def ocsf-1-3-0-json-schema-export (delay (json/decode (slurp (io/resource "flanders/ocsf-1.3.0-json-schema-export.json")))))
+(def ocsf-1-3-0-sample (delay (json/decode (slurp (io/resource "flanders/ocsf-1.3.0-sample.json")))))
+(def example-json-schemas
+  (delay (let [{:strs [objects base_event classes]} @ocsf-1-3-0-json-schema-export]
            (zipmap (range) (cons base_event (mapcat vals [objects classes]))))))
 
 (comment
@@ -64,12 +68,54 @@
 
 (deftest test-ocs-json-schemas
   (doseq [[i {:strs [$id] :as s}] @example-json-schemas]
-    (try (->malli s {:flanders.malli/no-example true
-                     ::sut/->infer-type (fn [s _opts] (assoc s "type" ::sut/any))}))))
+    (testing (or $id s)
+      (is (->malli s {:flanders.malli/no-example true
+                      ::sut/->infer-type (fn [s _opts] (assoc s "type" ::sut/any))})))))
 
 (comment
   (test-ocs-json-schemas)
   )
+
+(def nsamples 10)
+
+(comment
+  (count (get @ocsf-1-3-0-json-schema-export "objects"))
+  (count (get @ocsf-1-3-0-json-schema-export "classes"))
+  (count (get @ocsf-1-3-0-json-schema-export "objects"))
+  (count (get @ocsf-1-3-0-json-schema-export "classes"))
+  (map count (vals (get @ocsf-1-3-0-json-schema-export "classes")))
+  )
+(deftest ocsf-1-3-0-json-schema-export-test
+  (doseq [[k nexpected] {"objects" 121 "classes" 72}]
+    (let [objects (get @ocsf-1-3-0-json-schema-export k)
+          examples (get @ocsf-1-3-0-sample k)]
+      (is (= nexpected (count objects)))
+      (doseq [[name obj] objects]
+        (testing name
+          (let [m (is (malli/->malli (sut/->flanders obj)))
+                s (is (schema/->schema (sut/->flanders obj)))
+                good-examples (map walk/keywordize-keys (get examples name))]
+            (is (= nsamples (count good-examples)))
+            (doseq [good-example good-examples
+                    :let [bad-example (assoc good-example ::junk "foo")]]
+              (is (nil? (m/explain m good-example)))
+              (is (nil? (s/check s good-example)))
+              (is (m/explain m bad-example))
+              (is (s/check s bad-example))))))))
+  (testing "base_event"
+    (let [base-event (get @ocsf-1-3-0-json-schema-export "base_event")
+          examples (get @ocsf-1-3-0-sample "base_event")
+          m (is (malli/->malli (sut/->flanders base-event)))
+          s (is (schema/->schema (sut/->flanders base-event)))
+          good-examples (map walk/keywordize-keys examples)]
+      (is (= nsamples (count good-examples)))
+      #_ ;;TODO examples for base event seem to be an open map?
+      (doseq [good-example good-examples
+              :let [bad-example (assoc good-example ::junk "foo")]]
+        (is (nil? (m/explain m good-example)))
+        (is (nil? (s/check s good-example)))
+        (is (m/explain m bad-example))
+        (is (s/check s bad-example))))))
 
 (deftest ->flanders-test
   (is (= (m/form (->malli th/union-example {:flanders.malli/no-example true}))

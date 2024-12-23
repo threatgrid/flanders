@@ -19,16 +19,21 @@
 
 (def nsamples 10)
 
-(defn gen-ocsf-1-3-0 []
-  ;"https://schema.ocsf.io/api/1.3.0/classes/http_activity"
-  (let [export-schema (-> "https://schema.ocsf.io/export/schema" client/get :body json/decode)
+;"https://schema.ocsf.io/api/1.3.0/classes/http_activity"
+(defn gen-ocsf [{:keys [origin version base-url]
+                 :or {origin "https://schema.ocsf.io"
+                      version "1.3.0"}}]
+  (let [base-url (or base-url
+                     (str origin "/" version "/"))
+        _ (prn "base-url" base-url)
+        export-schema (-> (str base-url "export/schema") client/get :body json/decode)
         _ (assert (map? export-schema))
         sample {"objects" (into {} (map (fn [name]
                                           (when (Thread/interrupted) (throw (InterruptedException.)))
                                           [name (doall
                                                   (pmap (fn [_]
                                                           (do (when (Thread/interrupted) (throw (InterruptedException.)))
-                                                              (let [url (str "https://schema.ocsf.io/sample/objects/" name)]
+                                                              (let [url (str base-url "sample/objects/" name)]
                                                                 (prn url)
                                                                 (try (-> url client/get :body json/decode)
                                                                      (catch Exception e
@@ -39,7 +44,7 @@
                 "base_event" (doall
                                (pmap (fn [_]
                                        (when (Thread/interrupted) (throw (InterruptedException.)))
-                                       (let [url "https://schema.ocsf.io/sample/base_event"]
+                                       (let [url (str base-url "sample/base_event")]
                                          (prn url)
                                          (try (-> url client/get :body json/decode)
                                               (catch Exception e
@@ -50,7 +55,7 @@
                                           (when (Thread/interrupted) (throw (InterruptedException.)))
                                           [name (doall (pmap (fn [_]
                                                                (do (when (Thread/interrupted) (throw (InterruptedException.)))
-                                                                   (let [url (str "https://schema.ocsf.io/sample/classes/" name)]
+                                                                   (let [url (str base-url "sample/classes/" name)]
                                                                      (prn url)
                                                                      (try (-> url client/get :body json/decode)
                                                                           (catch Exception e
@@ -58,19 +63,22 @@
                                                                             (throw e))))))
                                                              (range nsamples)))]))
                                 (keys (get export-schema "classes")))}]
-    (try (spit "resources/flanders/ocsf-1.3.0-export.json"
+    (try (spit (format "resources/flanders/ocsf-%s-export.json" version)
                (-> export-schema
                    sort-recursive
                    (json/encode {:pretty true})))
          (finally
-           (spit "test-resources/flanders/ocsf-1.3.0-sample.json"
+           (spit (format "test-resources/flanders/ocsf-1.3.0-sample.json" version)
                  (-> sample
                      sort-recursive
                      (json/encode {:pretty true})))))))
 
 (comment
   ;;regenerate
-  (gen-ocsf-1-3-0)
+  (gen-ocsf {:version "1.3.0"})
+  (gen-ocsf {:version "1.4.0-dev"})
+  (gen-ocsf {:base-url "http://localhost:8080/"
+             :version "1.4.0-dev"})
   )
 
 (deftest flanders-test
