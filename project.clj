@@ -24,6 +24,7 @@
   :profiles {:dev
              {:jvm-opts ["-Dflanders-dev-time=true"]
               :dependencies [[org.clojure/test.check "1.1.1"]
+                             [babashka/process "0.5.22"]
                              [cheshire "5.13.0"]
                              [clj-http "3.13.0"]
                              [potemkin "0.4.7"]

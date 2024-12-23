@@ -2227,7 +2227,7 @@
       "description" : "Application Lifecycle events report installation, removal, start, stop of an application or service.",
       "extends" : "application",
       "name" : "application_lifecycle",
-      "profiles" : [ "cloud", "datetime", "osint", "host", "container", "linux/linux_users", "data_classification" ],
+      "profiles" : [ "cloud", "datetime", "osint", "host", "data_classification", "container", "linux/linux_users" ],
       "uid" : 6002
     },
     "authentication" : {
@@ -10282,7 +10282,7 @@
       "description" : "Email events report activities of emails.",
       "extends" : "base_event",
       "name" : "email_activity",
-      "profiles" : [ "cloud", "datetime", "osint", "host", "security_control", "container", "linux/linux_users", "data_classification" ],
+      "profiles" : [ "cloud", "datetime", "osint", "host", "security_control", "data_classification", "container", "linux/linux_users" ],
       "uid" : 4009
     },
     "email_file_activity" : {
@@ -12134,7 +12134,7 @@
       "description" : "Entity Management events report activity by a managed client, a micro service, or a user at a management console. The activity can be a create, read, update, and delete operation on a managed entity.",
       "extends" : "iam",
       "name" : "entity_management",
-      "profiles" : [ "cloud", "datetime", "osint", "host", "container", "linux/linux_users", "data_classification" ],
+      "profiles" : [ "cloud", "datetime", "osint", "host", "data_classification", "container", "linux/linux_users" ],
       "uid" : 3004
     },
     "event_log" : {
@@ -35304,7 +35304,7 @@
       "description" : "Software Inventory Info events report device software inventory data that is either logged or proactively collected. For example, when collecting device information from a CMDB or running a network sweep of connected devices.",
       "extends" : "discovery",
       "name" : "software_info",
-      "profiles" : [ "cloud", "datetime", "osint", "host", "container", "linux/linux_users", "data_classification" ],
+      "profiles" : [ "cloud", "datetime", "osint", "host", "data_classification", "container", "linux/linux_users" ],
       "uid" : 5020
     },
     "ssh_activity" : {
@@ -39451,7 +39451,7 @@
       "description" : "Web Resource Access Activity events describe successful/failed attempts to access a web resource over HTTP.",
       "extends" : "application",
       "name" : "web_resource_access_activity",
-      "profiles" : [ "cloud", "datetime", "osint", "host", "network_proxy", "data_classification", "container", "linux/linux_users" ],
+      "profiles" : [ "cloud", "datetime", "osint", "host", "network_proxy", "container", "linux/linux_users", "data_classification" ],
       "uid" : 6004
     },
     "web_resources_activity" : {
@@ -40250,7 +40250,7 @@
       "description" : "Web Resources Activity events describe actions executed on a set of Web Resources.",
       "extends" : "base_event",
       "name" : "web_resources_activity",
-      "profiles" : [ "cloud", "datetime", "osint", "host", "network_proxy", "security_control", "data_classification", "container", "linux/linux_users" ],
+      "profiles" : [ "cloud", "datetime", "osint", "host", "network_proxy", "security_control", "container", "linux/linux_users", "data_classification" ],
       "uid" : 6001
     },
     "win/prefetch_query" : {
@@ -56759,7 +56759,7 @@
       "description" : "The Logger object represents the device and product where events are stored with times for receipt and transmission.  This may be at the source device where the event occurred, a remote scanning device, intermediate hops, or the ultimate destination.",
       "extends" : "_entity",
       "name" : "logger",
-      "profiles" : [ "container", "data_classification", "datetime" ]
+      "profiles" : [ "data_classification", "container", "datetime" ]
     },
     "malware" : {
       "attributes" : {
@@ -57034,7 +57034,7 @@
       "description" : "The Managed Entity object describes the type and version of an entity, such as a user, device, or policy.  For types in the <code>type_id</code> enum list, an associated attribute should be populated.  If the type of entity is not in the <code>type_id</code> list, information can be put into the <code>data</code> attribute and the <code>type</code> attribute should identify the entity.",
       "extends" : "_entity",
       "name" : "managed_entity",
-      "profiles" : [ "container", "data_classification" ]
+      "profiles" : [ "data_classification", "container" ]
     },
     "metadata" : {
       "attributes" : {
