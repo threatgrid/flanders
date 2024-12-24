@@ -328,7 +328,8 @@
          (m/form (malli/->malli (ocsf/->flanders (json/decode (slurp (io/file "ocsf-schema/events/findings/compliance_finding.json")))))))))
 
 (defn test-ocsf-version [{:keys [version nobjects nclasses nsamples]}]
-  (let [export (json/decode (slurp (io/resource (format "flanders/ocsf-%s-export.json" version))))
+  (let [;;TODO moved here https://github.com/frenchy64/ocsf-schema-export
+        export (json/decode (slurp (io/resource (format "flanders/ocsf-%s-export.json" version))))
         sample (json/decode (slurp (io/resource (format "flanders/ocsf-%s-sample.json" version))))]
     (when (is (= version (get export "version")))
       (doseq [[k nexpected] {"objects" nobjects "classes" nclasses}]
