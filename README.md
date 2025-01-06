@@ -62,7 +62,7 @@ The result `ocsf-1-3-0-schemas` will have the vals of the `"objects"` and `"clas
 ;     ...}}
 ```
 
-From there, you can convert them other formats such as malli or schema:
+From there, you can convert them to other formats such as malli or schema:
 
 ```clojure
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
