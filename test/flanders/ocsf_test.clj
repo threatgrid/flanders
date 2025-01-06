@@ -381,3 +381,6 @@
   (doseq [config all-ocsf-exports]
     (testing (:version config)
       (test-ocsf-version config))))
+
+(deftest cisco-ocsf-schema-test
+  (is (= 33 (-> "flanders_test/cisco_network_activity.json" io/resource slurp json/decode ocsf/->flanders schema/->schema count))))

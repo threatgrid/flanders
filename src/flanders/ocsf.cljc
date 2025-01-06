@@ -49,12 +49,14 @@
                           "required" true
                           ("recommended" "optional" nil) false))))
 
+(defn- normalize-attributes [attributes]
+  (into (sorted-map) (if (map? attributes) [attributes] attributes)))
+
 (defn ->flanders
   "Converts parsed OCSF schemas to Flanders."
   ([v] (->flanders v nil))
   ([{:strs [attributes description]} opts]
-   (-> (f/map (mapv #(parse-attribute % opts)
-                    (sort-by key attributes)))
+   (-> (f/map (mapv #(parse-attribute % opts) (normalize-attributes attributes)))
        (assoc :description description))))
 
 (defn parse-exported-schemas
