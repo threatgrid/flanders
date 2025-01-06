@@ -15,6 +15,5 @@
                                clj-http/clj-http {:mvn/version "3.13.0"}
                                babashka/process {:mvn/version "0.5.22"}
                                metosin/malli {:mvn/version "0.17.0"}}
-                  :jvm-opts ["-Dflanders-dev-time=true"]
                   :main-opts ["-m" "cognitect.test-runner"]
                   :exec-fn cognitect.test-runner.api/test}}}
