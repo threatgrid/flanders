@@ -139,6 +139,20 @@ of via the bulk export:
   (flanders.malli/->malli (ocsf/->flanders (get-in ocsf-1-3-0-export ["objects" "authorization"]))))
 ```
 
+## Releasing
+
+To release flanders `x.y.z`:
+
+1. Create a new feature branch.
+2. Update `CHANGES.md` for the upcoming version.
+3. Change the project.clj version to `x.y.z-SNAPSHOT`.
+4. Commit changes.
+5. Run `lein deploy clojars` to deploy a snapshot to test your credentials.
+6. If that works, run `lein release` to release a new version.
+7. Open a PR for your branch.
+8. You must merge your PR using a merge commit, not squash.
+9. Once merged, double check the git tag `x.y.z` is present.
+
 ## License
 
 Copyright © 2016-2025 Cisco Systems
