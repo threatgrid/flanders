@@ -13,10 +13,16 @@ Use `flanders.ocsf/->flanders` to translate an OCSF schema to flanders. The OCSF
 are in an internal format returned by urls like https://schema.ocsf.io/api/objects/cve.
 
 You can export OCSF schemas in bulk at https://schema.ocsf.io/export/schema.
-This repository depends on [ocsf-schema-export](https://github.com/frenchy64/ocsf-schema-export)
+This repository depends on [ocsf-schema-export](https://github.com/threatgrid/ocsf-schema-export)
 which provides bulk OCSF schemas exports for each major OCSF version.
 
-These files are available on the classpath:
+Please add the following library to your classpath (already a dev dep in flanders):
+
+```clojure
+[io.github.threatgrid/ocsf-schema-export "1.0.0-SNAPSHOT"]
+```
+
+These files are now available on the classpath:
 
 ```
 threatgrid/ocsf-1.0.0-export.json
@@ -135,7 +141,7 @@ of via the bulk export:
 
 ## License
 
-Copyright © 2016-2024 Cisco Systems
+Copyright © 2016-2025 Cisco Systems
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

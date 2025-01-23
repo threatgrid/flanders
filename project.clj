@@ -9,8 +9,7 @@
                  [prismatic/schema "1.2.0"]
                  [metosin/ring-swagger "1.0.0"]
                  [metosin/schema-tools "0.12.3"]
-                 [org.clojure/math.combinatorics "0.3.0"]
-                 [io.github.threatgrid/ocsf-schema-export "1.0.0-SNAPSHOT"]]
+                 [org.clojure/math.combinatorics "0.3.0"]]
   :global-vars {*warn-on-reflection* true}
   :release-tasks [["clean"]
                   ["vcs" "assert-committed"]
@@ -29,4 +28,5 @@
                              [cheshire "5.13.0"]
                              [clj-http "3.13.0"]
                              [potemkin "0.4.7"]
-                             [metosin/malli "0.17.0"]]}})
+                             [metosin/malli "0.17.0"]
+                             [io.github.threatgrid/ocsf-schema-export "1.0.0-SNAPSHOT"]]}})
