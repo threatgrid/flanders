@@ -149,7 +149,7 @@ To release flanders `x.y.z`:
 4. Run `lein deploy clojars` to deploy a snapshot to test your credentials.
 5. If that works, run `lein release` to release a new version.
 6. Open a PR for your branch.
-7. You must close your PR using a merge commit, not squash.
+7. You must merge your PR using a merge commit, not squash.
 8. Once merged, double check the git tag `x.y.z` is present.
 
 ## License
