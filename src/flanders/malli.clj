@@ -79,7 +79,10 @@
   MapType
   (->malli' [{:keys [entries key?] :as dll} opts]
     (let [f #(->malli' % opts)
-          s (-> (into [:merge] (map (fn [e] [:map (f e)])) entries)
+          s (-> (case (count entries)
+                  ;workaround https://github.com/metosin/malli/pull/1147
+                  0 [:merge [:map]]
+                  (into [:merge] (map (fn [e] (m/schema [:map (f e)] opts))) entries))
                 (m/schema opts)
                 m/deref ;; eliminate :merge
                 (mu/update-properties assoc :closed true)

@@ -5,8 +5,7 @@
    [flanders.examples :refer [Example OptionalKeywordMapEntryExample]]
    [flanders.schema :as fs]
    [ring.swagger.json-schema :as js]
-   [schema.core :as s]
-   [schema-tools.core :as st]))
+   [schema.core :as s]))
 
 (deftest test-valid-schema
   (is
@@ -80,10 +79,12 @@
     "High"
     "None"
     "Unknown"})
+#_:clj-kondo/ignore
 (f/def-enum-type HighMedLow
   high-med-low
   :reference (str "[HighMedLowVocab](http://stixproject.github.io/"
                   "data-model/1.2/stixVocabs/HighMediumLowVocab-1.0/)"))
+#_:clj-kondo/ignore
 (f/def-map-type RelatedIdentity
   (concat
    (f/required-entries
@@ -112,7 +113,7 @@
                                       (constantly true)]
                               :choices [(f/int :description "inner")
                                         (f/bool :equals true :description "Foo")]))))
-  (is (= {:example {} :description "Description"} (->swagger (deref (f/def-entity-type Bar {:description "Description"})))))
+  (is (= {:example {} :description "Description"} (->swagger (deref #_:clj-kondo/ignore (f/def-entity-type Bar {:description "Description"})))))
   (is (= {:example {:start_time #inst "2016-01-01T01:01:01.000-00:00"
                     :related_identities [{:identity "https://example.com"
                                           :confidence "High"
