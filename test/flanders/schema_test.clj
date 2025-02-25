@@ -6,7 +6,6 @@
    [flanders.schema :as fs]
    [ring.swagger.json-schema :as js]
    [schema.core :as s]
-   [schema-tools.core :as st]
    [schema-generators.generators :as sg]))
 
 (deftest test-valid-schema

@@ -1,6 +1,5 @@
 (ns flanders.spec-test
   (:require
-   [clojure.string :as str]
    [clojure.core.match :refer [match]]
    [clojure.spec.alpha :as s]
    [clojure.spec.test.alpha :as stest]
@@ -151,24 +150,24 @@
     (is (s/valid?
           (fs/->spec (f/conditional
                         false? (f/bool :equals false))
-                     (str "conditional-test"))
+                     "conditional-test")
           false)))
   (testing "predicates that return true for nil work"
     (is (s/valid?
           (fs/->spec (f/conditional
                        nil? f/any)
-                     (str "conditional-test"))
+                     "conditional-test")
           nil)))
   (testing "predicates that return false for false and nil work"
     (is (not (s/valid?
                (fs/->spec (f/conditional
                             (constantly false) f/any)
-                          (str "conditional-test"))
+                          "conditional-test")
                false)))
     (is (not (s/valid?
                (fs/->spec (f/conditional
                             (constantly false) f/any)
-                          (str "conditional-test"))
+                          "conditional-test")
                nil))))
   (testing "condition predicates are taken into account in generators"
     (is (s/exercise (fs/->spec (f/conditional

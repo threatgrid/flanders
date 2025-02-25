@@ -46,8 +46,7 @@
     ;; e.g., (f/conditional #(= false %) f/any-bool) will choose true as an example
     (let [f #(->malli' % opts)
           ;; note: if test is more narrow than the choice, the example will be wrong.
-          choice-schemas (mapv f choices)
-          g (gensym)]
+          choice-schemas (mapv f choices)]
       (if-some [tests (some-> (not-empty tests) vec)]
         (let [ntests (count tests)
               _ (run! (fn [i]
