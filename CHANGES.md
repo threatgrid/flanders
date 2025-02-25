@@ -1,5 +1,7 @@
 # NEXT
 
+- fix `f/conditional` schemas that accept `nil` or `false`
+
 # 1.1.0 - 23rd January 2025
 
 - add OCSF schema support

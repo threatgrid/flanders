@@ -29,4 +29,5 @@
                              [clj-http "3.13.0"]
                              [potemkin "0.4.7"]
                              [metosin/malli "0.17.0"]
+                             [prismatic/schema-generators "0.1.5" :exclusions [prismatic/schema]]
                              [io.github.threatgrid/ocsf-schema-export "1.0.0-SNAPSHOT"]]}})
