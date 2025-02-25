@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@12.5
+        uses: DeLaGuardo/setup-clojure@main
         with:
           lein: 2.11.2
       - name: Cache project dependencies
@@ -47,7 +47,7 @@ jobs:
           java-version: '21'
 
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@12.5
+        uses: DeLaGuardo/setup-clojure@main
         with:
           clj-kondo: '2024.09.27'
 
@@ -78,7 +78,7 @@ jobs:
           distribution: 'temurin'
           java-version: ${{ matrix.jdk }}
       - name: Install clojure tools
-        uses: DeLaGuardo/setup-clojure@12.5
+        uses: DeLaGuardo/setup-clojure@main
         with:
           lein: 2.11.2
       - run: lein do clean, compile :all, test
