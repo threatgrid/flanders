@@ -69,7 +69,6 @@
                         (fn [i c]
                           (let [label (str "choice" i)
                                 spec (f c (str ns "." label))]
-                            (prn spec)
                             (eval `(s/def ~(keyword ns label) ~(if-some [t (nth tests i nil)]
                                                                  ;;hmm this doesn't s/exercise 
                                                                  `(s/and ~spec ~t)
