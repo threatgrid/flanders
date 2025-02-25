@@ -14,6 +14,7 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
@@ -31,12 +32,24 @@ jobs:
             ~/.gitlibs
           key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
           restore-keys: |
-            ${{ runner.os }}-clojure-
+            ${{ runner.os }}-clojure
       - name: Warm deps cache
         run: |
           for i in {1..10}; do lein deps :tree && break; done
+      - id: set-matrix
+        run: |
+          set -x
+          case "${GITHUB_EVENT_NAME}" in
+            #scheduled)
+            #  echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
+            # ;;
+            *)
+              echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
+              ;;
+          esac
   lint:
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
@@ -44,12 +57,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '8'
 
       - name: Install clojure tools
         uses: DeLaGuardo/setup-clojure@main
         with:
-          clj-kondo: '2024.09.27'
+          clj-kondo: '2023.12.15'
 
       - name: Check clojure code
         run:
@@ -57,9 +70,9 @@ jobs:
   test:
     needs: setup
     strategy:
-      matrix:
-        jdk: ["21" "22"]
+      matrix: ${{fromJson(needs.setup.outputs.matrix)}}
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,7 +84,7 @@ jobs:
             ~/.gitlibs
           key: ${{ runner.os }}-clojure-${{ hashFiles('**/project.clj', '**/deps.edn') }}
           restore-keys: |
-            ${{ runner.os }}-clojure-
+            ${{ runner.os }}-clojure
       - name: Prepare java
         uses: actions/setup-java@v4
         with:
@@ -81,9 +94,14 @@ jobs:
         uses: DeLaGuardo/setup-clojure@main
         with:
           lein: 2.11.2
-      - run: lein do clean, compile :all, test
+      - run: |
+          set -x
+          eval 'lein do clean, compile :all, ${CMD}'
+        env:
+          CMD: ${{ matrix.cmd }}
   all-pr-checks:
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     needs: [test, lint]
     steps:
       - run: echo "All tests pass!"
