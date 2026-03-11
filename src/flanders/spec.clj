@@ -108,16 +108,26 @@
       map-kw))
 
   SequenceOfType
-  (->spec' [{:keys [type]} ns f]
+  (->spec' [{:keys [type spec]} ns f]
     (let [result-kw (keyword ns "seq-of")]
       (eval `(s/def ~result-kw ~(f type (str ns "." "seq-of"))))
-      (eval `(s/coll-of ~result-kw))))
+      (let [coll-spec (eval `(s/coll-of ~result-kw))]
+        (if spec
+          (s/and-spec-impl [`(s/coll-of ~result-kw) `~spec]
+                           [coll-spec spec]
+                           nil)
+          coll-spec))))
 
   SetOfType
-  (->spec' [{:keys [type]} ns f]
+  (->spec' [{:keys [type spec]} ns f]
     (let [result-kw (keyword ns "set-of")]
       (eval `(s/def ~result-kw ~(f type (str ns "." "set-of"))))
-      (eval `(s/coll-of ~result-kw :kind set?))))
+      (let [coll-spec (eval `(s/coll-of ~result-kw :kind set?))]
+        (if spec
+          (s/and-spec-impl [`(s/coll-of ~result-kw :kind set?) `~spec]
+                           [coll-spec spec]
+                           nil)
+          coll-spec))))
 
   SignatureType
   (->spec' [{:keys [parameters rest-parameter return]} ns f]
