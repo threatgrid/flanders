@@ -20,6 +20,11 @@
                   ["change" "version" "leiningen.release/bump-version"]
                   ["vcs" "commit"]
                   ["vcs" "push"]]
+  ;; exclude ^:integration tests by default (e.g., ocsf-test/test-all-ocsf-versions requires Docker)
+  ;; run them explicitly with: lein test :integration
+  :test-selectors {:default (complement :integration)
+                   :integration :integration
+                   :all (constantly true)}
   :resource-paths ["resources"]
   :profiles {:dev
              {:resource-paths ["test-resources"]
