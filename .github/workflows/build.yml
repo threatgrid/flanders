@@ -45,10 +45,10 @@ jobs:
           set -x
           case "${GITHUB_EVENT_NAME}" in
             #scheduled)
-            #  echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
+            #  echo 'matrix={"jdk":["11","17","21"],"cmd":["test"]}' >> "$GITHUB_OUTPUT"
             # ;;
             *)
-              echo '::set-output name=matrix::{"jdk":["11","17","21"],"cmd":["test"]}}'
+              echo 'matrix={"jdk":["11","17","21"],"cmd":["test"]}' >> "$GITHUB_OUTPUT"
               ;;
           esac
   lint:
@@ -100,7 +100,7 @@ jobs:
           lein: 2.9.8
       - run: |
           set -x
-          eval 'lein do clean, compile :all, ${CMD}'
+          lein do clean, compile :all, "$CMD"
         env:
           CMD: ${{ matrix.cmd }}
   all-pr-checks:
